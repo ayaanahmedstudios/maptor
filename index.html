@@ -527,6 +527,20 @@
       </div>
     </section>
 
+    <!-- Floating Transform Mode Pill -->
+    <div id="mode-hud" class="fixed top-14 left-1/2 -translate-x-1/2 z-20 bg-bgPanel/90 backdrop-blur-md hairline-all rounded-full p-1 flex items-center gap-0.5 shadow-xl">
+      <button id="btn-mode-box" class="h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 bg-accent text-white transition" title="Bounding Box Transform (V)">
+        <i class="ph ph-bounding-box text-sm"></i>
+        <span>Box</span>
+        <span class="hidden sm:inline text-[10px] font-mono opacity-75">V</span>
+      </button>
+      <button id="btn-mode-warp" class="h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 text-zinc-300 hover:text-white transition" title="Direct Vertex & Mesh Warp (A)">
+        <i class="ph ph-corners-out text-sm"></i>
+        <span>Warp</span>
+        <span class="hidden sm:inline text-[10px] font-mono opacity-75">A</span>
+      </button>
+    </div>
+
     <!-- Mobile Dock -->
     <div id="mobile-sheet-backdrop" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
     <nav id="mobile-dock" class="lg:hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-30 bg-bgPanel/95 backdrop-blur-md hairline-all rounded-full p-1 flex items-center gap-1 shadow-2xl" style="margin-bottom: env(safe-area-inset-bottom);">
@@ -624,7 +638,7 @@
       const MIRROR_KEY = 'pmap_live_mirror';
       const LIBRARY_KEY = 'pm_studio_library_v5';
       const DB_NAME = 'pm_studio_media_db_v5';
-      const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('pmap_live_sync_v1') : null;
+      const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('pmap_sync_v3') : null;
 
       /* IndexedDB Media Blob Store */
       function openMediaDB() {
@@ -987,6 +1001,8 @@ void main() {
         zoom: 1.0,
         panX: 0,
         panY: 0,
+        transformMode: 'box',
+        lockAspect: true,
         showGrid: false,
         snapEnabled: true,
         selectedIds: [],
@@ -1168,7 +1184,11 @@ void main() {
             muted: opts.media?.muted !== undefined ? opts.media.muted : true,
             volume: opts.media?.volume ?? 0.8,
             speed: opts.media?.speed ?? 1.0,
-            fit: opts.media?.fit || 'stretch'
+            fit: opts.media?.fit || 'cover',
+            panX: opts.media?.panX ?? 0.0,
+            panY: opts.media?.panY ?? 0.0,
+            zoom: opts.media?.zoom ?? 1.0,
+            rotation: opts.media?.rotation ?? 0.0
           }
         };
         if (layer.meshSubdiv > 1 && !layer.meshGrid) rebuildMeshGrid(layer);
@@ -1280,7 +1300,13 @@ uniform float u_opacity;
 uniform float u_feather;
 uniform float u_cornerRadius;
 uniform vec2 u_flip;
-uniform vec2 u_uvScale;
+uniform int u_mediaFitMode;
+uniform vec4 u_surfRect;
+uniform vec2 u_stageSize;
+uniform vec2 u_mediaSize;
+uniform vec2 u_mediaPan;
+uniform float u_mediaZoom;
+uniform float u_mediaRot;
 
 uniform float u_time;
 uniform float u_speed;
@@ -1374,7 +1400,27 @@ void main() {
 
   vec4 col;
   if (u_sourceMode == 1) {
-    vec2 mUv = (uv - 0.5) * u_uvScale + 0.5;
+    vec2 mUv = uv;
+    if (u_mediaFitMode > 0) {
+      vec2 surfPx = max(u_surfRect.zw * u_stageSize, vec2(1.0));
+      vec2 relPx = ((v_screen - u_surfRect.xy) / max(u_surfRect.zw, vec2(0.0001)) - 0.5) * surfPx;
+      float ca = cos(-u_mediaRot), sa = sin(-u_mediaRot);
+      relPx = vec2(relPx.x * ca - relPx.y * sa, relPx.x * sa + relPx.y * ca);
+      vec2 targetPx = surfPx;
+      if (u_mediaFitMode == 1) {
+        float s = max(surfPx.x / max(u_mediaSize.x, 1.0), surfPx.y / max(u_mediaSize.y, 1.0));
+        targetPx = u_mediaSize * s;
+      } else if (u_mediaFitMode == 2) {
+        float s = min(surfPx.x / max(u_mediaSize.x, 1.0), surfPx.y / max(u_mediaSize.y, 1.0));
+        targetPx = u_mediaSize * s;
+      } else if (u_mediaFitMode == 3) {
+        targetPx = max(u_mediaSize, vec2(1.0));
+      }
+      mUv = (relPx / (targetPx * max(u_mediaZoom, 0.05))) - u_mediaPan + 0.5;
+      if (u_flip.x > 0.5) mUv.x = 1.0 - mUv.x;
+      if (u_flip.y > 0.5) mUv.y = 1.0 - mUv.y;
+    }
+
     if (mUv.x < 0.0 || mUv.x > 1.0 || mUv.y < 0.0 || mUv.y > 1.0) {
       col = vec4(0.0, 0.0, 0.0, 0.0);
     } else if (u_glow > 0.01) {
@@ -1532,17 +1578,7 @@ void main() {
           }
           ctx.fillText(line, anchorX, y);
         });
-
-        let item = textureStore.get(layer.id);
-        if (!item || item.isVideo) {
-          if (item?.tex) gl.deleteTexture(item.tex);
-          const tex = gl.createTexture();
-          gl.bindTexture(gl.TEXTURE_2D, tex);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-          item = { tex, isVideo: false, ready: true, aspect: 1600 / 900 };
+          item = { tex, isVideo: false, ready: true, width: 1600, height: 900, aspect: 1600 / 900 };
           textureStore.set(layer.id, item);
         }
         gl.bindTexture(gl.TEXTURE_2D, item.tex);
@@ -1583,12 +1619,17 @@ void main() {
           video.playbackRate = layer.media.speed || 1.0;
           video.playsInline = true;
           video.play().catch(() => {});
-          textureStore.set(layer.id, { tex, isVideo: true, video, blob, mimeType, ready: false, aspect: 16 / 9 });
+          textureStore.set(layer.id, { tex, isVideo: true, video, blob, mimeType, ready: false, width: 1920, height: 1080, aspect: 16 / 9 });
           video.addEventListener('loadeddata', () => {
             const it = textureStore.get(layer.id);
             if (it) {
               it.ready = true;
-              if (video.videoWidth && video.videoHeight) it.aspect = video.videoWidth / video.videoHeight;
+              if (video.videoWidth && video.videoHeight) {
+                it.width = video.videoWidth;
+                it.height = video.videoHeight;
+                it.aspect = video.videoWidth / video.videoHeight;
+              }
+              renderInspector();
             }
           });
         } else {
@@ -1599,11 +1640,16 @@ void main() {
             const it = textureStore.get(layer.id);
             if (it) {
               it.ready = true;
-              if (img.naturalWidth && img.naturalHeight) it.aspect = img.naturalWidth / img.naturalHeight;
+              if (img.naturalWidth && img.naturalHeight) {
+                it.width = img.naturalWidth;
+                it.height = img.naturalHeight;
+                it.aspect = img.naturalWidth / img.naturalHeight;
+              }
+              renderInspector();
             }
           };
           img.src = url;
-          textureStore.set(layer.id, { tex, isVideo: false, img, blob, mimeType, ready: false, aspect: 16 / 9 });
+          textureStore.set(layer.id, { tex, isVideo: false, img, blob, mimeType, ready: false, width: 1920, height: 1080, aspect: 16 / 9 });
         }
 
         layer.sourceType = 'media';
@@ -1750,11 +1796,15 @@ void main() {
           gl.uniform1i(gl.getUniformLocation(prog, 'u_isEllipse'), layer.shape === 'ellipse' ? 1 : 0);
 
           let srcMode = 0;
-          let uvScaleX = 1.0, uvScaleY = 1.0;
+          let fitMode = 0;
+          let mW = 1920, mH = 1080;
+          const b = getBounds(layer);
           if ((layer.sourceType === 'media' || layer.sourceType === 'text') && textureStore.has(layer.id)) {
             const item = textureStore.get(layer.id);
             if (item.ready) {
               srcMode = 1;
+              mW = item.width || 1920;
+              mH = item.height || 1080;
               gl.activeTexture(gl.TEXTURE0);
               gl.bindTexture(gl.TEXTURE_2D, item.tex);
               if (item.isVideo && item.video && item.video.readyState >= 2) {
@@ -1762,23 +1812,21 @@ void main() {
               }
               gl.uniform1i(gl.getUniformLocation(prog, 'u_tex'), 0);
 
-              if (layer.sourceType === 'media' && layer.media.fit && layer.media.fit !== 'stretch') {
-                const b = getBounds(layer);
-                const surfAsp = (b.w * state.outputWidth) / Math.max(1, b.h * state.outputHeight);
-                const mediaAsp = item.aspect || 1.777;
-                if (layer.media.fit === 'cover') {
-                  if (surfAsp > mediaAsp) uvScaleY = mediaAsp / surfAsp;
-                  else uvScaleX = surfAsp / mediaAsp;
-                } else if (layer.media.fit === 'contain') {
-                  if (surfAsp > mediaAsp) uvScaleX = surfAsp / mediaAsp;
-                  else uvScaleY = mediaAsp / surfAsp;
-                }
+              if (layer.sourceType === 'media') {
+                const f = layer.media.fit || 'cover';
+                fitMode = f === 'cover' ? 1 : (f === 'contain' ? 2 : (f === 'original' ? 3 : 0));
               }
             }
           }
 
           gl.uniform1i(gl.getUniformLocation(prog, 'u_sourceMode'), srcMode);
-          gl.uniform2f(gl.getUniformLocation(prog, 'u_uvScale'), uvScaleX, uvScaleY);
+          gl.uniform1i(gl.getUniformLocation(prog, 'u_mediaFitMode'), fitMode);
+          gl.uniform4f(gl.getUniformLocation(prog, 'u_surfRect'), b.minX, b.minY, b.w, b.h);
+          gl.uniform2f(gl.getUniformLocation(prog, 'u_stageSize'), state.outputWidth, state.outputHeight);
+          gl.uniform2f(gl.getUniformLocation(prog, 'u_mediaSize'), mW, mH);
+          gl.uniform2f(gl.getUniformLocation(prog, 'u_mediaPan'), layer.media?.panX || 0, layer.media?.panY || 0);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_mediaZoom'), layer.media?.zoom || 1.0);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_mediaRot'), ((layer.media?.rotation || 0) * Math.PI) / 180);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_opacity'), layer.opacity);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_feather'), layer.feather);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_cornerRadius'), layer.cornerRadius || 0);
@@ -1872,7 +1920,7 @@ void main() {
     (() => {
       const SHADER_PRESETS = ${presetsJson};
       const MIRROR_KEY = 'pmap_live_mirror';
-      const channel = ('BroadcastChannel' in window) ? new BroadcastChannel('pmap_live_sync_v1') : null;
+      const channel = ('BroadcastChannel' in window) ? new BroadcastChannel('pmap_sync_v3') : null;
       const canvas = document.getElementById('out-canvas');
       const gl = canvas.getContext('webgl2', { alpha: false, antialias: true });
       const hint = document.getElementById('hint');
@@ -1921,7 +1969,26 @@ void main() {
   if (u_flip.y > 0.5) uv.y = 1.0 - uv.y;
   vec4 col;
   if (u_sourceMode == 1) {
-    vec2 mUv = (uv - 0.5) * u_uvScale + 0.5;
+    vec2 mUv = uv;
+    if (u_mediaFitMode > 0) {
+      vec2 surfPx = max(u_surfRect.zw * u_stageSize, vec2(1.0));
+      vec2 relPx = ((v_screen - u_surfRect.xy) / max(u_surfRect.zw, vec2(0.0001)) - 0.5) * surfPx;
+      float ca = cos(-u_mediaRot), sa = sin(-u_mediaRot);
+      relPx = vec2(relPx.x * ca - relPx.y * sa, relPx.x * sa + relPx.y * ca);
+      vec2 targetPx = surfPx;
+      if (u_mediaFitMode == 1) {
+        float s = max(surfPx.x / max(u_mediaSize.x, 1.0), surfPx.y / max(u_mediaSize.y, 1.0));
+        targetPx = u_mediaSize * s;
+      } else if (u_mediaFitMode == 2) {
+        float s = min(surfPx.x / max(u_mediaSize.x, 1.0), surfPx.y / max(u_mediaSize.y, 1.0));
+        targetPx = u_mediaSize * s;
+      } else if (u_mediaFitMode == 3) {
+        targetPx = max(u_mediaSize, vec2(1.0));
+      }
+      mUv = (relPx / (targetPx * max(u_mediaZoom, 0.05))) - u_mediaPan + 0.5;
+      if (u_flip.x > 0.5) mUv.x = 1.0 - mUv.x;
+      if (u_flip.y > 0.5) mUv.y = 1.0 - mUv.y;
+    }
     if (mUv.x < 0.0 || mUv.x > 1.0 || mUv.y < 0.0 || mUv.y > 1.0) {
       col = vec4(0.0, 0.0, 0.0, 0.0);
     } else if (u_glow > 0.01) {
@@ -2031,20 +2098,7 @@ void main() {
             ctx.strokeStyle = tp.strokeColor || '#09090b';
             ctx.lineJoin = 'round';
             ctx.strokeText(line, anchorX, y);
-          }
-          ctx.fillText(line, anchorX, y);
-        });
-
-        let item = textureStore.get(layer.id);
-        if (!item || item.isVideo) {
-          if (item?.tex) gl.deleteTexture(item.tex);
-          const tex = gl.createTexture();
-          gl.bindTexture(gl.TEXTURE_2D, tex);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-          item = { tex, isVideo: false, ready: true, aspect: 1600 / 900 };
+          item = { tex, isVideo: false, ready: true, width: 1600, height: 900, aspect: 1600 / 900 };
           textureStore.set(layer.id, item);
         }
         gl.bindTexture(gl.TEXTURE_2D, item.tex);
@@ -2052,7 +2106,10 @@ void main() {
         item.ready = true;
       }
 
+      const pendingMediaReq = new Set();
+
       function installMediaData(layerId, bufferOrBlob, mimeType, mediaMeta) {
+        pendingMediaReq.delete(layerId);
         const blob = bufferOrBlob instanceof Blob ? bufferOrBlob : new Blob([bufferOrBlob], { type: mimeType });
         const url = URL.createObjectURL(blob);
         const isVideo = (mimeType || '').startsWith('video/');
@@ -2078,12 +2135,16 @@ void main() {
           video.playbackRate = mediaMeta?.speed || 1.0;
           video.playsInline = true;
           video.play().catch(() => {});
-          textureStore.set(layerId, { tex, isVideo: true, video, ready: false, aspect: 16 / 9 });
+          textureStore.set(layerId, { tex, isVideo: true, video, ready: false, width: 1920, height: 1080, aspect: 16 / 9 });
           video.addEventListener('loadeddata', () => {
             const it = textureStore.get(layerId);
             if (it) {
               it.ready = true;
-              if (video.videoWidth && video.videoHeight) it.aspect = video.videoWidth / video.videoHeight;
+              if (video.videoWidth && video.videoHeight) {
+                it.width = video.videoWidth;
+                it.height = video.videoHeight;
+                it.aspect = video.videoWidth / video.videoHeight;
+              }
             }
           });
         } else {
@@ -2094,11 +2155,15 @@ void main() {
             const it = textureStore.get(layerId);
             if (it) {
               it.ready = true;
-              if (img.naturalWidth && img.naturalHeight) it.aspect = img.naturalWidth / img.naturalHeight;
+              if (img.naturalWidth && img.naturalHeight) {
+                it.width = img.naturalWidth;
+                it.height = img.naturalHeight;
+                it.aspect = img.naturalWidth / img.naturalHeight;
+              }
             }
           };
           img.src = url;
-          textureStore.set(layerId, { tex, isVideo: false, img, ready: false, aspect: 16 / 9 });
+          textureStore.set(layerId, { tex, isVideo: false, img, ready: false, width: 1920, height: 1080, aspect: 16 / 9 });
         }
       }
 
@@ -2111,7 +2176,7 @@ void main() {
             it.video.playbackRate = vs.speed || 1.0;
             if (vs.paused && !it.video.paused) it.video.pause();
             if (!vs.paused && it.video.paused) it.video.play().catch(() => {});
-            if (Math.abs(it.video.currentTime - vs.currentTime) > 0.25) {
+            if (Math.abs(it.video.currentTime - vs.currentTime) > 0.08) {
               try { it.video.currentTime = vs.currentTime; } catch (e) {}
             }
           }
@@ -2135,8 +2200,10 @@ void main() {
           pState.layers = data.layers;
           for (const l of pState.layers) {
             if (l.sourceType === 'text') updateTextTexture(l);
-            if (l.sourceType === 'media' && !textureStore.has(l.id)) {
+            if (l.sourceType === 'media' && !textureStore.has(l.id) && !pendingMediaReq.has(l.id)) {
+              pendingMediaReq.add(l.id);
               notifyOpener({ type: 'REQUEST_MEDIA', layerId: l.id });
+              setTimeout(() => pendingMediaReq.delete(l.id), 1500);
             }
           }
         }
@@ -2275,35 +2342,35 @@ void main() {
           else gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
           gl.uniformMatrix3fv(gl.getUniformLocation(prog, 'u_invH'), false, invH);
-          gl.uniform1i(gl.getUniformLocation(prog, 'u_useH'), useH);
-          gl.uniform1i(gl.getUniformLocation(prog, 'u_isEllipse'), layer.shape === 'ellipse' ? 1 : 0);
-
-          let srcMode = 0, uvScaleX = 1.0, uvScaleY = 1.0;
+          let srcMode = 0, fitMode = 0, mW = 1920, mH = 1080;
+          const b = getBounds(layer);
           if ((layer.sourceType === 'media' || layer.sourceType === 'text') && textureStore.has(layer.id)) {
             const item = textureStore.get(layer.id);
             if (item.ready) {
               srcMode = 1;
+              mW = item.width || 1920;
+              mH = item.height || 1080;
               gl.activeTexture(gl.TEXTURE0);
               gl.bindTexture(gl.TEXTURE_2D, item.tex);
               if (item.isVideo && item.video && item.video.readyState >= 2) {
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, item.video);
               }
               gl.uniform1i(gl.getUniformLocation(prog, 'u_tex'), 0);
-              if (layer.sourceType === 'media' && layer.media?.fit && layer.media.fit !== 'stretch') {
-                const b = getBounds(layer);
-                const surfAsp = (b.w * pState.outputWidth) / Math.max(1, b.h * pState.outputHeight);
-                const mediaAsp = item.aspect || 1.777;
-                if (layer.media.fit === 'cover') {
-                  if (surfAsp > mediaAsp) uvScaleY = mediaAsp / surfAsp; else uvScaleX = surfAsp / mediaAsp;
-                } else if (layer.media.fit === 'contain') {
-                  if (surfAsp > mediaAsp) uvScaleX = surfAsp / mediaAsp; else uvScaleY = mediaAsp / surfAsp;
-                }
+              if (layer.sourceType === 'media') {
+                const f = layer.media?.fit || 'cover';
+                fitMode = f === 'cover' ? 1 : (f === 'contain' ? 2 : (f === 'original' ? 3 : 0));
               }
             }
           }
 
           gl.uniform1i(gl.getUniformLocation(prog, 'u_sourceMode'), srcMode);
-          gl.uniform2f(gl.getUniformLocation(prog, 'u_uvScale'), uvScaleX, uvScaleY);
+          gl.uniform1i(gl.getUniformLocation(prog, 'u_mediaFitMode'), fitMode);
+          gl.uniform4f(gl.getUniformLocation(prog, 'u_surfRect'), b.minX, b.minY, b.w, b.h);
+          gl.uniform2f(gl.getUniformLocation(prog, 'u_stageSize'), pState.outputWidth, pState.outputHeight);
+          gl.uniform2f(gl.getUniformLocation(prog, 'u_mediaSize'), mW, mH);
+          gl.uniform2f(gl.getUniformLocation(prog, 'u_mediaPan'), layer.media?.panX || 0, layer.media?.panY || 0);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_mediaZoom'), layer.media?.zoom || 1.0);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_mediaRot'), ((layer.media?.rotation || 0) * Math.PI) / 180);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_opacity'), layer.opacity);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_feather'), layer.feather);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_cornerRadius'), layer.cornerRadius || 0);
@@ -2335,7 +2402,7 @@ void main() {
         if (!msg) return;
         if (msg.type === 'PMAP_SYNC') {
           applySyncPayload(msg.payload);
-          notifyOpener({ type: 'PROJECTOR_PONG' });
+          notifyOpener({ type: 'SYNC_ACK' });
         } else if (msg.type === 'PMAP_MEDIA') {
           installMediaData(msg.layerId, msg.buffer, msg.mimeType, msg.mediaMeta);
         }
@@ -2360,7 +2427,7 @@ void main() {
       } catch (e) {}
 
       notifyOpener({ type: 'PROJECTOR_READY' });
-      setInterval(() => notifyOpener({ type: 'PROJECTOR_PONG' }), 600);
+      setInterval(() => notifyOpener({ type: 'SYNC_ACK' }), 600);
       requestAnimationFrame(renderLoop);
     })();
   <\/script>
@@ -2400,9 +2467,8 @@ void main() {
             mediaMeta: layer?.media || {}
           };
           if (projectorWin && !projectorWin.closed) {
-            projectorWin.postMessage(msg, '*');
-          }
-          if (syncChannel) {
+            projectorWin.postMessage(msg, '*', [buf]);
+          } else if (syncChannel) {
             syncChannel.postMessage(msg);
           }
         } catch (e) {}
@@ -2455,7 +2521,7 @@ void main() {
           updateProjectorStatusUI();
           pushProjectorSync();
           pushAllMediaToProjector();
-        } else if (msg.type === 'PROJECTOR_PONG') {
+        } else if (msg.type === 'SYNC_ACK' || msg.type === 'PROJECTOR_PONG') {
           projectorConnected = true;
           lastProjectorPong = Date.now();
           updateProjectorStatusUI();
@@ -2463,7 +2529,13 @@ void main() {
           const l = state.layers.find(x => x.id === msg.layerId);
           if (l) {
             const it = textureStore.get(l.id);
-            if (it?.blob) pushMediaToProjector(l.id, it.blob, l.media.name, it.mimeType);
+            if (it?.blob) {
+              pushMediaToProjector(l.id, it.blob, l.media.name, it.mimeType);
+            } else if (l.media?.blobKey) {
+              loadMediaBlob(l.media.blobKey).then(b => {
+                if (b) pushMediaToProjector(l.id, b, l.media.name, b.type);
+              });
+            }
           }
         }
       }
@@ -2489,7 +2561,7 @@ void main() {
         }
         const win = window.open(
           '',
-          'ProjectorOutput',
+          'pmap_projector',
           `width=${Math.min(1280, state.outputWidth)},height=${Math.min(800, state.outputHeight)},menubar=no,toolbar=no,location=no,status=no`
         );
         if (!win) {
@@ -2509,12 +2581,30 @@ void main() {
       });
 
       /* =========================================================================
-         2. INTERACTIVE VECTOR OVERLAY & MULTI-TOUCH HANDLING
+         2. ILLUSTRATOR BOUNDING BOX & FREEFORM VERTEX DUAL-MODE TRANSFORM
          ========================================================================= */
       const overlaySvg = document.getElementById('overlay-svg');
       const touchLoupe = document.getElementById('touch-loupe');
       let activeDrag = null;
       let snapGuides = [];
+
+      function setTransformMode(mode) {
+        state.transformMode = mode;
+        const btnBox = document.getElementById('btn-mode-box');
+        const btnWarp = document.getElementById('btn-mode-warp');
+        if (btnBox && btnWarp) {
+          btnBox.className = mode === 'box'
+            ? 'h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 bg-accent text-white transition'
+            : 'h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 text-zinc-300 hover:text-white transition';
+          btnWarp.className = mode === 'warp'
+            ? 'h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 bg-accent text-white transition'
+            : 'h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 text-zinc-300 hover:text-white transition';
+        }
+        renderOverlay();
+      }
+
+      document.getElementById('btn-mode-box').addEventListener('click', () => setTransformMode('box'));
+      document.getElementById('btn-mode-warp').addEventListener('click', () => setTransformMode('warp'));
 
       function isSelected(id) { return state.selectedIds.includes(id); }
 
@@ -2553,8 +2643,8 @@ void main() {
         }
 
         for (const g of snapGuides) {
-          if (g.x !== undefined) out += `<line x1="${g.x * w}" y1="0" x2="${g.x * w}" y2="${h}" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3,3" opacity="0.85"/>`;
-          if (g.y !== undefined) out += `<line x1="0" y1="${g.y * h}" x2="${w}" y2="${g.y * h}" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3,3" opacity="0.85"/>`;
+          if (g.x !== undefined) out += `<line x1="${g.x * w}" y1="0" x2="${g.x * w}" y2="${h}" stroke="#22d3ee" stroke-width="1" stroke-dasharray="3,3" opacity="0.9"/>`;
+          if (g.y !== undefined) out += `<line x1="0" y1="${g.y * h}" x2="${w}" y2="${g.y * h}" stroke="#22d3ee" stroke-width="1" stroke-dasharray="3,3" opacity="0.9"/>`;
         }
 
         const isTouchDevice = window.innerWidth < 1025;
@@ -2571,6 +2661,53 @@ void main() {
 
           const polyPts = layer.vertices.map(p => `${p.x * w},${p.y * h}`).join(' ');
           out += `<polygon points="${polyPts}" fill="transparent" stroke="${stroke}" stroke-width="${sel ? 1.5 : 1}" ${isMask ? 'stroke-dasharray="4,4"' : ''} data-id="${layer.id}" data-mode="move" style="cursor: ${layer.locked ? 'not-allowed' : 'move'};"/>`;
+
+          if (sel && !layer.locked && state.transformMode === 'box') {
+            const b = getBounds(layer);
+            const bx = b.minX * w, by = b.minY * h, bw = b.w * w, bh = b.h * h;
+            const cx = b.cx * w, topY = by;
+            const rotY = Math.max(14, topY - 24);
+
+            out += `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" fill="none" stroke="#38bdf8" stroke-width="1" stroke-dasharray="3,2" pointer-events="none"/>`;
+            out += `<line x1="${cx}" y1="${topY}" x2="${cx}" y2="${rotY}" stroke="#38bdf8" stroke-width="1.2" pointer-events="none"/>`;
+            out += `
+              <g data-id="${layer.id}" data-mode="box-rotate" style="cursor: grab;">
+                <circle cx="${cx}" cy="${rotY}" r="${hitRadius}" fill="transparent"/>
+                <circle cx="${cx}" cy="${rotY}" r="${handleRadius + 0.5}" fill="#121215" stroke="#38bdf8" stroke-width="2"/>
+              </g>`;
+
+            const handles = [
+              { id: 'nw', x: bx, y: by, cur: 'nwse-resize', corner: true },
+              { id: 'n', x: bx + bw * 0.5, y: by, cur: 'ns-resize', corner: false },
+              { id: 'ne', x: bx + bw, y: by, cur: 'nesw-resize', corner: true },
+              { id: 'e', x: bx + bw, y: by + bh * 0.5, cur: 'ew-resize', corner: false },
+              { id: 'se', x: bx + bw, y: by + bh, cur: 'nwse-resize', corner: true },
+              { id: 's', x: bx + bw * 0.5, y: by + bh, cur: 'ns-resize', corner: false },
+              { id: 'sw', x: bx, y: by + bh, cur: 'nesw-resize', corner: true },
+              { id: 'w', x: bx, y: by + bh * 0.5, cur: 'ew-resize', corner: false }
+            ];
+
+            for (const hnd of handles) {
+              if (hnd.corner) {
+                const sz = isTouchDevice ? 11 : 8;
+                out += `
+                  <g data-id="${layer.id}" data-mode="box-resize" data-handle="${hnd.id}" style="cursor: ${hnd.cur};">
+                    <circle cx="${hnd.x}" cy="${hnd.y}" r="${hitRadius}" fill="transparent"/>
+                    <rect x="${hnd.x - sz * 0.5}" y="${hnd.y - sz * 0.5}" width="${sz}" height="${sz}" rx="1.5" fill="#ffffff" stroke="#3b82f6" stroke-width="1.8"/>
+                  </g>`;
+              } else {
+                const isHoriz = hnd.id === 'n' || hnd.id === 's';
+                const rw = isHoriz ? (isTouchDevice ? 16 : 12) : (isTouchDevice ? 7 : 5);
+                const rh = isHoriz ? (isTouchDevice ? 7 : 5) : (isTouchDevice ? 16 : 12);
+                out += `
+                  <g data-id="${layer.id}" data-mode="box-resize" data-handle="${hnd.id}" style="cursor: ${hnd.cur};">
+                    <circle cx="${hnd.x}" cy="${hnd.y}" r="${hitRadius}" fill="transparent"/>
+                    <rect x="${hnd.x - rw * 0.5}" y="${hnd.y - rh * 0.5}" width="${rw}" height="${rh}" rx="2" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+                  </g>`;
+              }
+            }
+            continue;
+          }
 
           if (sel && !layer.locked && layer.shape === 'polygon') {
             for (let i = 0; i < layer.vertices.length; i++) {
@@ -2657,22 +2794,30 @@ void main() {
 
       overlaySvg.addEventListener('dblclick', (e) => {
         const edge = e.target.closest('[data-mode="edge"]');
-        if (!edge) return;
-        const id = edge.getAttribute('data-id');
-        const edgeIdx = parseInt(edge.getAttribute('data-edge-idx'), 10);
-        const layer = state.layers.find(l => l.id === id);
-        if (!layer || layer.shape !== 'polygon' || layer.locked) return;
+        if (edge) {
+          const id = edge.getAttribute('data-id');
+          const edgeIdx = parseInt(edge.getAttribute('data-edge-idx'), 10);
+          const layer = state.layers.find(l => l.id === id);
+          if (!layer || layer.shape !== 'polygon' || layer.locked) return;
 
-        const rect = overlaySvg.getBoundingClientRect();
-        layer.vertices.splice(edgeIdx + 1, 0, {
-          x: (e.clientX - rect.left) / rect.width,
-          y: (e.clientY - rect.top) / rect.height
-        });
-        pushHistory();
-        renderOverlay();
-        renderInspector();
-        persistAndSync(true);
-        showToast('Point added');
+          const rect = overlaySvg.getBoundingClientRect();
+          layer.vertices.splice(edgeIdx + 1, 0, {
+            x: (e.clientX - rect.left) / rect.width,
+            y: (e.clientY - rect.top) / rect.height
+          });
+          pushHistory();
+          renderOverlay();
+          renderInspector();
+          persistAndSync(true);
+          showToast('Point added');
+          return;
+        }
+        const poly = e.target.closest('[data-mode="move"]');
+        if (poly) {
+          const nextMode = state.transformMode === 'box' ? 'warp' : 'box';
+          setTransformMode(nextMode);
+          showToast(nextMode === 'box' ? 'Bounding Box Mode (V)' : 'Vertex Warp Mode (A)');
+        }
       });
 
       /* Right-Click Context Menu on Canvas & Layer Rows */
@@ -2785,6 +2930,7 @@ void main() {
         }
 
         const idx = parseInt(el.getAttribute('data-idx') || '0', 10);
+        const handle = el.getAttribute('data-handle') || '';
         if (mode === 'vertex' && e.altKey) {
           const layer = state.layers.find(l => l.id === id);
           if (layer && layer.shape === 'polygon' && layer.vertices.length > 3 && !layer.locked) {
@@ -2824,7 +2970,8 @@ void main() {
           if (sl && !sl.locked) {
             selectedSnapshots[sid] = {
               vertices: clone(sl.vertices),
-              meshGrid: clone(sl.meshGrid)
+              meshGrid: clone(sl.meshGrid),
+              bounds: getBounds(sl)
             };
           }
         }
@@ -2833,6 +2980,7 @@ void main() {
           id,
           mode,
           idx,
+          handle,
           pointerId: e.pointerId,
           isTouch: e.pointerType === 'touch',
           startX: (e.clientX - rect.left) / rect.width,
@@ -2852,7 +3000,63 @@ void main() {
         const mx = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
         const my = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
 
-        if (activeDrag.mode === 'vertex') {
+        if (activeDrag.mode === 'box-resize') {
+          snapGuides = [];
+          const snap = activeDrag.snapshots[layer.id];
+          const b = snap.bounds;
+          const hnd = activeDrag.handle;
+          let minX = b.minX, maxX = b.maxX, minY = b.minY, maxY = b.maxY;
+
+          if (hnd.includes('w')) minX = Math.min(maxX - 0.01, mx);
+          if (hnd.includes('e')) maxX = Math.max(minX + 0.01, mx);
+          if (hnd.includes('n')) minY = Math.min(maxY - 0.01, my);
+          if (hnd.includes('s')) maxY = Math.max(minY + 0.01, my);
+
+          const isCorner = hnd.length === 2;
+          const keepRatio = isCorner && (state.lockAspect !== e.shiftKey);
+          if (keepRatio) {
+            const origRatio = b.w / Math.max(0.0001, b.h);
+            let newW = maxX - minX, newH = maxY - minY;
+            if (newW / Math.max(0.0001, newH) > origRatio) {
+              newW = newH * origRatio;
+            } else {
+              newH = newW / origRatio;
+            }
+            if (hnd.includes('w')) minX = maxX - newW; else maxX = minX + newW;
+            if (hnd.includes('n')) minY = maxY - newH; else maxY = minY + newH;
+          }
+
+          const newW = Math.max(0.005, maxX - minX);
+          const newH = Math.max(0.005, maxY - minY);
+          const mapPt = (p) => ({
+            x: Math.max(0, Math.min(1, minX + ((p.x - b.minX) / b.w) * newW)),
+            y: Math.max(0, Math.min(1, minY + ((p.y - b.minY) / b.h) * newH))
+          });
+          layer.vertices = snap.vertices.map(mapPt);
+          if (snap.meshGrid && layer.meshGrid) layer.meshGrid = snap.meshGrid.map(mapPt);
+        } else if (activeDrag.mode === 'box-rotate') {
+          snapGuides = [];
+          const snap = activeDrag.snapshots[layer.id];
+          const b = snap.bounds;
+          const asp = state.outputWidth / state.outputHeight;
+          const a0 = Math.atan2(activeDrag.startY - b.cy, (activeDrag.startX - b.cx) * asp);
+          const a1 = Math.atan2(my - b.cy, (mx - b.cx) * asp);
+          let delta = a1 - a0;
+          if (e.shiftKey) {
+            const step = (15 * Math.PI) / 180;
+            delta = Math.round(delta / step) * step;
+          }
+          const ca = Math.cos(delta), sa = Math.sin(delta);
+          const rotPt = (p) => {
+            const dx = (p.x - b.cx) * asp, dy = p.y - b.cy;
+            return {
+              x: Math.max(0, Math.min(1, b.cx + (dx * ca - dy * sa) / asp)),
+              y: Math.max(0, Math.min(1, b.cy + (dx * sa + dy * ca)))
+            };
+          };
+          layer.vertices = snap.vertices.map(rotPt);
+          if (snap.meshGrid && layer.meshGrid) layer.meshGrid = snap.meshGrid.map(rotPt);
+        } else if (activeDrag.mode === 'vertex') {
           const snapped = snapPoint(layer.id, mx, my);
           layer.vertices[activeDrag.idx] = { x: snapped.x, y: snapped.y };
           if (layer.meshSubdiv > 1) rebuildMeshGrid(layer);
@@ -2872,8 +3076,33 @@ void main() {
           if (activeDrag.idx === n * stride) layer.vertices[3] = { ...snapped };
         } else if (activeDrag.mode === 'move') {
           snapGuides = [];
-          const dx = mx - activeDrag.startX;
-          const dy = my - activeDrag.startY;
+          let dx = mx - activeDrag.startX;
+          let dy = my - activeDrag.startY;
+          const primarySnap = activeDrag.snapshots[layer.id];
+          if (state.snapEnabled && primarySnap?.bounds) {
+            const pb = primarySnap.bounds;
+            const ncx = pb.cx + dx, ncy = pb.cy + dy;
+            const nminX = pb.minX + dx, nmaxX = pb.maxX + dx;
+            const nminY = pb.minY + dy, nmaxY = pb.maxY + dy;
+            const tol = 0.01;
+            if (Math.abs(ncx - 0.5) < tol) { dx += 0.5 - ncx; snapGuides.push({ x: 0.5 }); }
+            else if (Math.abs(nminX) < tol) { dx -= nminX; snapGuides.push({ x: 0 }); }
+            else if (Math.abs(nmaxX - 1) < tol) { dx += 1 - nmaxX; snapGuides.push({ x: 1 }); }
+            if (Math.abs(ncy - 0.5) < tol) { dy += 0.5 - ncy; snapGuides.push({ y: 0.5 }); }
+            else if (Math.abs(nminY) < tol) { dy -= nminY; snapGuides.push({ y: 0 }); }
+            else if (Math.abs(nmaxY - 1) < tol) { dy += 1 - nmaxY; snapGuides.push({ y: 1 }); }
+
+            for (const other of state.layers) {
+              if (state.selectedIds.includes(other.id) || !other.visible) continue;
+              const ob = getBounds(other);
+              if (Math.abs(ncx - ob.cx) < tol) { dx += ob.cx - ncx; snapGuides.push({ x: ob.cx }); }
+              else if (Math.abs(nminX - ob.minX) < tol) { dx += ob.minX - nminX; snapGuides.push({ x: ob.minX }); }
+              else if (Math.abs(nmaxX - ob.maxX) < tol) { dx += ob.maxX - nmaxX; snapGuides.push({ x: ob.maxX }); }
+              if (Math.abs(ncy - ob.cy) < tol) { dy += ob.cy - ncy; snapGuides.push({ y: ob.cy }); }
+              else if (Math.abs(nminY - ob.minY) < tol) { dy += ob.minY - nminY; snapGuides.push({ y: ob.minY }); }
+              else if (Math.abs(nmaxY - ob.maxY) < tol) { dy += ob.maxY - nmaxY; snapGuides.push({ y: ob.maxY }); }
+            }
+          }
           for (const [sid, snap] of Object.entries(activeDrag.snapshots)) {
             const sl = state.layers.find(l => l.id === sid);
             if (!sl) continue;
@@ -3271,7 +3500,12 @@ void main() {
           <div class="space-y-2.5 pt-3 hairline-t">
             <div class="flex items-center justify-between">
               <span class="text-[11px] font-medium text-zinc-400">Transform & Geometry</span>
-              <button id="btn-fit-output" class="text-[10px] text-accent hover:underline">Fit to Output</button>
+              <div class="flex items-center gap-2">
+                <button id="btn-lock-aspect" class="text-[10px] px-1.5 py-0.5 rounded hairline-all transition ${state.lockAspect ? 'bg-accent/20 border-accent/40 text-blue-300' : 'bg-bgControl text-zinc-400'}" title="Lock Aspect Ratio">
+                  <i class="ph ${state.lockAspect ? 'ph-lock-simple' : 'ph-lock-simple-open'}"></i> Ratio
+                </button>
+                <button id="btn-fit-output" class="text-[10px] text-accent hover:underline">Fit Stage</button>
+              </div>
             </div>
             <div class="grid grid-cols-2 gap-1.5">
               <div>
@@ -3458,17 +3692,62 @@ void main() {
               ` : ''}
 
               ${layer.sourceType === 'media' ? `
-                <div class="p-2.5 rounded-xl bg-bgControl/60 hairline-all space-y-2">
+                <div class="p-2.5 rounded-xl bg-bgControl/60 hairline-all space-y-2.5">
                   <div class="flex items-center justify-between gap-2">
-                    <span class="text-[11px] text-zinc-300 truncate">${layer.media.name || 'No file selected'}</span>
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <span class="w-1.5 h-1.5 rounded-full shrink-0 ${textureStore.get(layer.id)?.ready ? 'bg-emerald-400' : 'bg-amber-400 animate-pulse'}"></span>
+                      <span class="text-[11px] text-zinc-300 truncate">${layer.media.name || 'No file selected'}</span>
+                    </div>
                     <button id="btn-pick-media" class="h-7 px-2.5 rounded-lg bg-accent hover:bg-blue-500 text-white text-[11px] font-medium shrink-0">Browse</button>
                     <input id="inp-pick-media" type="file" accept="video/*,image/*" class="hidden" />
                   </div>
-                  <div class="grid grid-cols-3 gap-1 bg-bgControl p-0.5 rounded-lg hairline-all">
-                    ${['stretch', 'cover', 'contain'].map(m => `
-                      <button data-fit="${m}" class="btn-media-fit py-1 rounded text-[10px] capitalize transition ${(layer.media.fit || 'stretch') === m ? 'bg-bgPanel text-white' : 'text-zinc-400 hover:text-white'}">${m}</button>
-                    `).join('')}
+
+                  <div class="space-y-1">
+                    <div class="flex items-center justify-between text-[10px] text-zinc-400">
+                      <span>Fit & Projection Mode</span>
+                      <button id="btn-match-media-aspect" class="text-accent hover:underline">Match Surface Aspect</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1 bg-bgControl p-1 rounded-lg hairline-all">
+                      ${[
+                        { id: 'cover', label: 'Cover (Zero Skew)' },
+                        { id: 'contain', label: 'Contain (Fit)' },
+                        { id: 'original', label: 'Original 1:1 px' },
+                        { id: 'stretch', label: 'Perspective Warp' }
+                      ].map(m => `
+                        <button data-fit="${m.id}" class="btn-media-fit py-1 px-1.5 rounded text-[10px] font-medium transition ${(layer.media.fit || 'cover') === m.id ? 'bg-bgPanel text-white shadow-sm' : 'text-zinc-400 hover:text-white'}">${m.label}</button>
+                      `).join('')}
+                    </div>
                   </div>
+
+                  ${(layer.media.fit || 'cover') !== 'stretch' ? `
+                    <div class="grid grid-cols-2 gap-2 pt-0.5">
+                      <div>
+                        <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                          <span>Pan X</span><span id="lbl-med-px" class="font-mono">${Math.round((layer.media.panX || 0) * 100)}%</span>
+                        </div>
+                        <input id="inp-med-px" type="range" min="-0.75" max="0.75" step="0.01" value="${layer.media.panX || 0}" class="w-full" />
+                      </div>
+                      <div>
+                        <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                          <span>Pan Y</span><span id="lbl-med-py" class="font-mono">${Math.round((layer.media.panY || 0) * 100)}%</span>
+                        </div>
+                        <input id="inp-med-py" type="range" min="-0.75" max="0.75" step="0.01" value="${layer.media.panY || 0}" class="w-full" />
+                      </div>
+                      <div>
+                        <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                          <span>Zoom</span><span id="lbl-med-zm" class="font-mono">${Math.round((layer.media.zoom || 1) * 100)}%</span>
+                        </div>
+                        <input id="inp-med-zm" type="range" min="0.5" max="3.0" step="0.05" value="${layer.media.zoom || 1}" class="w-full" />
+                      </div>
+                      <div>
+                        <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                          <span>Angle</span><span id="lbl-med-rot" class="font-mono">${Math.round(layer.media.rotation || 0)}°</span>
+                        </div>
+                        <input id="inp-med-rot" type="range" min="-180" max="180" step="1" value="${layer.media.rotation || 0}" class="w-full" />
+                      </div>
+                    </div>
+                  ` : ''}
+
                   ${layer.media.type === 'video' ? `
                     <div>
                       <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
@@ -3723,6 +4002,39 @@ void main() {
             persistAndSync(true);
           });
         });
+
+        const btnMatchAsp = document.getElementById('btn-match-media-aspect');
+        if (btnMatchAsp) btnMatchAsp.addEventListener('click', () => {
+          const it = textureStore.get(layer.id);
+          if (!it?.aspect) return;
+          const b = getBounds(layer);
+          const stageAsp = state.outputWidth / state.outputHeight;
+          const targetNormW = b.h * (it.aspect / stageAsp);
+          const scaleX = targetNormW / b.w;
+          transformVertices(layer, p => ({
+            x: Math.max(0, Math.min(1, b.cx + (p.x - b.cx) * scaleX)),
+            y: p.y
+          }));
+          renderOverlay();
+          syncInspectorNumbers();
+          pushHistory();
+          persistAndSync(true);
+          showToast('Matched surface to media aspect ratio');
+        });
+
+        const bindMedSlider = (id, lblId, key, fmt) => {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener('input', (e) => {
+            layer.media[key] = parseFloat(e.target.value);
+            const lbl = document.getElementById(lblId);
+            if (lbl) lbl.textContent = fmt(layer.media[key]);
+            persistAndSync(true);
+          });
+        };
+        bindMedSlider('inp-med-px', 'lbl-med-px', 'panX', v => `${Math.round(v * 100)}%`);
+        bindMedSlider('inp-med-py', 'lbl-med-py', 'panY', v => `${Math.round(v * 100)}%`);
+        bindMedSlider('inp-med-zm', 'lbl-med-zm', 'zoom', v => `${Math.round(v * 100)}%`);
+        bindMedSlider('inp-med-rot', 'lbl-med-rot', 'rotation', v => `${Math.round(v)}°`);
         const vidSpd = document.getElementById('inp-vid-spd');
         if (vidSpd) vidSpd.addEventListener('input', (e) => {
           layer.media.speed = parseFloat(e.target.value);
@@ -3800,6 +4112,12 @@ void main() {
         const inpName = document.getElementById('inp-name');
         if (inpName) inpName.addEventListener('input', (e) => { layer.name = e.target.value; renderLayerList(); });
 
+        const btnLockAsp = document.getElementById('btn-lock-aspect');
+        if (btnLockAsp) btnLockAsp.addEventListener('click', () => {
+          state.lockAspect = !state.lockAspect;
+          renderInspector();
+        });
+
         const fitOut = document.getElementById('btn-fit-output');
         if (fitOut) fitOut.addEventListener('click', () => {
           if (layer.vertices.length === 4) {
@@ -3841,18 +4159,22 @@ void main() {
 
         const iw = document.getElementById('inp-w'), ih = document.getElementById('inp-h');
         if (iw && ih) {
-          const onDim = () => {
+          const onDim = (changedAxis) => {
             const b = getBounds(layer);
-            const sx = (Math.max(10, parseFloat(iw.value) || 100) / state.outputWidth) / b.w;
-            const sy = (Math.max(10, parseFloat(ih.value) || 100) / state.outputHeight) / b.h;
+            let sx = (Math.max(10, parseFloat(iw.value) || 100) / state.outputWidth) / b.w;
+            let sy = (Math.max(10, parseFloat(ih.value) || 100) / state.outputHeight) / b.h;
+            if (state.lockAspect) {
+              if (changedAxis === 'w') sy = sx;
+              else sx = sy;
+            }
             transformVertices(layer, p => ({
               x: Math.max(0, Math.min(1, b.cx + (p.x - b.cx) * sx)),
               y: Math.max(0, Math.min(1, b.cy + (p.y - b.cy) * sy))
             }));
             renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync(true);
           };
-          iw.addEventListener('change', onDim);
-          ih.addEventListener('change', onDim);
+          iw.addEventListener('change', () => onDim('w'));
+          ih.addEventListener('change', () => onDim('h'));
         }
 
         document.querySelectorAll('.btn-scale').forEach(btn => {
@@ -4930,6 +5252,8 @@ void main() {
           return;
         }
         if (e.key === ' ') { e.preventDefault(); togglePlayback(); return; }
+        if (e.key.toLowerCase() === 'v') { setTransformMode('box'); return; }
+        if (e.key.toLowerCase() === 'a') { setTransformMode('warp'); return; }
         if (e.key.toLowerCase() === 'g') { document.getElementById('btn-grid').click(); return; }
         if (e.key.toLowerCase() === 'n') { goNextCue(); return; }
 
