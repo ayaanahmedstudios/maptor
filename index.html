@@ -6,7 +6,7 @@
   <title>Projection Mapping Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -68,16 +68,16 @@
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       border-radius: 50%;
       background: #ffffff;
       cursor: pointer;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
     }
     input[type="range"]::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       border-radius: 50%;
       background: #ffffff;
       cursor: pointer;
@@ -87,7 +87,6 @@
     input[type="number"]::-webkit-inner-spin-button { opacity: 0.35; }
     .no-select { user-select: none; -webkit-user-select: none; }
 
-    /* Desktop Drawers & Collapse States */
     @media (min-width: 1025px) {
       #left-drawer.collapsed { width: 0 !important; border-right: none !important; overflow: hidden; }
       #right-drawer.collapsed { width: 0 !important; border-left: none !important; overflow: hidden; }
@@ -95,7 +94,6 @@
       #bottom-drawer.collapsed #timeline-body { display: none !important; }
     }
 
-    /* Mobile & Tablet Bottom Sheet Architecture (< 1025px) */
     @media (max-width: 1024px) {
       #left-drawer, #right-drawer, #bottom-drawer {
         position: fixed !important;
@@ -103,8 +101,8 @@
         right: 0 !important;
         bottom: 0 !important;
         width: 100% !important;
-        height: 54vh !important;
-        max-height: 520px !important;
+        height: 56vh !important;
+        max-height: 540px !important;
         z-index: 45 !important;
         border-left: none !important;
         border-right: none !important;
@@ -132,7 +130,6 @@
       }
     }
 
-    /* Fullscreen & External Projector Output Mode */
     .stage-fullscreen #top-bar,
     .stage-fullscreen #left-drawer,
     .stage-fullscreen #right-drawer,
@@ -141,7 +138,8 @@
     .stage-fullscreen #mobile-sheet-backdrop,
     .stage-fullscreen #zoom-hud,
     .stage-fullscreen #overlay-svg,
-    .stage-fullscreen #ref-image-layer {
+    .stage-fullscreen #ref-image-layer,
+    .stage-fullscreen #empty-stage-overlay {
       display: none !important;
     }
     .stage-fullscreen #viewport-wrap {
@@ -164,20 +162,27 @@
 
   <div id="toast-host" class="fixed top-14 left-1/2 -translate-x-1/2 z-[80] flex flex-col gap-1.5 pointer-events-none"></div>
 
-  <!-- Touch Vertex Loupe / Crosshair Readout -->
   <div id="touch-loupe" class="hidden fixed pointer-events-none z-50 px-2.5 py-1 rounded-full bg-bgPanel/95 hairline-all text-[11px] font-mono text-white shadow-xl">
     0, 0
   </div>
 
   <div id="app-shell" class="w-screen h-[100dvh] flex flex-col overflow-hidden bg-bgBase">
-    <!-- Slim 44px Top Toolbar (Zero Logos, Pure Functional Controls) -->
     <header id="top-bar" class="h-11 shrink-0 bg-bgPanel hairline-b px-2.5 lg:px-3 flex items-center justify-between gap-2 z-30">
       <div class="flex items-center gap-1.5 min-w-0">
         <button id="btn-toggle-left" class="hidden lg:flex w-8 h-8 rounded-lg hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white transition" title="Toggle Layers Panel">
           <i class="ph ph-sidebar-simple text-base"></i>
         </button>
 
-        <!-- Add Surface Menu -->
+        <button id="btn-projects" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Manage Local Projects & Export">
+          <i class="ph ph-folder-notch text-sm text-accent"></i>
+          <span class="hidden sm:inline font-medium">Projects</span>
+        </button>
+
+        <div class="flex items-center gap-1.5 bg-bgControl/60 hairline-all rounded-lg px-2 h-8 max-w-[140px] sm:max-w-[210px]">
+          <input id="inp-project-name" type="text" value="Untitled Mapping" class="w-full bg-transparent text-xs font-medium text-zinc-100 outline-none truncate" title="Edit Project Name" />
+          <span id="lbl-save-status" class="text-[10px] font-mono text-zinc-500 shrink-0">Saved</span>
+        </div>
+
         <div class="relative" id="wrap-add-menu">
           <button id="btn-add-menu" class="h-8 px-2.5 rounded-lg bg-accent hover:bg-blue-500 text-white text-xs font-medium flex items-center gap-1.5 transition">
             <i class="ph ph-plus text-sm"></i>
@@ -202,7 +207,7 @@
             <button data-add="ellipse" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
               <i class="ph ph-circle text-base text-accent"></i>
               <div>
-                <div class="text-xs font-medium text-zinc-100">Ellipse / Circle</div>
+                <div class="text-xs font-medium text-zinc-100">Circle / Ellipse</div>
                 <div class="text-[10px] text-zinc-500">Perspective-warped oval</div>
               </div>
             </button>
@@ -210,14 +215,14 @@
               <i class="ph ph-pentagon text-base text-accent"></i>
               <div>
                 <div class="text-xs font-medium text-zinc-100">Custom Polygon</div>
-                <div class="text-[10px] text-zinc-500">Click edges to insert vertices</div>
+                <div class="text-[10px] text-zinc-500">Double-click edges to add points</div>
               </div>
             </button>
             <button data-add="text" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
               <i class="ph ph-text-t text-base text-accent"></i>
               <div>
-                <div class="text-xs font-medium text-zinc-100">Typography Layer</div>
-                <div class="text-[10px] text-zinc-500">Perspective-mapped live text</div>
+                <div class="text-xs font-medium text-zinc-100">Text Layer</div>
+                <div class="text-[10px] text-zinc-500">Perspective-mapped typography</div>
               </div>
             </button>
             <div class="my-1 hairline-t"></div>
@@ -231,16 +236,13 @@
           </div>
         </div>
 
-        <button id="btn-undo" class="w-8 h-8 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white disabled:opacity-30 transition" title="Undo (Cmd/Ctrl+Z)">
+        <button id="btn-undo" class="hidden md:flex w-8 h-8 rounded-lg hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white disabled:opacity-30 transition" title="Undo (Cmd/Ctrl+Z)">
           <i class="ph ph-arrow-u-up-left text-base"></i>
         </button>
-        <button id="btn-redo" class="w-8 h-8 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white disabled:opacity-30 transition" title="Redo (Cmd/Ctrl+Shift+Z)">
+        <button id="btn-redo" class="hidden md:flex w-8 h-8 rounded-lg hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white disabled:opacity-30 transition" title="Redo (Cmd/Ctrl+Shift+Z)">
           <i class="ph ph-arrow-u-up-right text-base"></i>
         </button>
 
-        <div class="hidden sm:block h-4 w-px bg-white/[0.08] mx-0.5"></div>
-
-        <!-- Output Canvas Dimensions & Reference Image -->
         <div class="relative" id="wrap-output-menu">
           <button id="btn-output-menu" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Output Canvas Resolution & Reference Photo">
             <i class="ph ph-monitor text-zinc-400 text-sm"></i>
@@ -308,13 +310,15 @@
 
         <div class="hidden sm:block h-4 w-px bg-white/[0.08] mx-0.5"></div>
 
-        <button id="btn-save-json" class="w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Export Project JSON">
-          <i class="ph ph-download-simple text-sm"></i>
+        <button id="btn-export-pmap" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Export Portable .pmap File">
+          <i class="ph ph-export text-sm text-accent"></i>
+          <span class="hidden xl:inline">Export .pmap</span>
         </button>
-        <button id="btn-load-json" class="w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Import Project JSON">
-          <i class="ph ph-folder-open text-sm"></i>
+
+        <button id="btn-import-pmap" class="w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Import .pmap or .json File">
+          <i class="ph ph-upload-simple text-sm"></i>
         </button>
-        <input id="inp-load-json" type="file" accept=".json" class="hidden" />
+        <input id="inp-import-pmap" type="file" accept=".pmap,.json" class="hidden" />
 
         <button id="btn-projector-win" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs font-medium text-zinc-100 flex items-center gap-1.5 transition" title="Open Synchronized Projector Output Window">
           <i class="ph ph-projector-screen text-sm text-accent"></i>
@@ -331,17 +335,20 @@
       </div>
     </header>
 
-    <!-- Main Workspace Area -->
     <div class="flex-1 min-h-0 flex relative overflow-hidden">
-      <!-- Left Layers Drawer (240px Desktop / Bottom Sheet Mobile) -->
       <aside id="left-drawer" class="w-60 shrink-0 bg-bgPanel hairline-r flex flex-col overflow-hidden">
         <div class="lg:hidden flex justify-center pt-2 pb-1">
           <div class="w-9 h-1 rounded-full bg-white/20"></div>
         </div>
         <div class="px-3 py-2 hairline-b flex items-center justify-between">
-          <span class="text-xs font-medium text-zinc-300">Layers</span>
           <div class="flex items-center gap-2">
+            <span class="text-xs font-medium text-zinc-300">Layers</span>
             <span id="lbl-layer-count" class="text-[11px] font-mono text-zinc-500">0</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <button id="btn-clear-canvas" class="h-6 px-2 rounded bg-bgControl hover:bg-red-950/60 hover:text-red-300 hairline-all text-[10px] text-zinc-400 transition" title="Delete All Layers">
+              Clear
+            </button>
             <button class="lg:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400">
               <i class="ph ph-x text-xs"></i>
             </button>
@@ -350,7 +357,6 @@
 
         <div id="layer-list" class="flex-1 overflow-y-auto p-1.5 space-y-1"></div>
 
-        <!-- Quick Shape Strip -->
         <div class="p-2 hairline-t bg-bgBase/40 grid grid-cols-6 gap-1">
           <button data-add="quad" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Quad">
             <i class="ph ph-polygon text-sm"></i>
@@ -358,13 +364,13 @@
           <button data-add="triangle" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Triangle">
             <i class="ph ph-triangle text-sm"></i>
           </button>
-          <button data-add="ellipse" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Ellipse">
+          <button data-add="ellipse" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Circle / Ellipse">
             <i class="ph ph-circle text-sm"></i>
           </button>
           <button data-add="polygon" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Polygon">
             <i class="ph ph-pentagon text-sm"></i>
           </button>
-          <button data-add="text" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Typography">
+          <button data-add="text" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Text">
             <i class="ph ph-text-t text-sm"></i>
           </button>
           <button data-add="mask" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Blackout Mask">
@@ -373,15 +379,44 @@
         </div>
       </aside>
 
-      <!-- Fluid Central WebGL2 Viewport -->
       <main id="viewport-wrap" class="flex-1 min-w-0 relative bg-bgBase flex items-center justify-center overflow-hidden">
         <div id="stage-box" class="relative bg-black rounded-md overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.8)] hairline-all" style="width: 960px; height: 540px;">
           <img id="ref-image-layer" alt="" class="hidden absolute inset-0 w-full h-full object-cover pointer-events-none opacity-35" />
           <canvas id="gl-canvas" class="w-full h-full block"></canvas>
           <svg id="overlay-svg" class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg"></svg>
+
+          <div id="empty-stage-overlay" class="hidden absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none z-10">
+            <div class="pointer-events-auto max-w-md bg-bgPanel/90 backdrop-blur-md hairline-all rounded-2xl p-5 shadow-2xl space-y-3.5">
+              <div class="space-y-1">
+                <div class="text-sm font-medium text-zinc-100">Empty Canvas</div>
+                <div class="text-xs text-zinc-400">Add a projection surface or load a starter layout to begin mapping.</div>
+              </div>
+              <div class="flex flex-wrap items-center justify-center gap-1.5">
+                <button data-add="quad" class="add-item h-8 px-3 rounded-full bg-accent hover:bg-blue-500 text-white text-xs font-medium flex items-center gap-1 transition">
+                  <i class="ph ph-plus text-xs"></i><span>Quad</span>
+                </button>
+                <button data-add="ellipse" class="add-item h-8 px-3 rounded-full bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1 transition">
+                  <i class="ph ph-plus text-xs"></i><span>Circle</span>
+                </button>
+                <button data-add="polygon" class="add-item h-8 px-3 rounded-full bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1 transition">
+                  <i class="ph ph-plus text-xs"></i><span>Polygon</span>
+                </button>
+                <button data-add="text" class="add-item h-8 px-3 rounded-full bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1 transition">
+                  <i class="ph ph-plus text-xs"></i><span>Text</span>
+                </button>
+                <button data-add="mask" class="add-item h-8 px-3 rounded-full bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1 transition">
+                  <i class="ph ph-plus text-xs"></i><span>Mask</span>
+                </button>
+              </div>
+              <div class="pt-1 hairline-t">
+                <button id="btn-empty-load-starter" class="text-xs text-accent hover:text-blue-400 font-medium transition">
+                  Load Starter Scene
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Minimal Zoom Controls -->
         <div id="zoom-hud" class="absolute top-3 right-3 bg-bgPanel/90 backdrop-blur-md hairline-all rounded-full px-2 py-1 flex items-center gap-1 text-[11px] font-mono text-zinc-300 shadow-lg">
           <button id="btn-zoom-out" class="w-6 h-6 rounded-full hover:bg-bgControl flex items-center justify-center transition" title="Zoom Out">
             <i class="ph ph-minus text-xs"></i>
@@ -396,15 +431,13 @@
           </button>
         </div>
 
-        <!-- Drag & Drop Media Overlay -->
         <div id="drop-zone-banner" class="hidden absolute inset-4 rounded-2xl border border-dashed border-accent bg-bgPanel/85 backdrop-blur-md flex flex-col items-center justify-center pointer-events-none z-40">
-          <i class="ph ph-file-video text-3xl text-accent mb-2"></i>
-          <div class="text-xs font-medium text-white">Drop Video or Image onto Surface</div>
+          <i class="ph ph-file-arrow-up text-3xl text-accent mb-2"></i>
+          <div class="text-xs font-medium text-white">Drop .pmap Project, Video, or Image</div>
         </div>
       </main>
 
-      <!-- Right Inspector Drawer (280px Desktop / Bottom Sheet Mobile) -->
-      <aside id="right-drawer" class="w-[280px] shrink-0 bg-bgPanel hairline-l flex flex-col overflow-hidden">
+      <aside id="right-drawer" class="w-[288px] shrink-0 bg-bgPanel hairline-l flex flex-col overflow-hidden">
         <div class="lg:hidden flex justify-center pt-2 pb-1">
           <div class="w-9 h-1 rounded-full bg-white/20"></div>
         </div>
@@ -417,7 +450,7 @@
             <button id="btn-reset-layer" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white transition" title="Reset Geometry">
               <i class="ph ph-arrow-counter-clockwise text-sm"></i>
             </button>
-            <button id="btn-del-layer" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-red-400 transition" title="Delete Layer">
+            <button id="btn-del-layer" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-red-400 transition" title="Delete Layer (Delete/Backspace)">
               <i class="ph ph-trash text-sm"></i>
             </button>
             <button class="lg:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400 ml-1">
@@ -430,12 +463,10 @@
       </aside>
     </div>
 
-    <!-- Bottom Show Sequencer Drawer (180px Desktop / Bottom Sheet Mobile) -->
-    <section id="bottom-drawer" class="h-[184px] shrink-0 bg-bgPanel hairline-t flex flex-col overflow-hidden z-20">
+    <section id="bottom-drawer" class="h-[188px] shrink-0 bg-bgPanel hairline-t flex flex-col overflow-hidden z-20">
       <div class="lg:hidden flex justify-center pt-2 pb-1">
         <div class="w-9 h-1 rounded-full bg-white/20"></div>
       </div>
-      <!-- Transport Bar -->
       <div class="h-9 shrink-0 px-3 hairline-b flex items-center justify-between gap-2">
         <div class="flex items-center gap-1.5">
           <button id="btn-toggle-bottom" class="hidden lg:flex w-6 h-6 rounded hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white transition" title="Collapse/Expand Timeline">
@@ -466,7 +497,7 @@
             <i class="ph ph-repeat text-xs"></i>
           </button>
 
-          <button id="btn-cue-mode" class="h-7 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] text-zinc-300 flex items-center gap-1.5 transition" title="Switch Auto-Play vs Presenter Cue-by-Cue Hold">
+          <button id="btn-cue-mode" class="h-7 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] text-zinc-300 flex items-center gap-1.5 transition" title="Global Cue Trigger Mode">
             <i id="ico-cue-mode" class="ph ph-play-circle text-xs text-accent"></i>
             <span id="lbl-cue-mode" class="hidden sm:inline">Auto-Play</span>
           </button>
@@ -487,9 +518,8 @@
         </div>
       </div>
 
-      <!-- Timeline Split Body -->
       <div id="timeline-body" class="flex-1 min-h-0 flex overflow-hidden">
-        <div id="cue-sidebar" class="w-56 shrink-0 hairline-r p-2.5 overflow-y-auto space-y-2 bg-bgPanel"></div>
+        <div id="cue-sidebar" class="w-60 shrink-0 hairline-r p-2.5 overflow-y-auto space-y-2 bg-bgPanel"></div>
         <div id="timeline-scroll" class="flex-1 min-w-0 relative overflow-x-auto overflow-y-hidden bg-bgBase p-2.5 flex flex-col">
           <div class="relative flex-1 min-w-full flex flex-col">
             <div id="timeline-ruler" class="h-4 relative hairline-b text-[10px] font-mono text-zinc-500 cursor-pointer shrink-0"></div>
@@ -502,7 +532,6 @@
       </div>
     </section>
 
-    <!-- Mobile & Tablet Backdrop & Floating Segmented Dock (< 1025px) -->
     <div id="mobile-sheet-backdrop" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
     <nav id="mobile-dock" class="lg:hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-30 bg-bgPanel/95 backdrop-blur-md hairline-all rounded-full p-1 flex items-center gap-1 shadow-2xl" style="margin-bottom: env(safe-area-inset-bottom);">
       <button data-sheet="add" class="mobile-tab h-10 px-3.5 rounded-full text-xs font-medium text-zinc-300 hover:text-white flex items-center gap-1.5 transition">
@@ -522,6 +551,52 @@
         <span>Show</span>
       </button>
     </nav>
+  </div>
+
+  <!-- Projects & File Export Modal -->
+  <div id="projects-modal" class="hidden fixed inset-0 z-[70] bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-bgPanel hairline-all rounded-2xl w-full max-w-3xl max-h-[88dvh] shadow-2xl flex flex-col overflow-hidden">
+      <div class="px-4 py-3 hairline-b flex items-center justify-between gap-2">
+        <div class="text-xs font-medium text-white">Local Projects & Portable File Export</div>
+        <button id="btn-projects-close" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white">
+          <i class="ph ph-x text-sm"></i>
+        </button>
+      </div>
+
+      <div class="p-4 border-b border-white/[0.08] bg-bgBase/40 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button id="btn-proj-new-blank" class="h-8 px-3 rounded-lg bg-accent hover:bg-blue-500 text-white text-xs font-medium flex items-center gap-1.5 transition">
+            <i class="ph ph-file-plus text-sm"></i>
+            <span>New Blank Project</span>
+          </button>
+          <button id="btn-proj-new-preset" class="h-8 px-3 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition">
+            <i class="ph ph-cube text-sm text-accent"></i>
+            <span>New from Starter Layout</span>
+          </button>
+          <button id="btn-proj-save-snapshot" class="h-8 px-3 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition">
+            <i class="ph ph-floppy-disk text-sm text-accent"></i>
+            <span>Save Snapshot</span>
+          </button>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button id="btn-modal-export-pmap" class="h-8 px-3 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition">
+            <i class="ph ph-export text-sm text-accent"></i>
+            <span>Export .pmap</span>
+          </button>
+          <button id="btn-modal-import-pmap" class="h-8 px-3 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition">
+            <i class="ph ph-upload-simple text-sm"></i>
+            <span>Import .pmap</span>
+          </button>
+          <button id="btn-modal-export-png" class="h-8 px-3 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition">
+            <i class="ph ph-image text-sm"></i>
+            <span>Export PNG Frame</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="projects-grid" class="flex-1 overflow-y-auto p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    </div>
   </div>
 
   <!-- Custom GLSL Shader Modal -->
@@ -549,9 +624,65 @@
 
   <script>
     (() => {
-      const STORAGE_KEY = 'pm_studio_state_v3';
-      const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('pm_studio_sync_v3') : null;
+      const ACTIVE_KEY = 'pm_studio_active_v4';
+      const LIBRARY_KEY = 'pm_studio_library_v4';
+      const DB_NAME = 'pm_studio_media_db_v4';
+      const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('pm_studio_sync_v4') : null;
       const isProjectorWindow = new URLSearchParams(window.location.search).get('projector') === '1';
+
+      /* IndexedDB Media Blob Store */
+      function openMediaDB() {
+        return new Promise((resolve) => {
+          if (!('indexedDB' in window)) return resolve(null);
+          const req = indexedDB.open(DB_NAME, 1);
+          req.onupgradeneeded = () => {
+            const db = req.result;
+            if (!db.objectStoreNames.contains('blobs')) db.createObjectStore('blobs');
+          };
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => resolve(null);
+        });
+      }
+
+      async function saveMediaBlob(key, blob) {
+        const db = await openMediaDB();
+        if (!db) return;
+        return new Promise((resolve) => {
+          const tx = db.transaction('blobs', 'readwrite');
+          tx.objectStore('blobs').put(blob, key);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => resolve();
+        });
+      }
+
+      async function loadMediaBlob(key) {
+        const db = await openMediaDB();
+        if (!db) return null;
+        return new Promise((resolve) => {
+          const tx = db.transaction('blobs', 'readonly');
+          const req = tx.objectStore('blobs').get(key);
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => resolve(null);
+        });
+      }
+
+      function blobToDataURL(blob) {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => resolve(null);
+          reader.readAsDataURL(blob);
+        });
+      }
+
+      function dataURLToBlob(dataUrl) {
+        const parts = dataUrl.split(',');
+        const mime = parts[0].match(/:(.*?);/)?.[1] || 'application/octet-stream';
+        const bin = atob(parts[1]);
+        const arr = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        return new Blob([arr], { type: mime });
+      }
 
       const SHADER_PRESETS = {
         aurora: {
@@ -753,6 +884,8 @@ void main() {
 }`;
 
       const state = {
+        projectId: 'proj_default',
+        projectName: 'Untitled Mapping',
         outputWidth: 1920,
         outputHeight: 1080,
         zoom: 1.0,
@@ -760,8 +893,6 @@ void main() {
         panY: 0,
         showGrid: false,
         snapEnabled: true,
-        refImageUrl: '',
-        refOpacity: 0.35,
         selectedIds: [],
         layers: [],
         cues: [],
@@ -885,9 +1016,9 @@ void main() {
         const names = {
           quad: 'Quad Surface',
           triangle: 'Triangle',
-          ellipse: 'Ellipse',
+          ellipse: 'Circle / Ellipse',
           polygon: 'Polygon',
-          text: 'Typography',
+          text: 'Text Layer',
           mask: 'Blackout Mask'
         };
         const layer = {
@@ -920,7 +1051,8 @@ void main() {
             brightness: opts.uniforms?.brightness ?? 1.0,
             contrast: opts.uniforms?.contrast ?? 1.0,
             saturation: opts.uniforms?.saturation ?? 1.0,
-            hueShift: opts.uniforms?.hueShift ?? 0.0
+            hueShift: opts.uniforms?.hueShift ?? 0.0,
+            invert: opts.uniforms?.invert ?? 0.0
           },
           textProps: {
             content: opts.textProps?.content || 'THESIS\nSTUDY 01',
@@ -931,14 +1063,18 @@ void main() {
             lineHeight: opts.textProps?.lineHeight ?? 1.08,
             align: opts.textProps?.align || 'center',
             color: opts.textProps?.color || '#ffffff',
-            bgColor: opts.textProps?.bgColor || 'transparent'
+            strokeWidth: opts.textProps?.strokeWidth ?? 0,
+            strokeColor: opts.textProps?.strokeColor || '#09090b'
           },
           media: {
-            name: '',
-            type: '',
-            loop: true,
-            speed: 1.0,
-            fit: 'cover'
+            name: opts.media?.name || '',
+            type: opts.media?.type || '',
+            blobKey: opts.media?.blobKey || '',
+            loop: opts.media?.loop !== undefined ? opts.media.loop : true,
+            muted: opts.media?.muted !== undefined ? opts.media.muted : true,
+            volume: opts.media?.volume ?? 0.8,
+            speed: opts.media?.speed ?? 1.0,
+            fit: opts.media?.fit || 'stretch'
           }
         };
         if (layer.meshSubdiv > 1 && !layer.meshGrid) rebuildMeshGrid(layer);
@@ -1050,6 +1186,7 @@ uniform float u_opacity;
 uniform float u_feather;
 uniform float u_cornerRadius;
 uniform vec2 u_flip;
+uniform vec2 u_uvScale;
 
 uniform float u_time;
 uniform float u_speed;
@@ -1059,6 +1196,7 @@ uniform float u_brightness;
 uniform float u_contrast;
 uniform float u_saturation;
 uniform float u_hueShift;
+uniform float u_invert;
 uniform vec3 u_color1;
 uniform vec3 u_color2;
 uniform vec3 u_color3;
@@ -1095,15 +1233,13 @@ float computeMask(vec2 uv) {
 }
 
 vec3 applyColorGrade(vec3 c) {
-  // Hue rotation
+  if (u_invert > 0.5) c = 1.0 - c;
   float angle = u_hueShift * 6.2831853;
   const vec3 k = vec3(0.57735);
   float cosA = cos(angle);
   c = c * cosA + cross(k, c) * sin(angle) + k * dot(k, c) * (1.0 - cosA);
-  // Saturation
   float luma = dot(c, vec3(0.2126, 0.7152, 0.0722));
   c = mix(vec3(luma), c, u_saturation);
-  // Contrast & Brightness
   c = ((c - 0.5) * u_contrast + 0.5) * u_brightness;
   return clamp(c, 0.0, 1.5);
 }
@@ -1139,7 +1275,12 @@ void main() {
 
   vec4 col;
   if (u_sourceMode == 1) {
-    col = texture(u_tex, clamp(uv, 0.0, 1.0));
+    vec2 mUv = (uv - 0.5) * u_uvScale + 0.5;
+    if (mUv.x < 0.0 || mUv.x > 1.0 || mUv.y < 0.0 || mUv.y > 1.0) {
+      col = vec4(0.0, 0.0, 0.0, 0.0);
+    } else {
+      col = texture(u_tex, mUv);
+    }
   } else {
     col = evalUser(uv);
   }
@@ -1235,7 +1376,6 @@ void main() {
         return shaderCache.get('preset:aurora');
       }
 
-      /* Media & High-DPI Typography Texture Store */
       const textureStore = new Map();
 
       function updateTextTexture(layer) {
@@ -1247,18 +1387,11 @@ void main() {
         const ctx = off.getContext('2d');
         ctx.clearRect(0, 0, off.width, off.height);
 
-        if (tp.bgColor && tp.bgColor !== 'transparent') {
-          ctx.fillStyle = tp.bgColor;
-          ctx.fillRect(0, 0, off.width, off.height);
-        }
-
         ctx.fillStyle = tp.color || '#ffffff';
         ctx.font = `${tp.fontWeight || '600'} ${tp.fontSize || 110}px "${tp.fontFamily || 'Geist'}", sans-serif`;
         ctx.textAlign = tp.align || 'center';
         ctx.textBaseline = 'middle';
-        if ('letterSpacing' in ctx) {
-          ctx.letterSpacing = `${tp.letterSpacing || 0}em`;
-        }
+        if ('letterSpacing' in ctx) ctx.letterSpacing = `${tp.letterSpacing || 0}em`;
 
         const lines = (tp.content || '').split('\n');
         const lineH = (tp.fontSize || 110) * (tp.lineHeight || 1.1);
@@ -1267,7 +1400,14 @@ void main() {
         const anchorX = tp.align === 'left' ? 120 : (tp.align === 'right' ? off.width - 120 : off.width * 0.5);
 
         lines.forEach((line, idx) => {
-          ctx.fillText(line, anchorX, startY + idx * lineH);
+          const y = startY + idx * lineH;
+          if ((tp.strokeWidth || 0) > 0) {
+            ctx.lineWidth = tp.strokeWidth * 2;
+            ctx.strokeStyle = tp.strokeColor || '#09090b';
+            ctx.lineJoin = 'round';
+            ctx.strokeText(line, anchorX, y);
+          }
+          ctx.fillText(line, anchorX, y);
         });
 
         let item = textureStore.get(layer.id);
@@ -1279,7 +1419,7 @@ void main() {
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-          item = { tex, isVideo: false, ready: true };
+          item = { tex, isVideo: false, ready: true, aspect: 1600 / 900 };
           textureStore.set(layer.id, item);
         }
         gl.bindTexture(gl.TEXTURE_2D, item.tex);
@@ -1293,15 +1433,12 @@ void main() {
         }
       }
 
-      function loadMediaFile(layerId, file) {
-        const layer = state.layers.find(l => l.id === layerId);
-        if (!layer || layer.kind !== 'surface') return;
+      function attachMediaBlobToLayer(layer, blob, fileName, mimeType) {
+        const url = URL.createObjectURL(blob);
+        const isVideo = mimeType.startsWith('video/');
 
-        const url = URL.createObjectURL(file);
-        const isVideo = file.type.startsWith('video/');
-
-        if (textureStore.has(layerId)) {
-          const prev = textureStore.get(layerId);
+        if (textureStore.has(layer.id)) {
+          const prev = textureStore.get(layer.id);
           if (prev.video) { prev.video.pause(); prev.video.src = ''; }
           gl.deleteTexture(prev.tex);
         }
@@ -1318,33 +1455,61 @@ void main() {
           const video = document.createElement('video');
           video.src = url;
           video.loop = layer.media.loop;
-          video.muted = true;
-          video.playbackRate = layer.media.speed;
+          video.muted = layer.media.muted !== undefined ? layer.media.muted : true;
+          video.volume = layer.media.volume ?? 0.8;
+          video.playbackRate = layer.media.speed || 1.0;
           video.playsInline = true;
           video.play().catch(() => {});
-          textureStore.set(layerId, { tex, isVideo: true, video, ready: false });
+          textureStore.set(layer.id, { tex, isVideo: true, video, ready: false, aspect: 16 / 9 });
           video.addEventListener('loadeddata', () => {
-            const it = textureStore.get(layerId);
-            if (it) it.ready = true;
+            const it = textureStore.get(layer.id);
+            if (it) {
+              it.ready = true;
+              if (video.videoWidth && video.videoHeight) it.aspect = video.videoWidth / video.videoHeight;
+            }
           });
         } else {
           const img = new Image();
           img.onload = () => {
             gl.bindTexture(gl.TEXTURE_2D, tex);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-            const it = textureStore.get(layerId);
-            if (it) it.ready = true;
+            const it = textureStore.get(layer.id);
+            if (it) {
+              it.ready = true;
+              if (img.naturalWidth && img.naturalHeight) it.aspect = img.naturalWidth / img.naturalHeight;
+            }
           };
           img.src = url;
-          textureStore.set(layerId, { tex, isVideo: false, img, ready: false });
+          textureStore.set(layer.id, { tex, isVideo: false, img, ready: false, aspect: 16 / 9 });
         }
 
         layer.sourceType = 'media';
-        layer.media.name = file.name;
+        layer.media.name = fileName;
         layer.media.type = isVideo ? 'video' : 'image';
+      }
+
+      async function loadMediaFile(layerId, file) {
+        const layer = state.layers.find(l => l.id === layerId);
+        if (!layer || layer.kind !== 'surface') return;
+        const blobKey = `blob_${layer.id}`;
+        layer.media.blobKey = blobKey;
+        await saveMediaBlob(blobKey, file);
+        attachMediaBlobToLayer(layer, file, file.name, file.type);
         renderInspector();
         renderLayerList();
+        persistAndSync();
         showToast(`Loaded ${file.name}`);
+      }
+
+      async function restorePersistedMedia() {
+        for (const l of state.layers) {
+          if (l.sourceType === 'media' && l.media?.blobKey) {
+            const blob = await loadMediaBlob(l.media.blobKey);
+            if (blob) {
+              attachMediaBlobToLayer(l, blob, l.media.name || 'media', blob.type || (l.media.type === 'video' ? 'video/mp4' : 'image/png'));
+            }
+          }
+        }
       }
 
       function triangulateLayer(layer) {
@@ -1461,6 +1626,7 @@ void main() {
           gl.uniform1i(gl.getUniformLocation(prog, 'u_isEllipse'), layer.shape === 'ellipse' ? 1 : 0);
 
           let srcMode = 0;
+          let uvScaleX = 1.0, uvScaleY = 1.0;
           if ((layer.sourceType === 'media' || layer.sourceType === 'text') && textureStore.has(layer.id)) {
             const item = textureStore.get(layer.id);
             if (item.ready) {
@@ -1471,10 +1637,24 @@ void main() {
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, item.video);
               }
               gl.uniform1i(gl.getUniformLocation(prog, 'u_tex'), 0);
+
+              if (layer.sourceType === 'media' && layer.media.fit && layer.media.fit !== 'stretch') {
+                const b = getBounds(layer);
+                const surfAsp = (b.w * state.outputWidth) / Math.max(1, b.h * state.outputHeight);
+                const mediaAsp = item.aspect || 1.777;
+                if (layer.media.fit === 'cover') {
+                  if (surfAsp > mediaAsp) uvScaleY = mediaAsp / surfAsp;
+                  else uvScaleX = surfAsp / mediaAsp;
+                } else if (layer.media.fit === 'contain') {
+                  if (surfAsp > mediaAsp) uvScaleX = surfAsp / mediaAsp;
+                  else uvScaleY = mediaAsp / surfAsp;
+                }
+              }
             }
           }
 
           gl.uniform1i(gl.getUniformLocation(prog, 'u_sourceMode'), srcMode);
+          gl.uniform2f(gl.getUniformLocation(prog, 'u_uvScale'), uvScaleX, uvScaleY);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_opacity'), layer.opacity);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_feather'), layer.feather);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_cornerRadius'), layer.cornerRadius || 0);
@@ -1491,6 +1671,7 @@ void main() {
           gl.uniform1f(gl.getUniformLocation(prog, 'u_contrast'), layer.uniforms.contrast);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_saturation'), layer.uniforms.saturation ?? 1.0);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_hueShift'), layer.uniforms.hueShift ?? 0.0);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_invert'), layer.uniforms.invert ?? 0.0);
           gl.uniform3f(gl.getUniformLocation(prog, 'u_color1'), c1[0], c1[1], c1[2]);
           gl.uniform3f(gl.getUniformLocation(prog, 'u_color2'), c2[0], c2[1], c2[2]);
           gl.uniform3f(gl.getUniformLocation(prog, 'u_color3'), c3[0], c3[1], c3[2]);
@@ -1515,6 +1696,15 @@ void main() {
       }
 
       function renderOverlay() {
+        const emptyEl = document.getElementById('empty-stage-overlay');
+        if (emptyEl) {
+          if (state.layers.length === 0 && !document.body.classList.contains('stage-fullscreen') && !isProjectorWindow) {
+            emptyEl.classList.remove('hidden');
+          } else {
+            emptyEl.classList.add('hidden');
+          }
+        }
+
         if (document.body.classList.contains('stage-fullscreen') || isProjectorWindow) {
           overlaySvg.innerHTML = '';
           return;
@@ -1526,7 +1716,7 @@ void main() {
         let out = '';
 
         if (state.showGrid) {
-          out += `<g opacity="0.18">`;
+          out += `<g opacity="0.22">`;
           for (let i = 1; i < 16; i++) out += `<line x1="${(i / 16) * w}" y1="0" x2="${(i / 16) * w}" y2="${h}" stroke="#fff" stroke-width="1"/>`;
           for (let j = 1; j < 9; j++) out += `<line x1="0" y1="${(j / 9) * h}" x2="${w}" y2="${(j / 9) * h}" stroke="#fff" stroke-width="1"/>`;
           out += `<line x1="${w * 0.5}" y1="0" x2="${w * 0.5}" y2="${h}" stroke="#3b82f6" stroke-width="1.5"/>`;
@@ -1624,7 +1814,7 @@ void main() {
         return { x: sx, y: sy };
       }
 
-      overlaySvg.addEventListener('click', (e) => {
+      overlaySvg.addEventListener('dblclick', (e) => {
         const edge = e.target.closest('[data-mode="edge"]');
         if (!edge) return;
         const id = edge.getAttribute('data-id');
@@ -1640,11 +1830,29 @@ void main() {
         pushHistory();
         renderOverlay();
         renderInspector();
+        persistAndSync();
         showToast('Vertex added');
       });
 
+      overlaySvg.addEventListener('contextmenu', (e) => {
+        const vtx = e.target.closest('[data-mode="vertex"]');
+        if (!vtx) return;
+        e.preventDefault();
+        const id = vtx.getAttribute('data-id');
+        const idx = parseInt(vtx.getAttribute('data-idx'), 10);
+        const layer = state.layers.find(l => l.id === id);
+        if (layer && layer.shape === 'polygon' && layer.vertices.length > 3 && !layer.locked) {
+          layer.vertices.splice(idx, 1);
+          pushHistory();
+          renderOverlay();
+          renderInspector();
+          persistAndSync();
+          showToast('Vertex removed');
+        }
+      });
+
       overlaySvg.addEventListener('pointerdown', (e) => {
-        if (activePointers.size >= 1) return; // Yield to multi-touch pinch/pan
+        if (activePointers.size >= 1) return;
         const el = e.target.closest('[data-id]');
         if (!el) return;
         const id = el.getAttribute('data-id');
@@ -1866,13 +2074,56 @@ void main() {
         applyStageLayout();
       });
 
-      /* Left Layers Drawer (Drag Reorder, Solo, Lock, Visibility) */
+      /* Delete Layer Helper (Zero Restrictions) */
+      function deleteLayersByIds(ids) {
+        if (!ids || !ids.length) return;
+        for (const id of ids) {
+          if (textureStore.has(id)) {
+            const it = textureStore.get(id);
+            if (it.video) { it.video.pause(); it.video.src = ''; }
+            gl.deleteTexture(it.tex);
+            textureStore.delete(id);
+          }
+        }
+        state.layers = state.layers.filter(l => !ids.includes(l.id));
+        state.selectedIds = state.selectedIds.filter(id => !ids.includes(id));
+        if (!state.selectedIds.length && state.layers.length) {
+          state.selectedIds = [state.layers[state.layers.length - 1].id];
+        }
+        pushHistory();
+        refreshAll();
+      }
+
+      function clearAllLayers() {
+        for (const l of state.layers) {
+          if (textureStore.has(l.id)) {
+            const it = textureStore.get(l.id);
+            if (it.video) { it.video.pause(); it.video.src = ''; }
+            gl.deleteTexture(it.tex);
+          }
+        }
+        textureStore.clear();
+        state.layers = [];
+        state.selectedIds = [];
+        pushHistory();
+        refreshAll();
+        showToast('Canvas cleared');
+      }
+
+      document.getElementById('btn-clear-canvas').addEventListener('click', clearAllLayers);
+
+      /* Left Layers Drawer */
       let draggedLayerId = null;
 
       function renderLayerList() {
         const list = document.getElementById('layer-list');
         document.getElementById('lbl-layer-count').textContent = state.layers.length;
         list.innerHTML = '';
+
+        if (!state.layers.length) {
+          list.innerHTML = `<div class="py-8 px-3 text-center text-[11px] text-zinc-500">No layers on stage. Use the shape bar below to add a surface or mask.</div>`;
+          return;
+        }
 
         const shapeIcons = {
           quad: 'ph-polygon',
@@ -1890,25 +2141,28 @@ void main() {
 
           const row = document.createElement('div');
           row.draggable = true;
-          row.className = `group px-2 py-2 lg:py-1.5 rounded-lg flex items-center justify-between gap-1.5 cursor-pointer transition ${
+          row.className = `group px-2 py-2 lg:py-1.5 rounded-lg flex items-center justify-between gap-1 cursor-pointer transition ${
             sel ? 'bg-bgControl text-white hairline-all' : 'text-zinc-400 hover:bg-bgControl/60 hover:text-zinc-200'
           }`;
 
           row.innerHTML = `
-            <div class="flex items-center gap-2 min-w-0">
+            <div class="flex items-center gap-1.5 min-w-0">
               <i class="ph ph-dots-six-vertical text-xs text-zinc-600 cursor-grab shrink-0"></i>
               <i class="ph ${icon} text-sm ${isMask ? 'text-red-400' : (sel ? 'text-accent' : 'text-zinc-500')} shrink-0"></i>
               <span class="text-xs font-medium truncate">${layer.name}</span>
             </div>
             <div class="flex items-center gap-0.5 shrink-0">
               ${!isMask ? `
-                <button class="act-solo w-6 h-6 rounded hover:bg-white/10 text-[10px] font-mono font-semibold transition ${layer.solo ? 'text-amber-400' : 'text-zinc-600 opacity-0 group-hover:opacity-100'}" title="Solo Layer">S</button>
+                <button class="act-solo w-5 h-6 rounded hover:bg-white/10 text-[10px] font-mono font-semibold transition ${layer.solo ? 'text-amber-400' : 'text-zinc-600 opacity-0 group-hover:opacity-100'}" title="Solo Layer">S</button>
               ` : ''}
-              <button class="act-lock w-6 h-6 rounded hover:bg-white/10 flex items-center justify-center transition ${layer.locked ? 'text-zinc-200' : 'text-zinc-600 opacity-0 group-hover:opacity-100'}" title="Lock Geometry">
+              <button class="act-lock w-5 h-6 rounded hover:bg-white/10 flex items-center justify-center transition ${layer.locked ? 'text-zinc-200' : 'text-zinc-600 opacity-0 group-hover:opacity-100'}" title="Lock Geometry">
                 <i class="ph ${layer.locked ? 'ph-lock-simple' : 'ph-lock-simple-open'} text-xs"></i>
               </button>
-              <button class="act-vis w-6 h-6 rounded hover:bg-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition" title="Toggle Visibility">
+              <button class="act-vis w-5 h-6 rounded hover:bg-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition" title="Toggle Visibility">
                 <i class="ph ${layer.visible ? 'ph-eye' : 'ph-eye-slash text-zinc-600'} text-xs"></i>
+              </button>
+              <button class="act-del w-5 h-6 rounded hover:bg-red-950/70 flex items-center justify-center text-zinc-500 hover:text-red-400 transition" title="Delete Layer">
+                <i class="ph ph-trash text-xs"></i>
               </button>
             </div>
           `;
@@ -1933,6 +2187,10 @@ void main() {
           });
 
           row.addEventListener('click', (e) => {
+            if (e.target.closest('.act-del')) {
+              deleteLayersByIds([layer.id]);
+              return;
+            }
             if (e.target.closest('.act-vis')) {
               layer.visible = !layer.visible;
               renderLayerList();
@@ -1990,7 +2248,7 @@ void main() {
         const host = document.getElementById('inspector-scroll');
         const layer = primarySelectedLayer();
         if (!layer) {
-          host.innerHTML = `<div class="py-10 text-center text-xs text-zinc-500">Select or add a surface to edit properties.</div>`;
+          host.innerHTML = `<div class="py-12 px-3 text-center text-xs text-zinc-500">No layer selected. Add a surface or mask to customize geometry, shaders, text, or media.</div>`;
           return;
         }
 
@@ -2011,7 +2269,10 @@ void main() {
 
         const transformSection = `
           <div class="space-y-2.5 pt-3 hairline-t">
-            <div class="text-[11px] font-medium text-zinc-400">Transform & Geometry</div>
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-medium text-zinc-400">Transform & Geometry</span>
+              <button id="btn-fit-output" class="text-[10px] text-accent hover:underline">Fit to Output</button>
+            </div>
             <div class="grid grid-cols-2 gap-1.5">
               <div>
                 <span class="text-[10px] text-zinc-500">X (px)</span>
@@ -2040,8 +2301,8 @@ void main() {
 
             <div>
               <div class="flex justify-between text-[11px] text-zinc-400 mb-1">
-                <span>Edge Feather</span>
-                <span id="lbl-feather" class="font-mono text-zinc-200">${Math.round(layer.feather * 100)} px</span>
+                <span>Soft Edge Feather</span>
+                <span id="lbl-feather" class="font-mono text-zinc-200">${Math.round(layer.feather * 250)} px</span>
               </div>
               <input id="inp-feather" type="range" min="0" max="0.4" step="0.005" value="${layer.feather}" class="w-full" />
             </div>
@@ -2057,18 +2318,23 @@ void main() {
             ` : ''}
 
             ${layer.vertices.length === 4 ? `
-              <div>
-                <div class="flex justify-between text-[11px] text-zinc-400 mb-1">
+              <div class="space-y-1.5">
+                <div class="flex justify-between text-[11px] text-zinc-400">
                   <span>Mesh Warp Grid</span>
-                  <span class="font-mono text-zinc-500">${layer.meshSubdiv === 1 ? 'Off' : `${layer.meshSubdiv}×${layer.meshSubdiv}`}</span>
+                  <span class="font-mono text-zinc-500">${layer.meshSubdiv === 1 ? '1×1' : `${layer.meshSubdiv}×${layer.meshSubdiv}`}</span>
                 </div>
-                <div class="grid grid-cols-5 gap-1 bg-bgControl p-1 rounded-lg hairline-all">
-                  ${[1, 2, 4, 6, 8].map(d => `
-                    <button data-subdiv="${d}" class="btn-subdiv py-1 rounded text-[11px] font-mono transition ${layer.meshSubdiv === d ? 'bg-bgPanel text-white shadow-sm' : 'text-zinc-400 hover:text-white'}">
-                      ${d === 1 ? '1×1' : `${d}×${d}`}
+                <div class="grid grid-cols-6 gap-1 bg-bgControl p-1 rounded-lg hairline-all">
+                  ${[1, 2, 4, 6, 8, 10].map(d => `
+                    <button data-subdiv="${d}" class="btn-subdiv py-1 rounded text-[10px] font-mono transition ${layer.meshSubdiv === d ? 'bg-bgPanel text-white shadow-sm' : 'text-zinc-400 hover:text-white'}">
+                      ${d}×${d}
                     </button>
                   `).join('')}
                 </div>
+                ${layer.meshSubdiv > 1 ? `
+                  <button id="btn-reset-mesh" class="w-full h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] text-zinc-300 transition">
+                    Reset Interior Mesh Points
+                  </button>
+                ` : ''}
               </div>
             ` : ''}
 
@@ -2114,7 +2380,6 @@ void main() {
               <input id="inp-name" type="text" value="${layer.name}" class="w-full h-8 bg-bgControl hairline-all rounded-lg px-2.5 text-xs text-white outline-none focus:border-accent" />
             </div>
 
-            <!-- Source Mode Switcher -->
             <div class="space-y-2">
               <div class="text-[11px] font-medium text-zinc-400">Source</div>
               <div class="grid grid-cols-4 gap-1 bg-bgControl p-1 rounded-lg hairline-all">
@@ -2131,21 +2396,26 @@ void main() {
                   <textarea id="txt-layer-content" rows="2" class="w-full bg-bgBase hairline-all rounded-lg p-2 text-xs text-white outline-none focus:border-accent resize-none">${layer.textProps.content}</textarea>
                   <div class="grid grid-cols-2 gap-1.5">
                     <select id="sel-text-font" class="h-7 bg-bgControl hairline-all rounded-lg px-2 text-[11px] text-zinc-200 outline-none">
-                      <option value="Geist" ${layer.textProps.fontFamily === 'Geist' ? 'selected' : ''}>Geist Sans</option>
-                      <option value="Plus Jakarta Sans" ${layer.textProps.fontFamily === 'Plus Jakarta Sans' ? 'selected' : ''}>Jakarta Sans</option>
-                      <option value="Space Grotesk" ${layer.textProps.fontFamily === 'Space Grotesk' ? 'selected' : ''}>Space Grotesk</option>
-                      <option value="Cormorant Garamond" ${layer.textProps.fontFamily === 'Cormorant Garamond' ? 'selected' : ''}>Cormorant Serif</option>
+                      <option value="Geist" ${layer.textProps.fontFamily === 'Geist' ? 'selected' : ''}>Geist</option>
                       <option value="Geist Mono" ${layer.textProps.fontFamily === 'Geist Mono' ? 'selected' : ''}>Geist Mono</option>
+                      <option value="Georgia" ${layer.textProps.fontFamily === 'Georgia' ? 'selected' : ''}>Georgia</option>
+                      <option value="Arial Black" ${layer.textProps.fontFamily === 'Arial Black' ? 'selected' : ''}>Arial Black</option>
+                      <option value="Courier New" ${layer.textProps.fontFamily === 'Courier New' ? 'selected' : ''}>Courier New</option>
                     </select>
                     <select id="sel-text-weight" class="h-7 bg-bgControl hairline-all rounded-lg px-2 text-[11px] text-zinc-200 outline-none">
                       <option value="400" ${layer.textProps.fontWeight === '400' ? 'selected' : ''}>Regular</option>
                       <option value="600" ${layer.textProps.fontWeight === '600' ? 'selected' : ''}>SemiBold</option>
+                      <option value="700" ${layer.textProps.fontWeight === '700' ? 'selected' : ''}>Bold</option>
                     </select>
                   </div>
-                  <div class="grid grid-cols-2 gap-1.5 items-center">
+                  <div class="grid grid-cols-3 gap-1.5 items-center">
                     <label class="flex items-center justify-between bg-bgControl hairline-all rounded-lg px-2 h-7 cursor-pointer">
-                      <span class="text-[10px] text-zinc-400">Text</span>
+                      <span class="text-[10px] text-zinc-400">Fill</span>
                       <input id="inp-text-color" type="color" value="${layer.textProps.color}" class="w-4 h-4 bg-transparent border-0" />
+                    </label>
+                    <label class="flex items-center justify-between bg-bgControl hairline-all rounded-lg px-2 h-7 cursor-pointer">
+                      <span class="text-[10px] text-zinc-400">Edge</span>
+                      <input id="inp-text-stroke-col" type="color" value="${layer.textProps.strokeColor || '#09090b'}" class="w-4 h-4 bg-transparent border-0" />
                     </label>
                     <div class="flex bg-bgControl hairline-all rounded-lg p-0.5 h-7">
                       ${['left', 'center', 'right'].map(al => `
@@ -2155,11 +2425,31 @@ void main() {
                       `).join('')}
                     </div>
                   </div>
-                  <div>
-                    <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
-                      <span>Size</span><span class="font-mono">${layer.textProps.fontSize}px</span>
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                        <span>Size</span><span id="lbl-txt-sz" class="font-mono">${layer.textProps.fontSize}px</span>
+                      </div>
+                      <input id="inp-text-size" type="range" min="36" max="240" step="2" value="${layer.textProps.fontSize}" class="w-full" />
                     </div>
-                    <input id="inp-text-size" type="range" min="36" max="240" step="2" value="${layer.textProps.fontSize}" class="w-full" />
+                    <div>
+                      <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                        <span>Outline</span><span id="lbl-txt-str" class="font-mono">${layer.textProps.strokeWidth || 0}px</span>
+                      </div>
+                      <input id="inp-text-stroke" type="range" min="0" max="24" step="1" value="${layer.textProps.strokeWidth || 0}" class="w-full" />
+                    </div>
+                    <div>
+                      <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                        <span>Tracking</span><span id="lbl-txt-trk" class="font-mono">${(layer.textProps.letterSpacing ?? 0.04).toFixed(2)}em</span>
+                      </div>
+                      <input id="inp-text-track" type="range" min="-0.05" max="0.4" step="0.01" value="${layer.textProps.letterSpacing ?? 0.04}" class="w-full" />
+                    </div>
+                    <div>
+                      <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                        <span>Leading</span><span id="lbl-txt-lh" class="font-mono">${(layer.textProps.lineHeight ?? 1.08).toFixed(2)}</span>
+                      </div>
+                      <input id="inp-text-lh" type="range" min="0.8" max="2.0" step="0.04" value="${layer.textProps.lineHeight ?? 1.08}" class="w-full" />
+                    </div>
                   </div>
                 </div>
               ` : ''}
@@ -2171,12 +2461,25 @@ void main() {
                     <button id="btn-pick-media" class="h-7 px-2.5 rounded-lg bg-accent hover:bg-blue-500 text-white text-[11px] font-medium shrink-0">Browse</button>
                     <input id="inp-pick-media" type="file" accept="video/*,image/*" class="hidden" />
                   </div>
+                  <div class="grid grid-cols-3 gap-1 bg-bgControl p-0.5 rounded-lg hairline-all">
+                    ${['stretch', 'cover', 'contain'].map(m => `
+                      <button data-fit="${m}" class="btn-media-fit py-1 rounded text-[10px] capitalize transition ${(layer.media.fit || 'stretch') === m ? 'bg-bgPanel text-white' : 'text-zinc-400 hover:text-white'}">${m}</button>
+                    `).join('')}
+                  </div>
                   ${layer.media.type === 'video' ? `
                     <div>
                       <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
                         <span>Playback Speed</span><span id="lbl-vid-spd" class="font-mono">${layer.media.speed.toFixed(1)}×</span>
                       </div>
                       <input id="inp-vid-spd" type="range" min="0.2" max="2.5" step="0.1" value="${layer.media.speed}" class="w-full" />
+                    </div>
+                    <div class="flex items-center justify-between gap-1.5 pt-0.5">
+                      <button id="btn-vid-loop" class="flex-1 h-7 rounded-lg hairline-all text-[11px] transition ${layer.media.loop ? 'bg-accent/20 border-accent/40 text-blue-300' : 'bg-bgControl text-zinc-400'}">
+                        Loop: ${layer.media.loop ? 'On' : 'Off'}
+                      </button>
+                      <button id="btn-vid-mute" class="flex-1 h-7 rounded-lg hairline-all text-[11px] transition ${layer.media.muted ? 'bg-bgControl text-zinc-400' : 'bg-accent/20 border-accent/40 text-blue-300'}">
+                        Audio: ${layer.media.muted ? 'Muted' : 'On'}
+                      </button>
                     </div>
                   ` : ''}
                 </div>
@@ -2190,7 +2493,6 @@ void main() {
               ` : ''}
             </div>
 
-            <!-- Procedural Parameters -->
             ${(layer.sourceType === 'preset' || layer.sourceType === 'custom') ? `
               <div class="space-y-2 pt-3 hairline-t">
                 <div class="text-[11px] font-medium text-zinc-400">Colors & Motion</div>
@@ -2218,23 +2520,27 @@ void main() {
 
                 <div>
                   <div class="flex justify-between text-[11px] text-zinc-400 mb-0.5">
-                    <span>Scale</span><span id="lbl-scl" class="font-mono text-zinc-200">${layer.uniforms.scale.toFixed(1)}×</span>
+                    <span>Scale / Frequency</span><span id="lbl-scl" class="font-mono text-zinc-200">${layer.uniforms.scale.toFixed(1)}×</span>
                   </div>
                   <input id="inp-scl" type="range" min="0.2" max="4.0" step="0.1" value="${layer.uniforms.scale}" class="w-full" />
                 </div>
 
                 <div>
                   <div class="flex justify-between text-[11px] text-zinc-400 mb-0.5">
-                    <span>Complexity</span><span id="lbl-cmp" class="font-mono text-zinc-200">${layer.uniforms.complexity.toFixed(1)}</span>
+                    <span>Complexity / Detail</span><span id="lbl-cmp" class="font-mono text-zinc-200">${layer.uniforms.complexity.toFixed(1)}</span>
                   </div>
                   <input id="inp-cmp" type="range" min="1" max="5" step="0.2" value="${layer.uniforms.complexity}" class="w-full" />
                 </div>
               </div>
             ` : ''}
 
-            <!-- Color Grading & Compositing -->
             <div class="space-y-2 pt-3 hairline-t">
-              <div class="text-[11px] font-medium text-zinc-400">Compositing & Grade</div>
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-zinc-400">Compositing & Grade</span>
+                <button id="btn-invert" class="px-2 h-6 rounded hairline-all text-[10px] transition ${(layer.uniforms.invert ?? 0) > 0.5 ? 'bg-accent text-white' : 'bg-bgControl text-zinc-400 hover:text-white'}">
+                  Invert
+                </button>
+              </div>
               <div>
                 <div class="flex justify-between text-[11px] text-zinc-400 mb-0.5">
                   <span>Opacity</span><span id="lbl-op" class="font-mono text-zinc-200">${Math.round(layer.opacity * 100)}%</span>
@@ -2310,7 +2616,6 @@ void main() {
           });
         });
 
-        // Text Controls
         const txtContent = document.getElementById('txt-layer-content');
         if (txtContent) txtContent.addEventListener('input', (e) => {
           layer.textProps.content = e.target.value;
@@ -2335,11 +2640,38 @@ void main() {
           updateTextTexture(layer);
           persistAndSync();
         });
+        const inpTxtStrCol = document.getElementById('inp-text-stroke-col');
+        if (inpTxtStrCol) inpTxtStrCol.addEventListener('input', (e) => {
+          layer.textProps.strokeColor = e.target.value;
+          updateTextTexture(layer);
+          persistAndSync();
+        });
         const inpTxtSz = document.getElementById('inp-text-size');
         if (inpTxtSz) inpTxtSz.addEventListener('input', (e) => {
           layer.textProps.fontSize = parseInt(e.target.value, 10);
+          document.getElementById('lbl-txt-sz').textContent = `${layer.textProps.fontSize}px`;
           updateTextTexture(layer);
-          renderInspector();
+          persistAndSync();
+        });
+        const inpTxtStr = document.getElementById('inp-text-stroke');
+        if (inpTxtStr) inpTxtStr.addEventListener('input', (e) => {
+          layer.textProps.strokeWidth = parseInt(e.target.value, 10);
+          document.getElementById('lbl-txt-str').textContent = `${layer.textProps.strokeWidth}px`;
+          updateTextTexture(layer);
+          persistAndSync();
+        });
+        const inpTxtTrk = document.getElementById('inp-text-track');
+        if (inpTxtTrk) inpTxtTrk.addEventListener('input', (e) => {
+          layer.textProps.letterSpacing = parseFloat(e.target.value);
+          document.getElementById('lbl-txt-trk').textContent = `${layer.textProps.letterSpacing.toFixed(2)}em`;
+          updateTextTexture(layer);
+          persistAndSync();
+        });
+        const inpTxtLh = document.getElementById('inp-text-lh');
+        if (inpTxtLh) inpTxtLh.addEventListener('input', (e) => {
+          layer.textProps.lineHeight = parseFloat(e.target.value);
+          document.getElementById('lbl-txt-lh').textContent = layer.textProps.lineHeight.toFixed(2);
+          updateTextTexture(layer);
           persistAndSync();
         });
         host.querySelectorAll('.btn-text-align').forEach(btn => {
@@ -2351,7 +2683,6 @@ void main() {
           });
         });
 
-        // Media Controls
         const pickMedia = document.getElementById('btn-pick-media');
         const inpMedia = document.getElementById('inp-pick-media');
         if (pickMedia && inpMedia) {
@@ -2360,6 +2691,13 @@ void main() {
             if (e.target.files?.[0]) loadMediaFile(layer.id, e.target.files[0]);
           });
         }
+        host.querySelectorAll('.btn-media-fit').forEach(btn => {
+          btn.addEventListener('click', () => {
+            layer.media.fit = btn.getAttribute('data-fit');
+            renderInspector();
+            persistAndSync();
+          });
+        });
         const vidSpd = document.getElementById('inp-vid-spd');
         if (vidSpd) vidSpd.addEventListener('input', (e) => {
           layer.media.speed = parseFloat(e.target.value);
@@ -2367,8 +2705,21 @@ void main() {
           const it = textureStore.get(layer.id);
           if (it?.video) it.video.playbackRate = layer.media.speed;
         });
+        const vidLoop = document.getElementById('btn-vid-loop');
+        if (vidLoop) vidLoop.addEventListener('click', () => {
+          layer.media.loop = !layer.media.loop;
+          const it = textureStore.get(layer.id);
+          if (it?.video) it.video.loop = layer.media.loop;
+          renderInspector();
+        });
+        const vidMute = document.getElementById('btn-vid-mute');
+        if (vidMute) vidMute.addEventListener('click', () => {
+          layer.media.muted = !layer.media.muted;
+          const it = textureStore.get(layer.id);
+          if (it?.video) it.video.muted = layer.media.muted;
+          renderInspector();
+        });
 
-        // GLSL Modal Trigger
         const openGlsl = document.getElementById('btn-open-glsl');
         if (openGlsl) openGlsl.addEventListener('click', () => {
           document.getElementById('txt-glsl-code').value = layer.customGlsl || STARTER_GLSL;
@@ -2376,7 +2727,6 @@ void main() {
           document.getElementById('glsl-modal').classList.remove('hidden');
         });
 
-        // Uniforms & Grade
         const bindColor = (id, key) => {
           const el = document.getElementById(id);
           if (el) el.addEventListener('input', (e) => { layer.uniforms[key] = e.target.value; persistAndSync(); });
@@ -2403,6 +2753,13 @@ void main() {
         bindSlider('inp-sat', 'lbl-sat', layer.uniforms, 'saturation', v => `${Math.round(v * 100)}%`);
         bindSlider('inp-hue', 'lbl-hue', layer.uniforms, 'hueShift', v => `${Math.round(v * 360)}°`);
 
+        const btnInv = document.getElementById('btn-invert');
+        if (btnInv) btnInv.addEventListener('click', () => {
+          layer.uniforms.invert = (layer.uniforms.invert ?? 0) > 0.5 ? 0.0 : 1.0;
+          renderInspector();
+          persistAndSync();
+        });
+
         const selBlend = document.getElementById('sel-blend');
         if (selBlend) selBlend.addEventListener('change', (e) => { layer.blendMode = e.target.value; persistAndSync(); });
         const flipH = document.getElementById('btn-flip-h');
@@ -2415,10 +2772,25 @@ void main() {
         const inpName = document.getElementById('inp-name');
         if (inpName) inpName.addEventListener('input', (e) => { layer.name = e.target.value; renderLayerList(); });
 
+        const fitOut = document.getElementById('btn-fit-output');
+        if (fitOut) fitOut.addEventListener('click', () => {
+          if (layer.vertices.length === 4) {
+            layer.vertices = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }];
+            if (layer.meshSubdiv > 1) rebuildMeshGrid(layer);
+          } else {
+            const b = getBounds(layer);
+            transformVertices(layer, p => ({
+              x: (p.x - b.minX) / b.w,
+              y: (p.y - b.minY) / b.h
+            }));
+          }
+          renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync();
+        });
+
         const inpFeather = document.getElementById('inp-feather');
         if (inpFeather) inpFeather.addEventListener('input', (e) => {
           layer.feather = parseFloat(e.target.value);
-          document.getElementById('lbl-feather').textContent = `${Math.round(layer.feather * 100)} px`;
+          document.getElementById('lbl-feather').textContent = `${Math.round(layer.feather * 250)} px`;
           persistAndSync();
         });
 
@@ -2497,6 +2869,12 @@ void main() {
           });
         });
 
+        const resetMesh = document.getElementById('btn-reset-mesh');
+        if (resetMesh) resetMesh.addEventListener('click', () => {
+          rebuildMeshGrid(layer);
+          renderOverlay(); pushHistory(); persistAndSync();
+        });
+
         document.querySelectorAll('.vtx-inp').forEach(inp => {
           inp.addEventListener('change', () => {
             const idx = parseInt(inp.getAttribute('data-vtx'), 10);
@@ -2552,7 +2930,7 @@ void main() {
       });
 
       /* Time-Based Show Sequencer */
-      function captureCue(name, duration = 8.0, fade = 1.5, ease = 'cubic') {
+      function captureCue(name, duration = 8.0, fade = 1.5, ease = 'cubic', holdMode = 'inherit') {
         const snapshot = {};
         for (const l of state.layers) {
           snapshot[l.id] = {
@@ -2564,7 +2942,8 @@ void main() {
             meshGrid: clone(l.meshGrid),
             shaderPreset: l.shaderPreset,
             sourceType: l.sourceType,
-            uniforms: clone(l.uniforms)
+            uniforms: clone(l.uniforms),
+            textProps: clone(l.textProps)
           };
         }
         return {
@@ -2573,6 +2952,7 @@ void main() {
           duration,
           fade,
           ease,
+          holdMode,
           snapshot
         };
       }
@@ -2589,6 +2969,7 @@ void main() {
 
       function applyEase(t, type) {
         const x = Math.max(0, Math.min(1, t));
+        if (type === 'snap') return x >= 1 ? 1 : 0;
         if (type === 'linear') return x;
         if (type === 'cubic') return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
         return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
@@ -2608,6 +2989,10 @@ void main() {
           if (t >= 0.5) {
             l.shaderPreset = dst.shaderPreset;
             if (dst.sourceType !== 'media' && dst.sourceType !== 'text') l.sourceType = dst.sourceType;
+            if (dst.textProps && l.sourceType === 'text' && l.textProps.content !== dst.textProps.content) {
+              l.textProps = clone(dst.textProps);
+              updateTextTexture(l);
+            }
           }
 
           if (dst.vertices && src.vertices && dst.vertices.length === src.vertices.length) {
@@ -2659,6 +3044,8 @@ void main() {
         }
       }
 
+      let draggedCueIdx = null;
+
       function renderCueTrack() {
         const track = document.getElementById('cue-track');
         const ruler = document.getElementById('timeline-ruler');
@@ -2674,6 +3061,12 @@ void main() {
         ruler.innerHTML = rHtml;
 
         track.innerHTML = '';
+        if (!state.cues.length) {
+          track.innerHTML = `<div class="w-full flex items-center justify-center text-xs text-zinc-500">No cues in timeline. Click Capture Cue to record the current stage.</div>`;
+          updatePlayhead();
+          return;
+        }
+
         let acc = 0;
         state.cues.forEach((cue, idx) => {
           const wPct = (cue.duration / tot) * 100;
@@ -2682,6 +3075,7 @@ void main() {
           const act = idx === state.activeCueIndex;
 
           const card = document.createElement('div');
+          card.draggable = true;
           card.style.width = `${wPct}%`;
           card.className = `relative rounded-xl px-2.5 py-2 flex flex-col justify-between cursor-pointer transition overflow-hidden ${
             sel ? 'bg-bgControl ring-1 ring-accent' : 'bg-bgControl/50 hover:bg-bgControl hairline-all'
@@ -2695,9 +3089,25 @@ void main() {
             </div>
             <div class="flex items-center justify-between text-[10px] font-mono text-zinc-500 z-10">
               <span>Fade ${cue.fade.toFixed(1)}s</span>
-              <span>${fmtTime(acc)}</span>
+              <span>${cue.holdMode === 'wait' ? 'Hold' : fmtTime(acc)}</span>
             </div>
           `;
+
+          card.addEventListener('dragstart', () => { draggedCueIdx = idx; });
+          card.addEventListener('dragover', (e) => { e.preventDefault(); card.classList.add('ring-1', 'ring-white'); });
+          card.addEventListener('dragleave', () => { card.classList.remove('ring-1', 'ring-white'); });
+          card.addEventListener('drop', (e) => {
+            e.preventDefault();
+            card.classList.remove('ring-1', 'ring-white');
+            if (draggedCueIdx !== null && draggedCueIdx !== idx) {
+              const [moved] = state.cues.splice(draggedCueIdx, 1);
+              state.cues.splice(idx, 0, moved);
+              renderCueTrack();
+              renderCueSidebar();
+              persistAndSync();
+            }
+            draggedCueIdx = null;
+          });
 
           const startT = acc;
           card.addEventListener('click', () => {
@@ -2730,21 +3140,26 @@ void main() {
         const side = document.getElementById('cue-sidebar');
         const cue = state.cues.find(c => c.id === state.selectedCueId);
         if (!cue) {
-          side.innerHTML = `<div class="text-xs text-zinc-500">No cue selected.</div>`;
+          side.innerHTML = `<div class="text-xs text-zinc-500 py-4 text-center">No cue selected.</div>`;
           return;
         }
         const idx = state.cues.indexOf(cue);
         side.innerHTML = `
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-medium text-zinc-400">Cue ${idx + 1}</span>
-            <button id="btn-cue-del" class="w-6 h-6 rounded hover:bg-bgControl text-zinc-500 hover:text-red-400 flex items-center justify-center" title="Delete Cue">
-              <i class="ph ph-trash text-xs"></i>
-            </button>
+            <div class="flex items-center gap-0.5">
+              <button id="btn-cue-dup" class="w-6 h-6 rounded hover:bg-bgControl text-zinc-400 hover:text-white flex items-center justify-center" title="Duplicate Cue">
+                <i class="ph ph-copy text-xs"></i>
+              </button>
+              <button id="btn-cue-del" class="w-6 h-6 rounded hover:bg-bgControl text-zinc-500 hover:text-red-400 flex items-center justify-center" title="Delete Cue">
+                <i class="ph ph-trash text-xs"></i>
+              </button>
+            </div>
           </div>
           <input id="inp-cue-name" type="text" value="${cue.name}" class="w-full h-7 bg-bgControl hairline-all rounded-lg px-2 text-xs text-white outline-none focus:border-accent" />
           <div class="grid grid-cols-3 gap-1">
             <div>
-              <label class="block text-[9px] text-zinc-500 mb-0.5">Hold (s)</label>
+              <label class="block text-[9px] text-zinc-500 mb-0.5">Time (s)</label>
               <input id="inp-cue-dur" type="number" min="0.5" max="600" step="0.5" value="${cue.duration}" class="w-full h-7 bg-bgControl hairline-all rounded px-1.5 text-[11px] font-mono text-zinc-200 outline-none focus:border-accent" />
             </div>
             <div>
@@ -2752,13 +3167,21 @@ void main() {
               <input id="inp-cue-fade" type="number" min="0" max="30" step="0.1" value="${cue.fade}" class="w-full h-7 bg-bgControl hairline-all rounded px-1.5 text-[11px] font-mono text-zinc-200 outline-none focus:border-accent" />
             </div>
             <div>
-              <label class="block text-[9px] text-zinc-500 mb-0.5">Curve</label>
+              <label class="block text-[9px] text-zinc-500 mb-0.5">Easing</label>
               <select id="sel-cue-ease" class="w-full h-7 bg-bgControl hairline-all rounded px-1 text-[10px] text-zinc-200 outline-none">
                 <option value="cubic" ${cue.ease === 'cubic' ? 'selected' : ''}>Cubic</option>
                 <option value="easeInOut" ${cue.ease === 'easeInOut' ? 'selected' : ''}>Ease</option>
                 <option value="linear" ${cue.ease === 'linear' ? 'selected' : ''}>Linear</option>
+                <option value="snap" ${cue.ease === 'snap' ? 'selected' : ''}>Snap</option>
               </select>
             </div>
+          </div>
+          <div>
+            <select id="sel-cue-hold" class="w-full h-7 bg-bgControl hairline-all rounded px-2 text-[10px] text-zinc-300 outline-none">
+              <option value="inherit" ${(cue.holdMode || 'inherit') === 'inherit' ? 'selected' : ''}>Follow Global Playback Mode</option>
+              <option value="auto" ${cue.holdMode === 'auto' ? 'selected' : ''}>Auto-Advance After Duration</option>
+              <option value="wait" ${cue.holdMode === 'wait' ? 'selected' : ''}>Wait for Presenter Trigger</option>
+            </select>
           </div>
         `;
 
@@ -2766,10 +3189,18 @@ void main() {
         document.getElementById('inp-cue-dur').addEventListener('change', (e) => { cue.duration = Math.max(0.5, parseFloat(e.target.value) || 4); renderCueTrack(); persistAndSync(); });
         document.getElementById('inp-cue-fade').addEventListener('change', (e) => { cue.fade = Math.max(0, Math.min(cue.duration, parseFloat(e.target.value) || 0)); renderCueTrack(); persistAndSync(); });
         document.getElementById('sel-cue-ease').addEventListener('change', (e) => { cue.ease = e.target.value; persistAndSync(); });
+        document.getElementById('sel-cue-hold').addEventListener('change', (e) => { cue.holdMode = e.target.value; renderCueTrack(); persistAndSync(); });
+        document.getElementById('btn-cue-dup').addEventListener('click', () => {
+          const copy = clone(cue);
+          copy.id = genId('cue');
+          copy.name = `${cue.name} Copy`;
+          state.cues.splice(idx + 1, 0, copy);
+          state.selectedCueId = copy.id;
+          renderCueTrack(); renderCueSidebar(); persistAndSync();
+        });
         document.getElementById('btn-cue-del').addEventListener('click', () => {
-          if (state.cues.length <= 1) return showToast('At least one cue required');
           state.cues.splice(idx, 1);
-          state.selectedCueId = state.cues[Math.max(0, idx - 1)].id;
+          state.selectedCueId = state.cues[Math.max(0, idx - 1)]?.id || null;
           renderCueTrack(); renderCueSidebar(); persistAndSync();
         });
       }
@@ -2878,9 +3309,336 @@ void main() {
       document.getElementById('btn-cue-update').addEventListener('click', () => {
         const cue = state.cues.find(c => c.id === state.selectedCueId);
         if (!cue) return;
-        cue.snapshot = captureCue(cue.name, cue.duration, cue.fade, cue.ease).snapshot;
+        cue.snapshot = captureCue(cue.name, cue.duration, cue.fade, cue.ease, cue.holdMode).snapshot;
         persistAndSync();
         showToast(`Updated ${cue.name}`);
+      });
+
+      /* Local Project Library & Portable .pmap Export / Import */
+      function getProjectLibrary() {
+        try {
+          const raw = localStorage.getItem(LIBRARY_KEY);
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function setProjectLibrary(list) {
+        try {
+          localStorage.setItem(LIBRARY_KEY, JSON.stringify(list));
+        } catch (e) {}
+      }
+
+      function captureStageThumbnail() {
+        try {
+          renderGL(performance.now() / 1000);
+          const thumb = document.createElement('canvas');
+          thumb.width = 320;
+          thumb.height = 180;
+          const ctx = thumb.getContext('2d');
+          ctx.fillStyle = '#000000';
+          ctx.fillRect(0, 0, 320, 180);
+          ctx.drawImage(canvas, 0, 0, 320, 180);
+          return thumb.toDataURL('image/jpeg', 0.72);
+        } catch (e) {
+          return '';
+        }
+      }
+
+      function saveCurrentToLibrary(asNewSnapshot = false) {
+        const lib = getProjectLibrary();
+        const thumb = captureStageThumbnail();
+        const entryId = asNewSnapshot ? genId('proj') : state.projectId;
+        const entryName = asNewSnapshot ? `${state.projectName} Copy` : state.projectName;
+        if (!asNewSnapshot) state.projectId = entryId;
+
+        const record = {
+          id: entryId,
+          name: entryName,
+          updatedAt: Date.now(),
+          thumbnail: thumb,
+          outputWidth: state.outputWidth,
+          outputHeight: state.outputHeight,
+          layerCount: state.layers.length,
+          cueCount: state.cues.length,
+          data: {
+            projectId: entryId,
+            projectName: entryName,
+            outputWidth: state.outputWidth,
+            outputHeight: state.outputHeight,
+            selectedIds: clone(state.selectedIds),
+            layers: clone(state.layers),
+            cues: clone(state.cues),
+            selectedCueId: state.selectedCueId
+          }
+        };
+
+        const idx = lib.findIndex(p => p.id === entryId);
+        if (idx !== -1) lib[idx] = record;
+        else lib.unshift(record);
+        setProjectLibrary(lib);
+        renderProjectsModal();
+      }
+
+      async function loadProjectRecord(data) {
+        for (const l of state.layers) {
+          if (textureStore.has(l.id)) {
+            const it = textureStore.get(l.id);
+            if (it.video) { it.video.pause(); it.video.src = ''; }
+            gl.deleteTexture(it.tex);
+          }
+        }
+        textureStore.clear();
+
+        state.projectId = data.projectId || genId('proj');
+        state.projectName = data.projectName || 'Untitled Mapping';
+        state.outputWidth = data.outputWidth || 1920;
+        state.outputHeight = data.outputHeight || 1080;
+        state.layers = data.layers || [];
+        state.selectedIds = data.selectedIds || (state.layers[0] ? [state.layers[0].id] : []);
+        state.cues = data.cues || [];
+        state.selectedCueId = data.selectedCueId || state.cues[0]?.id || null;
+        state.showTime = 0;
+        state.isPlaying = false;
+
+        document.getElementById('inp-project-name').value = state.projectName;
+        rebuildAllTextTextures();
+        await restorePersistedMedia();
+        historyStack.length = 0;
+        redoStack.length = 0;
+        pushHistory();
+        updatePlayUI();
+        refreshAll();
+      }
+
+      function renderProjectsModal() {
+        const grid = document.getElementById('projects-grid');
+        const lib = getProjectLibrary();
+        grid.innerHTML = '';
+
+        if (!lib.length) {
+          grid.innerHTML = `<div class="col-span-full py-12 text-center text-xs text-zinc-500">No saved local snapshots yet. Click Save Snapshot to store this project in your browser.</div>`;
+          return;
+        }
+
+        lib.forEach((proj) => {
+          const isCur = proj.id === state.projectId;
+          const dateStr = new Date(proj.updatedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+          const card = document.createElement('div');
+          card.className = `rounded-xl bg-bgControl/60 hairline-all overflow-hidden flex flex-col justify-between transition ${isCur ? 'ring-1 ring-accent' : 'hover:bg-bgControl'}`;
+          card.innerHTML = `
+            <div>
+              <div class="aspect-video bg-black relative overflow-hidden hairline-b">
+                ${proj.thumbnail ? `<img src="${proj.thumbnail}" alt="" class="w-full h-full object-cover"/>` : ''}
+                <span class="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-mono text-zinc-300">
+                  ${proj.outputWidth}×${proj.outputHeight}
+                </span>
+              </div>
+              <div class="p-2.5 space-y-1">
+                <div class="flex items-center justify-between gap-1">
+                  <span class="text-xs font-medium text-white truncate">${proj.name}</span>
+                  ${isCur ? `<span class="text-[10px] font-mono text-accent shrink-0">Active</span>` : ''}
+                </div>
+                <div class="text-[10px] font-mono text-zinc-500">
+                  ${proj.layerCount} layers · ${proj.cueCount} cues · ${dateStr}
+                </div>
+              </div>
+            </div>
+            <div class="px-2.5 py-2 hairline-t flex items-center justify-between gap-1.5 bg-bgBase/30">
+              <button class="act-open-proj flex-1 h-7 rounded-lg bg-accent hover:bg-blue-500 text-white text-[11px] font-medium transition">Open</button>
+              <button class="act-ren-proj w-7 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300" title="Rename">
+                <i class="ph ph-pencil-simple text-xs"></i>
+              </button>
+              <button class="act-del-proj w-7 h-7 rounded-lg bg-bgControl hover:bg-red-950/60 hairline-all flex items-center justify-center text-zinc-400 hover:text-red-400" title="Delete">
+                <i class="ph ph-trash text-xs"></i>
+              </button>
+            </div>
+          `;
+
+          card.querySelector('.act-open-proj').addEventListener('click', async () => {
+            await loadProjectRecord(proj.data);
+            document.getElementById('projects-modal').classList.add('hidden');
+            showToast(`Opened ${proj.name}`);
+          });
+
+          card.querySelector('.act-ren-proj').addEventListener('click', () => {
+            const titleEl = card.querySelector('span.truncate');
+            const inp = document.createElement('input');
+            inp.type = 'text';
+            inp.value = proj.name;
+            inp.className = 'w-full h-6 bg-bgBase hairline-all rounded px-1.5 text-xs text-white outline-none';
+            titleEl.replaceWith(inp);
+            inp.focus();
+            const commit = () => {
+              const nextName = inp.value.trim() || proj.name;
+              proj.name = nextName;
+              proj.data.projectName = nextName;
+              if (proj.id === state.projectId) {
+                state.projectName = nextName;
+                document.getElementById('inp-project-name').value = nextName;
+              }
+              setProjectLibrary(lib);
+              renderProjectsModal();
+            };
+            inp.addEventListener('blur', commit);
+            inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') commit(); });
+          });
+
+          card.querySelector('.act-del-proj').addEventListener('click', () => {
+            const nextLib = lib.filter(x => x.id !== proj.id);
+            setProjectLibrary(nextLib);
+            renderProjectsModal();
+            showToast('Deleted snapshot');
+          });
+
+          grid.appendChild(card);
+        });
+      }
+
+      async function exportPortablePmapFile() {
+        showToast('Packaging .pmap file...');
+        const embeddedMedia = {};
+        for (const l of state.layers) {
+          if (l.sourceType === 'media' && l.media?.blobKey) {
+            const blob = await loadMediaBlob(l.media.blobKey);
+            if (blob && blob.size <= 15 * 1024 * 1024) {
+              const dataUrl = await blobToDataURL(blob);
+              if (dataUrl) embeddedMedia[l.media.blobKey] = { name: l.media.name, type: blob.type, dataUrl };
+            }
+          }
+        }
+
+        const bundle = {
+          format: 'pmap-studio-v1',
+          exportedAt: new Date().toISOString(),
+          projectName: state.projectName,
+          outputWidth: state.outputWidth,
+          outputHeight: state.outputHeight,
+          layers: state.layers,
+          cues: state.cues,
+          embeddedMedia
+        };
+
+        const slug = (state.projectName || 'projection_project').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '') || 'projection_project';
+        const url = URL.createObjectURL(new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' }));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${slug}.pmap`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast(`Exported ${slug}.pmap`);
+      }
+
+      async function importPortablePmapFile(file) {
+        try {
+          const parsed = JSON.parse(await file.text());
+          if (!Array.isArray(parsed.layers)) throw new Error('Invalid format');
+          if (parsed.embeddedMedia) {
+            for (const [key, item] of Object.entries(parsed.embeddedMedia)) {
+              if (item?.dataUrl) {
+                const blob = dataURLToBlob(item.dataUrl);
+                await saveMediaBlob(key, blob);
+              }
+            }
+          }
+          await loadProjectRecord({
+            projectId: genId('proj'),
+            projectName: parsed.projectName || file.name.replace(/\.(pmap|json)$/i, ''),
+            outputWidth: parsed.outputWidth || 1920,
+            outputHeight: parsed.outputHeight || 1080,
+            layers: parsed.layers,
+            selectedIds: parsed.layers[0] ? [parsed.layers[0].id] : [],
+            cues: parsed.cues || [],
+            selectedCueId: parsed.cues?.[0]?.id || null
+          });
+          saveCurrentToLibrary(false);
+          showToast(`Imported ${state.projectName}`);
+        } catch (err) {
+          showToast('Invalid .pmap or .json file');
+        }
+      }
+
+      function exportPngFrame() {
+        const exp = document.createElement('canvas');
+        exp.width = state.outputWidth;
+        exp.height = state.outputHeight;
+        const prevW = canvas.width, prevH = canvas.height;
+        canvas.width = state.outputWidth;
+        canvas.height = state.outputHeight;
+        renderGL(performance.now() / 1000);
+        const ctx = exp.getContext('2d');
+        ctx.drawImage(canvas, 0, 0);
+        canvas.width = prevW;
+        canvas.height = prevH;
+
+        const slug = (state.projectName || 'frame').toLowerCase().replace(/[^a-z0-9]+/g, '_');
+        exp.toBlob((blob) => {
+          if (!blob) return;
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${slug}_${state.outputWidth}x${state.outputHeight}.png`;
+          a.click();
+          URL.revokeObjectURL(url);
+          showToast('Exported PNG frame');
+        }, 'image/png');
+      }
+
+      document.getElementById('btn-projects').addEventListener('click', () => {
+        saveCurrentToLibrary(false);
+        renderProjectsModal();
+        document.getElementById('projects-modal').classList.remove('hidden');
+      });
+      document.getElementById('btn-projects-close').addEventListener('click', () => document.getElementById('projects-modal').classList.add('hidden'));
+
+      document.getElementById('btn-proj-new-blank').addEventListener('click', async () => {
+        await loadProjectRecord({
+          projectId: genId('proj'),
+          projectName: 'Blank Canvas',
+          outputWidth: state.outputWidth,
+          outputHeight: state.outputHeight,
+          layers: [],
+          selectedIds: [],
+          cues: [],
+          selectedCueId: null
+        });
+        saveCurrentToLibrary(false);
+        document.getElementById('projects-modal').classList.add('hidden');
+        showToast('Created blank project');
+      });
+
+      document.getElementById('btn-proj-new-preset').addEventListener('click', async () => {
+        state.projectId = genId('proj');
+        state.projectName = 'Architectural Starter';
+        document.getElementById('inp-project-name').value = state.projectName;
+        initDefaultScene();
+        historyStack.length = 0;
+        redoStack.length = 0;
+        pushHistory();
+        refreshAll();
+        saveCurrentToLibrary(false);
+        document.getElementById('projects-modal').classList.add('hidden');
+        showToast('Loaded starter layout');
+      });
+
+      document.getElementById('btn-proj-save-snapshot').addEventListener('click', () => {
+        saveCurrentToLibrary(true);
+        showToast('Saved snapshot to local library');
+      });
+
+      document.getElementById('btn-export-pmap').addEventListener('click', exportPortablePmapFile);
+      document.getElementById('btn-modal-export-pmap').addEventListener('click', exportPortablePmapFile);
+      document.getElementById('btn-import-pmap').addEventListener('click', () => document.getElementById('inp-import-pmap').click());
+      document.getElementById('btn-modal-import-pmap').addEventListener('click', () => document.getElementById('inp-import-pmap').click());
+      document.getElementById('inp-import-pmap').addEventListener('change', (e) => {
+        if (e.target.files?.[0]) importPortablePmapFile(e.target.files[0]);
+      });
+      document.getElementById('btn-modal-export-png').addEventListener('click', exportPngFrame);
+
+      document.getElementById('inp-project-name').addEventListener('input', (e) => {
+        state.projectName = e.target.value;
+        persistAndSync();
       });
 
       /* Responsive Desktop Drawers & Mobile Bottom Sheets */
@@ -2954,6 +3712,13 @@ void main() {
         });
       });
 
+      document.getElementById('btn-empty-load-starter').addEventListener('click', () => {
+        initDefaultScene();
+        pushHistory();
+        refreshAll();
+        showToast('Starter scene loaded');
+      });
+
       function setResolution(w, h) {
         state.outputWidth = Math.max(320, Math.min(7680, w));
         state.outputHeight = Math.max(240, Math.min(4320, h));
@@ -2976,7 +3741,6 @@ void main() {
         setResolution(parseInt(document.getElementById('inp-res-w').value, 10) || 1920, parseInt(document.getElementById('inp-res-h').value, 10) || 1080);
       });
 
-      /* Reference Image Overlay for Physical Model Alignment */
       const refImgEl = document.getElementById('ref-image-layer');
       document.getElementById('btn-upload-ref').addEventListener('click', () => document.getElementById('inp-ref-file').click());
       document.getElementById('inp-ref-file').addEventListener('change', (e) => {
@@ -3039,11 +3803,7 @@ void main() {
       });
 
       document.getElementById('btn-del-layer').addEventListener('click', () => {
-        if (!state.selectedIds.length) return;
-        state.layers = state.layers.filter(l => !state.selectedIds.includes(l.id));
-        state.selectedIds = state.layers.length ? [state.layers[state.layers.length - 1].id] : [];
-        pushHistory();
-        refreshAll();
+        deleteLayersByIds(state.selectedIds);
       });
 
       document.getElementById('btn-undo').addEventListener('click', undo);
@@ -3081,57 +3841,37 @@ void main() {
         }
       });
 
-      /* JSON Save / Load */
-      document.getElementById('btn-save-json').addEventListener('click', () => {
-        const data = JSON.stringify({
-          outputWidth: state.outputWidth,
-          outputHeight: state.outputHeight,
-          layers: state.layers,
-          cues: state.cues
-        }, null, 2);
-        const url = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'projection_mapping_project.json';
-        a.click();
-        URL.revokeObjectURL(url);
-        showToast('Project exported');
-      });
-
-      document.getElementById('btn-load-json').addEventListener('click', () => document.getElementById('inp-load-json').click());
-      document.getElementById('inp-load-json').addEventListener('change', async (e) => {
-        const f = e.target.files?.[0];
-        if (!f) return;
-        try {
-          const parsed = JSON.parse(await f.text());
-          if (Array.isArray(parsed.layers)) {
-            state.outputWidth = parsed.outputWidth || 1920;
-            state.outputHeight = parsed.outputHeight || 1080;
-            state.layers = parsed.layers;
-            state.selectedIds = parsed.layers[0] ? [parsed.layers[0].id] : [];
-            state.cues = parsed.cues || [];
-            state.selectedCueId = state.cues[0]?.id || null;
-            rebuildAllTextTextures();
-            pushHistory();
-            refreshAll();
-            showToast('Project loaded');
-          }
-        } catch (err) {
-          showToast('Invalid project JSON');
+      /* Drag & Drop .pmap / Media Files */
+      const dropBanner = document.getElementById('drop-zone-banner');
+      window.addEventListener('dragover', (e) => {
+        if (e.dataTransfer?.types?.includes('Files')) {
+          e.preventDefault();
+          dropBanner.classList.remove('hidden');
         }
       });
-
-      /* Drag & Drop Media Files */
-      const dropBanner = document.getElementById('drop-zone-banner');
-      viewportWrap.addEventListener('dragover', (e) => { e.preventDefault(); dropBanner.classList.remove('hidden'); });
-      viewportWrap.addEventListener('dragleave', () => dropBanner.classList.add('hidden'));
-      viewportWrap.addEventListener('drop', (e) => {
+      window.addEventListener('dragleave', (e) => {
+        if (!e.relatedTarget) dropBanner.classList.add('hidden');
+      });
+      window.addEventListener('drop', (e) => {
+        if (!e.dataTransfer?.files?.length) return;
         e.preventDefault();
         dropBanner.classList.add('hidden');
-        const f = e.dataTransfer?.files?.[0];
-        if (!f) return;
-        const target = primarySelectedLayer() || state.layers.find(l => l.kind === 'surface');
-        if (target) loadMediaFile(target.id, f);
+        const f = e.dataTransfer.files[0];
+        if (/\.(pmap|json)$/i.test(f.name)) {
+          importPortablePmapFile(f);
+          return;
+        }
+        let target = primarySelectedLayer();
+        if (!target || target.kind !== 'surface') {
+          target = state.layers.find(l => l.kind === 'surface');
+        }
+        if (!target) {
+          target = createLayer({ shape: 'quad', name: f.name.replace(/\.[^/.]+$/, '') });
+          state.layers.push(target);
+          state.selectedIds = [target.id];
+          refreshAll();
+        }
+        loadMediaFile(target.id, f);
       });
 
       /* Keyboard Shortcuts */
@@ -3144,6 +3884,19 @@ void main() {
           e.preventDefault();
           if (e.shiftKey) redo();
           else undo();
+          return;
+        }
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+          e.preventDefault();
+          saveCurrentToLibrary(false);
+          showToast('Project saved locally');
+          return;
+        }
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+          if (state.selectedIds.length) {
+            e.preventDefault();
+            deleteLayersByIds(state.selectedIds);
+          }
           return;
         }
         if (e.key === 'Escape' && document.body.classList.contains('stage-fullscreen')) { exitFullscreen(); return; }
@@ -3170,9 +3923,12 @@ void main() {
 
       window.addEventListener('keyup', (e) => { if (e.code === 'Space') spaceDown = false; });
 
-      /* Cross-Window Projector Sync */
+      /* Cross-Window Projector Sync & Continuous Autosave */
+      let saveBadgeTimer = null;
       function persistAndSync() {
         const payload = {
+          projectId: state.projectId,
+          projectName: state.projectName,
           outputWidth: state.outputWidth,
           outputHeight: state.outputHeight,
           selectedIds: state.selectedIds,
@@ -3180,9 +3936,19 @@ void main() {
           cues: state.cues,
           selectedCueId: state.selectedCueId
         };
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch (e) {}
+        try { localStorage.setItem(ACTIVE_KEY, JSON.stringify(payload)); } catch (e) {}
         if (syncChannel && !isProjectorWindow) {
           syncChannel.postMessage({ type: 'SYNC', ...payload });
+        }
+        const badge = document.getElementById('lbl-save-status');
+        if (badge && !isProjectorWindow) {
+          badge.textContent = 'Saving...';
+          badge.className = 'text-[10px] font-mono text-accent shrink-0';
+          clearTimeout(saveBadgeTimer);
+          saveBadgeTimer = setTimeout(() => {
+            badge.textContent = 'Saved';
+            badge.className = 'text-[10px] font-mono text-zinc-500 shrink-0';
+          }, 450);
         }
       }
 
@@ -3201,7 +3967,7 @@ void main() {
       }
 
       window.addEventListener('storage', (e) => {
-        if (e.key === STORAGE_KEY && isProjectorWindow && e.newValue) {
+        if (e.key === ACTIVE_KEY && isProjectorWindow && e.newValue) {
           try {
             const parsed = JSON.parse(e.newValue);
             state.layers = parsed.layers || [];
@@ -3239,21 +4005,21 @@ void main() {
           shape: 'quad',
           vertices: [{ x: 0.50, y: 0.16 }, { x: 0.68, y: 0.31 }, { x: 0.50, y: 0.46 }, { x: 0.32, y: 0.31 }],
           shaderPreset: 'aurora',
-          uniforms: { color1: '#60a5fa', color2: '#09090b', color3: '#f4f4f6', speed: 0.8, scale: 1.2, complexity: 2.2, brightness: 1.05, contrast: 1.05, saturation: 1.0, hueShift: 0.0 }
+          uniforms: { color1: '#60a5fa', color2: '#09090b', color3: '#f4f4f6', speed: 0.8, scale: 1.2, complexity: 2.2, brightness: 1.05, contrast: 1.05, saturation: 1.0, hueShift: 0.0, invert: 0.0 }
         });
         const left = createLayer({
           name: 'Left Facet',
           shape: 'quad',
           vertices: [{ x: 0.32, y: 0.31 }, { x: 0.50, y: 0.46 }, { x: 0.50, y: 0.82 }, { x: 0.32, y: 0.67 }],
           shaderPreset: 'grid',
-          uniforms: { color1: '#3b82f6', color2: '#09090b', color3: '#93c5fd', speed: 1.0, scale: 1.0, complexity: 2.0, brightness: 1.0, contrast: 1.05, saturation: 1.0, hueShift: 0.0 }
+          uniforms: { color1: '#3b82f6', color2: '#09090b', color3: '#93c5fd', speed: 1.0, scale: 1.0, complexity: 2.0, brightness: 1.0, contrast: 1.05, saturation: 1.0, hueShift: 0.0, invert: 0.0 }
         });
         const right = createLayer({
           name: 'Right Facet',
           shape: 'quad',
           vertices: [{ x: 0.50, y: 0.46 }, { x: 0.68, y: 0.31 }, { x: 0.68, y: 0.67 }, { x: 0.50, y: 0.82 }],
           shaderPreset: 'waves',
-          uniforms: { color1: '#2563eb', color2: '#09090b', color3: '#e4e4e7', speed: 0.9, scale: 1.1, complexity: 2.0, brightness: 1.0, contrast: 1.05, saturation: 1.0, hueShift: 0.0 }
+          uniforms: { color1: '#2563eb', color2: '#09090b', color3: '#e4e4e7', speed: 0.9, scale: 1.1, complexity: 2.0, brightness: 1.0, contrast: 1.05, saturation: 1.0, hueShift: 0.0, invert: 0.0 }
         });
         state.layers = [top, left, right];
         state.selectedIds = [top.id];
@@ -3279,6 +4045,7 @@ void main() {
 
       function refreshAll() {
         document.getElementById('lbl-output-res').textContent = `${state.outputWidth}×${state.outputHeight}`;
+        document.getElementById('inp-project-name').value = state.projectName;
         applyStageLayout();
         renderLayerList();
         renderInspector();
@@ -3298,15 +4065,17 @@ void main() {
         const dt = Math.min(0.1, (nowMs - lastMs) / 1000);
         lastMs = nowMs;
 
-        if (state.isPlaying && !state.waitingNextCue && !isProjectorWindow) {
+        if (state.isPlaying && !state.waitingNextCue && !isProjectorWindow && state.cues.length > 0) {
           const tot = totalShowSec();
           const curIdx = state.activeCueIndex;
+          const activeCue = state.cues[curIdx];
           state.showTime += dt;
 
           let cueEnd = 0;
           for (let i = 0; i <= curIdx && i < state.cues.length; i++) cueEnd += state.cues[i].duration;
 
-          if (state.presenterMode && state.showTime >= cueEnd && curIdx < state.cues.length - 1) {
+          const shouldHold = activeCue?.holdMode === 'wait' || (activeCue?.holdMode !== 'auto' && state.presenterMode);
+          if (shouldHold && state.showTime >= cueEnd && curIdx < state.cues.length - 1) {
             state.showTime = cueEnd - 0.001;
             state.waitingNextCue = true;
             updatePlayUI();
@@ -3328,36 +4097,52 @@ void main() {
         requestAnimationFrame(loop);
       }
 
-      if (isProjectorWindow) {
-        document.body.classList.add('stage-fullscreen');
-        initDefaultScene();
-        fitProjectorWindow();
-        if (syncChannel) syncChannel.postMessage({ type: 'HELLO' });
-      } else {
-        let loaded = false;
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (raw) {
-            const p = JSON.parse(raw);
-            if (Array.isArray(p.layers) && p.layers.length > 0) {
+      (async () => {
+        if (isProjectorWindow) {
+          document.body.classList.add('stage-fullscreen');
+          try {
+            const raw = localStorage.getItem(ACTIVE_KEY);
+            if (raw) {
+              const p = JSON.parse(raw);
               state.outputWidth = p.outputWidth || 1920;
               state.outputHeight = p.outputHeight || 1080;
-              state.layers = p.layers;
-              state.selectedIds = p.selectedIds || [p.layers[0].id];
-              state.cues = p.cues || [];
-              state.selectedCueId = p.selectedCueId || state.cues[0]?.id || null;
+              state.layers = p.layers || [];
               rebuildAllTextTextures();
-              loaded = true;
+              await restorePersistedMedia();
             }
-          }
-        } catch (e) {}
+          } catch (e) {}
+          fitProjectorWindow();
+          if (syncChannel) syncChannel.postMessage({ type: 'HELLO' });
+        } else {
+          let loaded = false;
+          try {
+            const raw = localStorage.getItem(ACTIVE_KEY);
+            if (raw) {
+              const p = JSON.parse(raw);
+              if (Array.isArray(p.layers)) {
+                state.projectId = p.projectId || 'proj_default';
+                state.projectName = p.projectName || 'Untitled Mapping';
+                state.outputWidth = p.outputWidth || 1920;
+                state.outputHeight = p.outputHeight || 1080;
+                state.layers = p.layers;
+                state.selectedIds = p.selectedIds || (p.layers[0] ? [p.layers[0].id] : []);
+                state.cues = p.cues || [];
+                state.selectedCueId = p.selectedCueId || state.cues[0]?.id || null;
+                rebuildAllTextTextures();
+                await restorePersistedMedia();
+                loaded = true;
+              }
+            }
+          } catch (e) {}
 
-        if (!loaded) initDefaultScene();
-        pushHistory();
-        refreshAll();
-      }
+          if (!loaded) initDefaultScene();
+          pushHistory();
+          refreshAll();
+          if (!getProjectLibrary().length) saveCurrentToLibrary(false);
+        }
 
-      requestAnimationFrame(loop);
+        requestAnimationFrame(loop);
+      })();
     })();
   </script>
 </body>
