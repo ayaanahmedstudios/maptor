@@ -6,7 +6,7 @@
   <title>Projection Mapping Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@500;700&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -19,10 +19,10 @@
             mono: ['Geist Mono', 'monospace'],
           },
           colors: {
-            bgBase: '#09090b',
-            bgPanel: '#111114',
-            bgControl: '#18181c',
-            bgHover: '#222228',
+            bgBase: '#0a0a0c',
+            bgPanel: '#121215',
+            bgControl: '#1a1a1f',
+            bgHover: '#23232a',
             accent: '#3b82f6',
           }
         }
@@ -30,21 +30,12 @@
     };
   </script>
   <style>
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #09090b;
-      color: #f4f4f6;
-      overflow: hidden;
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background-color: #0a0a0c; color: #f4f4f6; overflow: hidden;
       font-family: 'Geist', 'Plus Jakarta Sans', system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      touch-action: none;
+      -webkit-font-smoothing: antialiased; touch-action: none;
     }
     .hairline-b { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
     .hairline-t { border-top: 1px solid rgba(255, 255, 255, 0.08); }
@@ -58,32 +49,17 @@
     ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
 
     input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      background: rgba(255, 255, 255, 0.12);
-      height: 3px;
-      border-radius: 999px;
-      outline: none;
+      -webkit-appearance: none; appearance: none;
+      background: rgba(255, 255, 255, 0.12); height: 3px; border-radius: 999px; outline: none;
     }
     input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      background: #ffffff;
-      cursor: pointer;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      -webkit-appearance: none; appearance: none;
+      width: 13px; height: 13px; border-radius: 50%; background: #ffffff;
+      cursor: pointer; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
     }
     input[type="range"]::-moz-range-thumb {
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      background: #ffffff;
-      cursor: pointer;
-      border: none;
+      width: 13px; height: 13px; border-radius: 50%; background: #ffffff; cursor: pointer; border: none;
     }
-
     input[type="number"]::-webkit-inner-spin-button { opacity: 0.35; }
     .no-select { user-select: none; -webkit-user-select: none; }
 
@@ -96,37 +72,20 @@
 
     @media (max-width: 1024px) {
       #left-drawer, #right-drawer, #bottom-drawer {
-        position: fixed !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: 100% !important;
-        height: 56vh !important;
-        max-height: 540px !important;
-        z-index: 45 !important;
-        border-left: none !important;
-        border-right: none !important;
+        position: fixed !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+        width: 100% !important; height: 58vh !important; max-height: 560px !important;
+        z-index: 45 !important; border-left: none !important; border-right: none !important;
         border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
-        border-top-left-radius: 18px !important;
-        border-top-right-radius: 18px !important;
+        border-top-left-radius: 18px !important; border-top-right-radius: 18px !important;
         box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.85) !important;
-        transform: translateY(105%);
-        transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+        transform: translateY(105%); transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
         padding-bottom: env(safe-area-inset-bottom);
       }
-      #left-drawer.sheet-open,
-      #right-drawer.sheet-open,
-      #bottom-drawer.sheet-open {
-        transform: translateY(0%);
-      }
-      #bottom-drawer #timeline-body {
-        flex-direction: column !important;
-      }
+      #left-drawer.sheet-open, #right-drawer.sheet-open, #bottom-drawer.sheet-open { transform: translateY(0%); }
+      #bottom-drawer #timeline-body { flex-direction: column !important; }
       #bottom-drawer #cue-sidebar {
-        width: 100% !important;
-        height: auto !important;
-        border-right: none !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        width: 100% !important; height: auto !important;
+        border-right: none !important; border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
       }
     }
 
@@ -139,47 +98,75 @@
     .stage-fullscreen #zoom-hud,
     .stage-fullscreen #overlay-svg,
     .stage-fullscreen #ref-image-layer,
-    .stage-fullscreen #empty-stage-overlay {
-      display: none !important;
-    }
+    .stage-fullscreen #empty-stage-overlay { display: none !important; }
     .stage-fullscreen #viewport-wrap {
-      position: fixed !important;
-      inset: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      background: #000000 !important;
-      z-index: 60 !important;
+      position: fixed !important; inset: 0 !important;
+      width: 100vw !important; height: 100vh !important;
+      background: #000000 !important; z-index: 60 !important;
     }
     .stage-fullscreen #stage-box {
-      transform: none !important;
-      border: none !important;
-      border-radius: 0 !important;
-      box-shadow: none !important;
+      transform: none !important; border: none !important; border-radius: 0 !important; box-shadow: none !important;
     }
   </style>
 </head>
 <body class="bg-bgBase text-zinc-100 no-select">
 
-  <div id="toast-host" class="fixed top-14 left-1/2 -translate-x-1/2 z-[80] flex flex-col gap-1.5 pointer-events-none"></div>
+  <div id="toast-host" class="fixed top-14 left-1/2 -translate-x-1/2 z-[90] flex flex-col gap-1.5 pointer-events-none"></div>
 
   <div id="touch-loupe" class="hidden fixed pointer-events-none z-50 px-2.5 py-1 rounded-full bg-bgPanel/95 hairline-all text-[11px] font-mono text-white shadow-xl">
     0, 0
   </div>
 
+  <!-- Right-Click Context Menu -->
+  <div id="context-menu" class="hidden fixed z-[85] w-48 bg-bgPanel/95 backdrop-blur-md hairline-all rounded-xl shadow-2xl p-1 text-xs text-zinc-200">
+    <button data-ctx="duplicate" class="ctx-btn w-full px-2.5 py-1.5 rounded-lg hover:bg-bgControl flex items-center justify-between">
+      <span class="flex items-center gap-2"><i class="ph ph-copy text-zinc-400"></i>Duplicate</span>
+      <span class="text-[10px] font-mono text-zinc-500">⌘D</span>
+    </button>
+    <button data-ctx="copy-style" class="ctx-btn w-full px-2.5 py-1.5 rounded-lg hover:bg-bgControl flex items-center gap-2">
+      <i class="ph ph-eyedropper text-zinc-400"></i><span>Copy Style</span>
+    </button>
+    <button data-ctx="paste-style" id="ctx-paste-style" class="ctx-btn w-full px-2.5 py-1.5 rounded-lg hover:bg-bgControl flex items-center gap-2 disabled:opacity-35">
+      <i class="ph ph-paint-bucket text-zinc-400"></i><span>Paste Style</span>
+    </button>
+    <div class="my-1 hairline-t"></div>
+    <button data-ctx="front" class="ctx-btn w-full px-2.5 py-1.5 rounded-lg hover:bg-bgControl flex items-center gap-2">
+      <i class="ph ph-bring-to-front text-zinc-400"></i><span>Bring to Front</span>
+    </button>
+    <button data-ctx="forward" class="ctx-btn w-full px-2.5 py-1.5 rounded-lg hover:bg-bgControl flex items-center gap-2">
+      <i class="ph ph-arrow-up text-zinc-400"></i><span>Bring Forward</span>
+    </button>
+    <button data-ctx="backward" class="ctx-btn w-full px-2.5 py-1.5 rounded-lg hover:bg-bgControl flex items-center gap-2">
+      <i class="ph ph-arrow-down text-zinc-400"></i><span>Send Backward</span>
+    </button>
+    <button data-ctx="back" class="ctx-btn w-full px-2.5 py-1.5 rounded-lg hover:bg-bgControl flex items-center gap-2">
+      <i class="ph ph-send-to-back text-zinc-400"></i><span>Send to Back</span>
+    </button>
+    <div class="my-1 hairline-t"></div>
+    <button data-ctx="reset" class="ctx-btn w-full px-2.5 py-1.5 rounded-lg hover:bg-bgControl flex items-center gap-2">
+      <i class="ph ph-arrow-counter-clockwise text-zinc-400"></i><span>Reset Warp</span>
+    </button>
+    <button data-ctx="delete" class="ctx-btn w-full px-2.5 py-1.5 rounded-lg hover:bg-red-950/60 text-red-400 flex items-center justify-between">
+      <span class="flex items-center gap-2"><i class="ph ph-trash"></i>Delete</span>
+      <span class="text-[10px] font-mono text-red-400/70">⌫</span>
+    </button>
+  </div>
+
   <div id="app-shell" class="w-screen h-[100dvh] flex flex-col overflow-hidden bg-bgBase">
+    <!-- Top Header -->
     <header id="top-bar" class="h-11 shrink-0 bg-bgPanel hairline-b px-2.5 lg:px-3 flex items-center justify-between gap-2 z-30">
       <div class="flex items-center gap-1.5 min-w-0">
         <button id="btn-toggle-left" class="hidden lg:flex w-8 h-8 rounded-lg hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white transition" title="Toggle Layers Panel">
           <i class="ph ph-sidebar-simple text-base"></i>
         </button>
 
-        <button id="btn-projects" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Manage Local Projects & Export">
+        <button id="btn-projects" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Local Projects & File Export">
           <i class="ph ph-folder-notch text-sm text-accent"></i>
           <span class="hidden sm:inline font-medium">Projects</span>
         </button>
 
-        <div class="flex items-center gap-1.5 bg-bgControl/60 hairline-all rounded-lg px-2 h-8 max-w-[140px] sm:max-w-[210px]">
-          <input id="inp-project-name" type="text" value="Untitled Mapping" class="w-full bg-transparent text-xs font-medium text-zinc-100 outline-none truncate" title="Edit Project Name" />
+        <div class="flex items-center gap-1.5 bg-bgControl/60 hairline-all rounded-lg px-2 h-8 max-w-[130px] sm:max-w-[190px]">
+          <input id="inp-project-name" type="text" value="Untitled Mapping" class="w-full bg-transparent text-xs font-medium text-zinc-100 outline-none truncate" title="Project Name" />
           <span id="lbl-save-status" class="text-[10px] font-mono text-zinc-500 shrink-0">Saved</span>
         </div>
 
@@ -189,12 +176,12 @@
             <span>Add</span>
             <i class="ph ph-caret-down text-[10px] opacity-80"></i>
           </button>
-          <div id="menu-add" class="hidden absolute left-0 mt-1.5 w-56 bg-bgPanel hairline-all rounded-xl shadow-2xl p-1 z-50">
+          <div id="menu-add" class="hidden absolute left-0 mt-1.5 w-60 bg-bgPanel hairline-all rounded-xl shadow-2xl p-1 z-50">
             <button data-add="quad" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
               <i class="ph ph-polygon text-base text-accent"></i>
               <div>
-                <div class="text-xs font-medium text-zinc-100">Quad Surface</div>
-                <div class="text-[10px] text-zinc-500">4-point perspective homography</div>
+                <div class="text-xs font-medium text-zinc-100">4-Point Quad</div>
+                <div class="text-[10px] text-zinc-500">True perspective homography</div>
               </div>
             </button>
             <button data-add="triangle" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
@@ -211,13 +198,11 @@
                 <div class="text-[10px] text-zinc-500">Perspective-warped oval</div>
               </div>
             </button>
-            <button data-add="polygon" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
-              <i class="ph ph-pentagon text-base text-accent"></i>
-              <div>
-                <div class="text-xs font-medium text-zinc-100">Custom Polygon</div>
-                <div class="text-[10px] text-zinc-500">Double-click edges to add points</div>
-              </div>
-            </button>
+            <div class="grid grid-cols-3 gap-1 px-1 py-1">
+              <button data-add="pentagon" class="add-item py-1.5 rounded-lg bg-bgControl/60 hover:bg-bgControl text-center text-[11px] text-zinc-200 transition">Pentagon</button>
+              <button data-add="hexagon" class="add-item py-1.5 rounded-lg bg-bgControl/60 hover:bg-bgControl text-center text-[11px] text-zinc-200 transition">Hexagon</button>
+              <button data-add="polygon" class="add-item py-1.5 rounded-lg bg-bgControl/60 hover:bg-bgControl text-center text-[11px] text-zinc-200 transition">Polygon</button>
+            </div>
             <button data-add="text" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
               <i class="ph ph-text-t text-base text-accent"></i>
               <div>
@@ -229,7 +214,7 @@
             <button data-add="mask" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
               <i class="ph ph-selection-slash text-base text-red-400"></i>
               <div>
-                <div class="text-xs font-medium text-zinc-100">Blackout Mask</div>
+                <div class="text-xs font-medium text-zinc-100">Cutout Mask</div>
                 <div class="text-[10px] text-zinc-500">Blocks light spill in pure #000</div>
               </div>
             </button>
@@ -244,7 +229,7 @@
         </button>
 
         <div class="relative" id="wrap-output-menu">
-          <button id="btn-output-menu" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Output Canvas Resolution & Reference Photo">
+          <button id="btn-output-menu" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Output Resolution & Reference Guide">
             <i class="ph ph-monitor text-zinc-400 text-sm"></i>
             <span id="lbl-output-res" class="font-mono text-[11px]">1920×1080</span>
             <i class="ph ph-caret-down text-[10px] text-zinc-500"></i>
@@ -315,17 +300,19 @@
           <span class="hidden xl:inline">Export .pmap</span>
         </button>
 
-        <button id="btn-import-pmap" class="w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Import .pmap or .json File">
+        <button id="btn-import-pmap" class="w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Import .pmap File">
           <i class="ph ph-upload-simple text-sm"></i>
         </button>
         <input id="inp-import-pmap" type="file" accept=".pmap,.json" class="hidden" />
 
-        <button id="btn-projector-win" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs font-medium text-zinc-100 flex items-center gap-1.5 transition" title="Open Synchronized Projector Output Window">
+        <!-- Live Projector Output Button with Connection Status Indicator -->
+        <button id="btn-projector-win" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs font-medium text-zinc-100 flex items-center gap-1.5 transition" title="Open or Focus Synchronized Live Projector Window">
+          <span id="dot-projector-status" class="w-2 h-2 rounded-full bg-zinc-600 transition-colors"></span>
           <i class="ph ph-projector-screen text-sm text-accent"></i>
-          <span class="hidden sm:inline">Projector</span>
+          <span id="lbl-projector-status" class="hidden sm:inline">Projector</span>
         </button>
 
-        <button id="btn-fullscreen" class="w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Fullscreen Stage (F)">
+        <button id="btn-fullscreen" class="w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Full-Screen Stage Preview (F)">
           <i class="ph ph-corners-out text-sm"></i>
         </button>
 
@@ -335,8 +322,10 @@
       </div>
     </header>
 
+    <!-- Main Workspace -->
     <div class="flex-1 min-h-0 flex relative overflow-hidden">
-      <aside id="left-drawer" class="w-60 shrink-0 bg-bgPanel hairline-r flex flex-col overflow-hidden">
+      <!-- Left Layers Drawer -->
+      <aside id="left-drawer" class="w-[272px] shrink-0 bg-bgPanel hairline-r flex flex-col overflow-hidden">
         <div class="lg:hidden flex justify-center pt-2 pb-1">
           <div class="w-9 h-1 rounded-full bg-white/20"></div>
         </div>
@@ -347,7 +336,7 @@
           </div>
           <div class="flex items-center gap-1">
             <button id="btn-clear-canvas" class="h-6 px-2 rounded bg-bgControl hover:bg-red-950/60 hover:text-red-300 hairline-all text-[10px] text-zinc-400 transition" title="Delete All Layers">
-              Clear
+              Clear All
             </button>
             <button class="lg:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400">
               <i class="ph ph-x text-xs"></i>
@@ -358,33 +347,35 @@
         <div id="layer-list" class="flex-1 overflow-y-auto p-1.5 space-y-1"></div>
 
         <div class="p-2 hairline-t bg-bgBase/40 grid grid-cols-6 gap-1">
-          <button data-add="quad" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Quad">
+          <button data-add="quad" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Quad">
             <i class="ph ph-polygon text-sm"></i>
           </button>
-          <button data-add="triangle" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Triangle">
+          <button data-add="triangle" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Triangle">
             <i class="ph ph-triangle text-sm"></i>
           </button>
-          <button data-add="ellipse" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Circle / Ellipse">
+          <button data-add="ellipse" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Circle / Ellipse">
             <i class="ph ph-circle text-sm"></i>
           </button>
-          <button data-add="polygon" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Polygon">
+          <button data-add="polygon" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Polygon">
             <i class="ph ph-pentagon text-sm"></i>
           </button>
-          <button data-add="text" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Text">
+          <button data-add="text" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Text Layer">
             <i class="ph ph-text-t text-sm"></i>
           </button>
-          <button data-add="mask" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Blackout Mask">
+          <button data-add="mask" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Cutout Mask">
             <i class="ph ph-selection-slash text-sm"></i>
           </button>
         </div>
       </aside>
 
+      <!-- Central Stage Viewport -->
       <main id="viewport-wrap" class="flex-1 min-w-0 relative bg-bgBase flex items-center justify-center overflow-hidden">
         <div id="stage-box" class="relative bg-black rounded-md overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.8)] hairline-all" style="width: 960px; height: 540px;">
           <img id="ref-image-layer" alt="" class="hidden absolute inset-0 w-full h-full object-cover pointer-events-none opacity-35" />
           <canvas id="gl-canvas" class="w-full h-full block"></canvas>
           <svg id="overlay-svg" class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg"></svg>
 
+          <!-- Empty State Launcher -->
           <div id="empty-stage-overlay" class="hidden absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none z-10">
             <div class="pointer-events-auto max-w-md bg-bgPanel/90 backdrop-blur-md hairline-all rounded-2xl p-5 shadow-2xl space-y-3.5">
               <div class="space-y-1">
@@ -417,6 +408,7 @@
           </div>
         </div>
 
+        <!-- Zoom HUD -->
         <div id="zoom-hud" class="absolute top-3 right-3 bg-bgPanel/90 backdrop-blur-md hairline-all rounded-full px-2 py-1 flex items-center gap-1 text-[11px] font-mono text-zinc-300 shadow-lg">
           <button id="btn-zoom-out" class="w-6 h-6 rounded-full hover:bg-bgControl flex items-center justify-center transition" title="Zoom Out">
             <i class="ph ph-minus text-xs"></i>
@@ -431,26 +423,28 @@
           </button>
         </div>
 
+        <!-- Drag & Drop Banner -->
         <div id="drop-zone-banner" class="hidden absolute inset-4 rounded-2xl border border-dashed border-accent bg-bgPanel/85 backdrop-blur-md flex flex-col items-center justify-center pointer-events-none z-40">
           <i class="ph ph-file-arrow-up text-3xl text-accent mb-2"></i>
           <div class="text-xs font-medium text-white">Drop .pmap Project, Video, or Image</div>
         </div>
       </main>
 
-      <aside id="right-drawer" class="w-[288px] shrink-0 bg-bgPanel hairline-l flex flex-col overflow-hidden">
+      <!-- Right Inspector Drawer -->
+      <aside id="right-drawer" class="w-[292px] shrink-0 bg-bgPanel hairline-l flex flex-col overflow-hidden">
         <div class="lg:hidden flex justify-center pt-2 pb-1">
           <div class="w-9 h-1 rounded-full bg-white/20"></div>
         </div>
         <div class="px-3 py-2 hairline-b flex items-center justify-between">
           <span id="lbl-inspector-title" class="text-xs font-medium text-zinc-200">Inspector</span>
           <div class="flex items-center gap-1">
-            <button id="btn-dup-layer" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white transition" title="Duplicate Layer">
+            <button id="btn-dup-layer" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white transition" title="Duplicate Layer (Cmd/Ctrl+D)">
               <i class="ph ph-copy text-sm"></i>
             </button>
-            <button id="btn-reset-layer" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white transition" title="Reset Geometry">
+            <button id="btn-reset-layer" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white transition" title="Reset Warp">
               <i class="ph ph-arrow-counter-clockwise text-sm"></i>
             </button>
-            <button id="btn-del-layer" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-red-400 transition" title="Delete Layer (Delete/Backspace)">
+            <button id="btn-del-layer" class="w-7 h-7 rounded-lg hover:bg-red-950/60 flex items-center justify-center text-zinc-400 hover:text-red-400 transition" title="Delete Layer (Delete/Backspace)">
               <i class="ph ph-trash text-sm"></i>
             </button>
             <button class="lg:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400 ml-1">
@@ -463,6 +457,7 @@
       </aside>
     </div>
 
+    <!-- Bottom Time-Based Show Sequencer -->
     <section id="bottom-drawer" class="h-[188px] shrink-0 bg-bgPanel hairline-t flex flex-col overflow-hidden z-20">
       <div class="lg:hidden flex justify-center pt-2 pb-1">
         <div class="w-9 h-1 rounded-full bg-white/20"></div>
@@ -497,14 +492,14 @@
             <i class="ph ph-repeat text-xs"></i>
           </button>
 
-          <button id="btn-cue-mode" class="h-7 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] text-zinc-300 flex items-center gap-1.5 transition" title="Global Cue Trigger Mode">
+          <button id="btn-cue-mode" class="h-7 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] text-zinc-300 flex items-center gap-1.5 transition" title="Cue Trigger Mode">
             <i id="ico-cue-mode" class="ph ph-play-circle text-xs text-accent"></i>
-            <span id="lbl-cue-mode" class="hidden sm:inline">Auto-Play</span>
+            <span id="lbl-cue-mode" class="hidden sm:inline">Auto-Advance</span>
           </button>
         </div>
 
         <div class="flex items-center gap-1.5">
-          <button id="btn-cue-update" class="h-7 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] text-zinc-300 hover:text-white flex items-center gap-1 transition" title="Overwrite Selected Cue with Current Stage">
+          <button id="btn-cue-update" class="h-7 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] text-zinc-300 hover:text-white flex items-center gap-1 transition" title="Overwrite Selected Cue">
             <i class="ph ph-check text-xs text-accent"></i>
             <span class="hidden sm:inline">Update Cue</span>
           </button>
@@ -532,6 +527,7 @@
       </div>
     </section>
 
+    <!-- Mobile Dock -->
     <div id="mobile-sheet-backdrop" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
     <nav id="mobile-dock" class="lg:hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-30 bg-bgPanel/95 backdrop-blur-md hairline-all rounded-full p-1 flex items-center gap-1 shadow-2xl" style="margin-bottom: env(safe-area-inset-bottom);">
       <button data-sheet="add" class="mobile-tab h-10 px-3.5 rounded-full text-xs font-medium text-zinc-300 hover:text-white flex items-center gap-1.5 transition">
@@ -624,11 +620,11 @@
 
   <script>
     (() => {
-      const ACTIVE_KEY = 'pm_studio_active_v4';
-      const LIBRARY_KEY = 'pm_studio_library_v4';
-      const DB_NAME = 'pm_studio_media_db_v4';
-      const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('pm_studio_sync_v4') : null;
-      const isProjectorWindow = new URLSearchParams(window.location.search).get('projector') === '1';
+      const ACTIVE_KEY = 'pm_studio_active_v5';
+      const MIRROR_KEY = 'pmap_live_mirror';
+      const LIBRARY_KEY = 'pm_studio_library_v5';
+      const DB_NAME = 'pm_studio_media_db_v5';
+      const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('pmap_live_sync_v1') : null;
 
       /* IndexedDB Media Blob Store */
       function openMediaDB() {
@@ -684,6 +680,7 @@
         return new Blob([arr], { type: mime });
       }
 
+      /* 12 Built-in WebGL2 Procedural Shaders */
       const SHADER_PRESETS = {
         aurora: {
           name: 'Liquid Aurora',
@@ -711,26 +708,6 @@ void main() {
   fragColor = vec4(col, 1.0);
 }`
         },
-        waves: {
-          name: 'Kinetic Waves',
-          swatch: 'linear-gradient(120deg, #09090b 0%, #3b82f6 50%, #f4f4f6 100%)',
-          code: `#version 300 es
-precision highp float;
-in vec2 v_uv;
-out vec4 fragColor;
-uniform float u_time, u_speed, u_scale, u_complexity;
-uniform vec3 u_color1, u_color2, u_color3;
-void main() {
-  float t = u_time * u_speed * 1.4;
-  float freq = max(1.0, u_scale * 6.0);
-  float wave = sin(v_uv.x * freq + t + sin(v_uv.y * freq * 0.5 - t) * u_complexity * 0.6);
-  float band = smoothstep(-0.35, 0.65, wave);
-  float crest = smoothstep(0.75, 0.98, wave);
-  vec3 col = mix(u_color2, u_color1, band);
-  col = mix(col, u_color3, crest * 0.75);
-  fragColor = vec4(col, 1.0);
-}`
-        },
         grid: {
           name: 'Architectural Grid',
           swatch: 'radial-gradient(circle, #1e293b 0%, #09090b 100%)',
@@ -755,9 +732,9 @@ void main() {
   fragColor = vec4(col, 1.0);
 }`
         },
-        pulse: {
-          name: 'Radial Pulse',
-          swatch: 'radial-gradient(circle, #3b82f6 15%, #111114 60%, #3b82f6 95%)',
+        waves: {
+          name: 'Plasma Wave',
+          swatch: 'linear-gradient(120deg, #09090b 0%, #3b82f6 50%, #f4f4f6 100%)',
           code: `#version 300 es
 precision highp float;
 in vec2 v_uv;
@@ -765,40 +742,18 @@ out vec4 fragColor;
 uniform float u_time, u_speed, u_scale, u_complexity;
 uniform vec3 u_color1, u_color2, u_color3;
 void main() {
-  vec2 p = v_uv - 0.5;
-  float d = length(p);
-  float t = u_time * u_speed * 2.4;
-  float w = sin(d * (18.0 * u_scale) - t) * 0.5 + 0.5;
-  float ring = smoothstep(0.45, 0.92, w) * smoothstep(0.8, 0.01, d);
-  float core = smoothstep(0.22 / max(0.5, u_complexity * 0.5), 0.0, d);
-  vec3 col = mix(u_color2 * 0.2, u_color1, ring);
-  col = mix(col, u_color3, core);
-  fragColor = vec4(col, 1.0);
-}`
-        },
-        plasma: {
-          name: 'Chromatic Plasma',
-          swatch: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #06b6d4 100%)',
-          code: `#version 300 es
-precision highp float;
-in vec2 v_uv;
-out vec4 fragColor;
-uniform float u_time, u_speed, u_scale, u_complexity;
-uniform vec3 u_color1, u_color2, u_color3;
-void main() {
-  float t = u_time * u_speed * 0.9;
-  vec2 uv = (v_uv - 0.5) * max(0.8, u_scale * 4.0);
-  float v = sin(uv.x + t) + sin(uv.y + t * 0.8) + sin((uv.x + uv.y) * 0.7 + t);
-  v += sin(length(uv * u_complexity) - t * 1.2);
-  float m1 = 0.5 + 0.5 * sin(v * 1.5);
-  float m2 = 0.5 + 0.5 * cos(v * 1.5 + 1.2);
-  vec3 col = mix(u_color2, u_color1, m1);
-  col = mix(col, u_color3, m2 * 0.55);
+  float t = u_time * u_speed * 1.4;
+  float freq = max(1.0, u_scale * 6.0);
+  float wave = sin(v_uv.x * freq + t + sin(v_uv.y * freq * 0.5 - t) * u_complexity * 0.6);
+  float band = smoothstep(-0.35, 0.65, wave);
+  float crest = smoothstep(0.75, 0.98, wave);
+  vec3 col = mix(u_color2, u_color1, band);
+  col = mix(col, u_color3, crest * 0.75);
   fragColor = vec4(col, 1.0);
 }`
         },
         grain: {
-          name: 'Noise Grain',
+          name: 'Volumetric Noise',
           swatch: 'linear-gradient(180deg, #27272a 0%, #09090b 100%)',
           code: `#version 300 es
 precision highp float;
@@ -824,8 +779,36 @@ void main() {
   fragColor = vec4(col, 1.0);
 }`
         },
+        caustics: {
+          name: 'Caustics',
+          swatch: 'radial-gradient(circle at 30% 30%, #38bdf8, #0f172a 85%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  vec2 p = mod(v_uv * max(1.0, u_scale * 3.0) * 6.28318, 6.28318) - 250.0;
+  vec2 i = p;
+  float c = 1.0;
+  float inten = 0.005;
+  float t = u_time * u_speed * 0.7;
+  for (int n = 0; n < 4; n++) {
+    float lt = t * (1.0 - (3.5 / float(n + 1)));
+    i = p + vec2(cos(lt - i.x) + sin(lt + i.y), sin(lt - i.y) + cos(lt + i.x));
+    c += 1.0 / length(vec2(p.x / (sin(i.x + lt) / inten), p.y / (cos(i.y + lt) / inten)));
+  }
+  c /= 4.0;
+  c = 1.17 - pow(c, 1.4);
+  float val = pow(abs(c), 6.0 + u_complexity);
+  vec3 col = mix(u_color2, u_color1, clamp(val, 0.0, 1.0));
+  col = mix(col, u_color3, clamp(val * 0.6, 0.0, 1.0));
+  fragColor = vec4(col, 1.0);
+}`
+        },
         kaleidoscope: {
-          name: 'Kaleidoscope',
+          name: 'Geometric Kaleidoscope',
           swatch: 'conic-gradient(from 45deg, #3b82f6, #09090b, #60a5fa, #09090b, #3b82f6)',
           code: `#version 300 es
 precision highp float;
@@ -850,9 +833,9 @@ void main() {
   fragColor = vec4(col, 1.0);
 }`
         },
-        solid: {
-          name: 'Gradient / Solid',
-          swatch: 'linear-gradient(180deg, #3b82f6 0%, #111114 100%)',
+        pulse: {
+          name: 'Scanline Pulse',
+          swatch: 'radial-gradient(circle, #3b82f6 15%, #111114 60%, #3b82f6 95%)',
           code: `#version 300 es
 precision highp float;
 in vec2 v_uv;
@@ -860,11 +843,124 @@ out vec4 fragColor;
 uniform float u_time, u_speed, u_scale, u_complexity;
 uniform vec3 u_color1, u_color2, u_color3;
 void main() {
-  float ang = (u_scale - 1.0) * 3.14159 + u_time * u_speed * 0.2;
-  vec2 dir = vec2(cos(ang), sin(ang));
-  float t = clamp(dot(v_uv - 0.5, dir) + 0.5, 0.0, 1.0);
-  t = smoothstep(0.0, 1.0, t);
-  vec3 col = mix(u_color2, u_color1, t);
+  vec2 p = v_uv - 0.5;
+  float d = length(p);
+  float t = u_time * u_speed * 2.4;
+  float w = sin(d * (18.0 * u_scale) - t) * 0.5 + 0.5;
+  float ring = smoothstep(0.45, 0.92, w) * smoothstep(0.8, 0.01, d);
+  float core = smoothstep(0.22 / max(0.5, u_complexity * 0.5), 0.0, d);
+  vec3 col = mix(u_color2 * 0.2, u_color1, ring);
+  col = mix(col, u_color3, core);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        tunnel: {
+          name: 'Laser Tunnel',
+          swatch: 'radial-gradient(circle, #09090b 10%, #2563eb 55%, #09090b 95%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  vec2 p = (v_uv - 0.5) * 2.0;
+  float r = max(0.04, length(p));
+  float a = atan(p.y, p.x);
+  float z = (1.0 / r) * max(0.4, u_scale) + u_time * u_speed * 2.0;
+  float beams = abs(sin(a * floor(u_complexity * 3.0) + z * 0.4));
+  float rings = smoothstep(0.7, 0.98, sin(z * 3.14159));
+  float m = smoothstep(0.82, 0.99, beams) + rings * 0.65;
+  vec3 col = mix(u_color2, u_color1, clamp(m, 0.0, 1.0));
+  col = mix(col, u_color3, rings * 0.5);
+  col *= smoothstep(0.02, 0.25, r);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        voronoi: {
+          name: 'Voronoi Cells',
+          swatch: 'linear-gradient(135deg, #1d4ed8, #0f172a 65%, #38bdf8)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+vec2 hash2(vec2 p) {
+  return fract(sin(vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)))) * 43758.5453);
+}
+void main() {
+  vec2 uv = v_uv * max(1.5, u_scale * 4.5);
+  vec2 n = floor(uv), f = fract(uv);
+  float md = 8.0;
+  float t = u_time * u_speed * 0.9;
+  for (int j = -1; j <= 1; j++) {
+    for (int i = -1; i <= 1; i++) {
+      vec2 g = vec2(float(i), float(j));
+      vec2 o = hash2(n + g);
+      o = 0.5 + 0.45 * sin(t + 6.2831 * o);
+      float d = length(g + o - f);
+      md = min(md, d);
+    }
+  }
+  float edge = smoothstep(0.06 * u_complexity, 0.0, md);
+  vec3 col = mix(u_color1, u_color2, smoothstep(0.0, 0.85, md));
+  col = mix(col, u_color3, edge * 0.85);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        plasma: {
+          name: 'Gradient Mesh',
+          swatch: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #06b6d4 100%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  float t = u_time * u_speed * 0.9;
+  vec2 uv = (v_uv - 0.5) * max(0.8, u_scale * 4.0);
+  float v = sin(uv.x + t) + sin(uv.y + t * 0.8) + sin((uv.x + uv.y) * 0.7 + t);
+  v += sin(length(uv * u_complexity) - t * 1.2);
+  float m1 = 0.5 + 0.5 * sin(v * 1.5);
+  float m2 = 0.5 + 0.5 * cos(v * 1.5 + 1.2);
+  vec3 col = mix(u_color2, u_color1, m1);
+  col = mix(col, u_color3, m2 * 0.55);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        strobe: {
+          name: 'Strobe / Pulse',
+          swatch: 'linear-gradient(90deg, #09090b 0%, #ffffff 50%, #09090b 100%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  float freq = max(0.5, u_speed * 3.0);
+  float beat = fract(u_time * freq);
+  float env = pow(1.0 - beat, max(1.0, u_complexity * 1.5));
+  float grad = smoothstep(0.0, 1.0, v_uv.y * u_scale);
+  vec3 base = mix(u_color2, u_color1, grad);
+  vec3 col = mix(base, u_color3, env);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        solid: {
+          name: 'Solid Color',
+          swatch: 'linear-gradient(180deg, #3b82f6 0%, #2563eb 100%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  float mixAmt = clamp((u_scale - 1.0) * 0.35, 0.0, 1.0);
+  vec3 col = mix(u_color1, u_color2, mixAmt);
   fragColor = vec4(col, 1.0);
 }`
         }
@@ -902,7 +998,8 @@ void main() {
         loopShow: true,
         presenterMode: false,
         waitingNextCue: false,
-        showTime: 0
+        showTime: 0,
+        copiedStyle: null
       };
 
       const historyStack = [];
@@ -981,55 +1078,49 @@ void main() {
         return `#${[r, g, bl].map(v => Math.max(0, Math.min(255, v)).toString(16).padStart(2, '0')).join('')}`;
       }
 
+      function regularPoly(sides) {
+        const pts = [];
+        for (let i = 0; i < sides; i++) {
+          const ang = (i / sides) * Math.PI * 2 - Math.PI / 2;
+          pts.push({ x: 0.5 + Math.cos(ang) * 0.16, y: 0.5 + Math.sin(ang) * 0.26 });
+        }
+        return pts;
+      }
+
       function defaultVertices(shape) {
-        if (shape === 'triangle') {
-          return [{ x: 0.50, y: 0.24 }, { x: 0.67, y: 0.72 }, { x: 0.33, y: 0.72 }];
-        }
-        if (shape === 'polygon') {
-          const pts = [];
-          for (let i = 0; i < 6; i++) {
-            const ang = (i / 6) * Math.PI * 2 - Math.PI / 2;
-            pts.push({ x: 0.5 + Math.cos(ang) * 0.17, y: 0.5 + Math.sin(ang) * 0.27 });
-          }
-          return pts;
-        }
+        if (shape === 'triangle') return [{ x: 0.50, y: 0.24 }, { x: 0.67, y: 0.72 }, { x: 0.33, y: 0.72 }];
+        if (shape === 'pentagon') return regularPoly(5);
+        if (shape === 'hexagon' || shape === 'polygon') return regularPoly(6);
         if (shape === 'text') {
-          return [
-            { x: 0.28, y: 0.38 },
-            { x: 0.72, y: 0.38 },
-            { x: 0.72, y: 0.62 },
-            { x: 0.28, y: 0.62 }
-          ];
+          return [{ x: 0.28, y: 0.38 }, { x: 0.72, y: 0.38 }, { x: 0.72, y: 0.62 }, { x: 0.28, y: 0.62 }];
         }
-        return [
-          { x: 0.34, y: 0.24 },
-          { x: 0.66, y: 0.24 },
-          { x: 0.66, y: 0.76 },
-          { x: 0.34, y: 0.76 }
-        ];
+        return [{ x: 0.34, y: 0.24 }, { x: 0.66, y: 0.24 }, { x: 0.66, y: 0.76 }, { x: 0.34, y: 0.76 }];
       }
 
       function createLayer(opts = {}) {
-        const shape = opts.shape || 'quad';
-        const isMask = shape === 'mask';
-        const isText = shape === 'text';
+        const rawShape = opts.shape || 'quad';
+        const isMask = rawShape === 'mask';
+        const isText = rawShape === 'text';
+        const normShape = isMask ? 'quad' : ((rawShape === 'pentagon' || rawShape === 'hexagon') ? 'polygon' : rawShape);
         const names = {
           quad: 'Quad Surface',
           triangle: 'Triangle',
           ellipse: 'Circle / Ellipse',
+          pentagon: 'Pentagon',
+          hexagon: 'Hexagon',
           polygon: 'Polygon',
           text: 'Text Layer',
-          mask: 'Blackout Mask'
+          mask: 'Cutout Mask'
         };
         const layer = {
           id: opts.id || genId(isMask ? 'msk' : 'lyr'),
-          name: opts.name || names[shape] || 'Surface',
+          name: opts.name || names[rawShape] || 'Surface',
           kind: isMask ? 'mask' : 'surface',
-          shape: isMask ? 'quad' : shape,
+          shape: normShape,
           visible: opts.visible !== undefined ? opts.visible : true,
           locked: opts.locked || false,
           solo: opts.solo || false,
-          vertices: opts.vertices || defaultVertices(shape),
+          vertices: opts.vertices || defaultVertices(rawShape),
           meshSubdiv: opts.meshSubdiv || 1,
           meshGrid: opts.meshGrid || null,
           opacity: opts.opacity !== undefined ? opts.opacity : 1.0,
@@ -1052,6 +1143,7 @@ void main() {
             contrast: opts.uniforms?.contrast ?? 1.0,
             saturation: opts.uniforms?.saturation ?? 1.0,
             hueShift: opts.uniforms?.hueShift ?? 0.0,
+            glow: opts.uniforms?.glow ?? 0.0,
             invert: opts.uniforms?.invert ?? 0.0
           },
           textProps: {
@@ -1063,6 +1155,8 @@ void main() {
             lineHeight: opts.textProps?.lineHeight ?? 1.08,
             align: opts.textProps?.align || 'center',
             color: opts.textProps?.color || '#ffffff',
+            bgPill: opts.textProps?.bgPill || false,
+            bgColor: opts.textProps?.bgColor || '#18181b',
             strokeWidth: opts.textProps?.strokeWidth ?? 0,
             strokeColor: opts.textProps?.strokeColor || '#09090b'
           },
@@ -1196,6 +1290,7 @@ uniform float u_brightness;
 uniform float u_contrast;
 uniform float u_saturation;
 uniform float u_hueShift;
+uniform float u_glow;
 uniform float u_invert;
 uniform vec3 u_color1;
 uniform vec3 u_color2;
@@ -1241,6 +1336,10 @@ vec3 applyColorGrade(vec3 c) {
   float luma = dot(c, vec3(0.2126, 0.7152, 0.0722));
   c = mix(vec3(luma), c, u_saturation);
   c = ((c - 0.5) * u_contrast + 0.5) * u_brightness;
+  if (u_glow > 0.001) {
+    vec3 bloom = max(c - 0.45, 0.0) * (u_glow * 1.8);
+    c += bloom;
+  }
   return clamp(c, 0.0, 1.5);
 }
 `;
@@ -1278,6 +1377,14 @@ void main() {
     vec2 mUv = (uv - 0.5) * u_uvScale + 0.5;
     if (mUv.x < 0.0 || mUv.x > 1.0 || mUv.y < 0.0 || mUv.y > 1.0) {
       col = vec4(0.0, 0.0, 0.0, 0.0);
+    } else if (u_glow > 0.01) {
+      float off = u_glow * 0.012;
+      vec4 s0 = texture(u_tex, mUv);
+      vec4 s1 = texture(u_tex, clamp(mUv + vec2(off, 0.0), 0.0, 1.0));
+      vec4 s2 = texture(u_tex, clamp(mUv - vec2(off, 0.0), 0.0, 1.0));
+      vec4 s3 = texture(u_tex, clamp(mUv + vec2(0.0, off), 0.0, 1.0));
+      vec4 s4 = texture(u_tex, clamp(mUv - vec2(0.0, off), 0.0, 1.0));
+      col = (s0 * 2.0 + s1 + s2 + s3 + s4) / 6.0;
     } else {
       col = texture(u_tex, mUv);
     }
@@ -1387,8 +1494,8 @@ void main() {
         const ctx = off.getContext('2d');
         ctx.clearRect(0, 0, off.width, off.height);
 
-        ctx.fillStyle = tp.color || '#ffffff';
-        ctx.font = `${tp.fontWeight || '600'} ${tp.fontSize || 110}px "${tp.fontFamily || 'Geist'}", sans-serif`;
+        const fontName = tp.fontFamily || 'Geist';
+        ctx.font = `${tp.fontWeight || '600'} ${tp.fontSize || 110}px "${fontName}", sans-serif`;
         ctx.textAlign = tp.align || 'center';
         ctx.textBaseline = 'middle';
         if ('letterSpacing' in ctx) ctx.letterSpacing = `${tp.letterSpacing || 0}em`;
@@ -1399,6 +1506,22 @@ void main() {
         const startY = (off.height - totalH) * 0.5 + lineH * 0.5;
         const anchorX = tp.align === 'left' ? 120 : (tp.align === 'right' ? off.width - 120 : off.width * 0.5);
 
+        if (tp.bgPill) {
+          let maxW = 0;
+          lines.forEach(l => { maxW = Math.max(maxW, ctx.measureText(l).width); });
+          const padX = 64, padY = 42;
+          const boxW = Math.min(off.width - 80, maxW + padX * 2);
+          const boxH = totalH + padY * 2;
+          const boxX = tp.align === 'left' ? anchorX - padX : (tp.align === 'right' ? anchorX - boxW + padX : anchorX - boxW * 0.5);
+          const boxY = (off.height - boxH) * 0.5;
+          ctx.fillStyle = tp.bgColor || '#18181b';
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(boxX, boxY, boxW, boxH, 32);
+          else ctx.rect(boxX, boxY, boxW, boxH);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = tp.color || '#ffffff';
         lines.forEach((line, idx) => {
           const y = startY + idx * lineH;
           if ((tp.strokeWidth || 0) > 0) {
@@ -1460,7 +1583,7 @@ void main() {
           video.playbackRate = layer.media.speed || 1.0;
           video.playsInline = true;
           video.play().catch(() => {});
-          textureStore.set(layer.id, { tex, isVideo: true, video, ready: false, aspect: 16 / 9 });
+          textureStore.set(layer.id, { tex, isVideo: true, video, blob, mimeType, ready: false, aspect: 16 / 9 });
           video.addEventListener('loadeddata', () => {
             const it = textureStore.get(layer.id);
             if (it) {
@@ -1480,7 +1603,7 @@ void main() {
             }
           };
           img.src = url;
-          textureStore.set(layer.id, { tex, isVideo: false, img, ready: false, aspect: 16 / 9 });
+          textureStore.set(layer.id, { tex, isVideo: false, img, blob, mimeType, ready: false, aspect: 16 / 9 });
         }
 
         layer.sourceType = 'media';
@@ -1495,9 +1618,10 @@ void main() {
         layer.media.blobKey = blobKey;
         await saveMediaBlob(blobKey, file);
         attachMediaBlobToLayer(layer, file, file.name, file.type);
+        await pushMediaToProjector(layer.id, file, file.name, file.type);
         renderInspector();
         renderLayerList();
-        persistAndSync();
+        persistAndSync(true);
         showToast(`Loaded ${file.name}`);
       }
 
@@ -1671,6 +1795,7 @@ void main() {
           gl.uniform1f(gl.getUniformLocation(prog, 'u_contrast'), layer.uniforms.contrast);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_saturation'), layer.uniforms.saturation ?? 1.0);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_hueShift'), layer.uniforms.hueShift ?? 0.0);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_glow'), layer.uniforms.glow ?? 0.0);
           gl.uniform1f(gl.getUniformLocation(prog, 'u_invert'), layer.uniforms.invert ?? 0.0);
           gl.uniform3f(gl.getUniformLocation(prog, 'u_color1'), c1[0], c1[1], c1[2]);
           gl.uniform3f(gl.getUniformLocation(prog, 'u_color2'), c2[0], c2[1], c2[2]);
@@ -1680,15 +1805,718 @@ void main() {
         }
       }
 
-      /* Interactive Vector Overlay & Multi-Touch Handling */
+      /* =========================================================================
+         1. ROCK-SOLID REAL-TIME LIVE PROJECTOR WINDOW SYNC
+         Self-contained popup builder (window.open('', 'ProjectorOutput')) +
+         Multi-transport bridge: direct postMessage + BroadcastChannel +
+         localStorage mirror + PROJECTOR_READY handshake + Transferable Blobs
+         ========================================================================= */
+      let projectorWin = null;
+      let projectorConnected = false;
+      let lastProjectorPong = 0;
+
+      function updateProjectorStatusUI() {
+        const dot = document.getElementById('dot-projector-status');
+        const lbl = document.getElementById('lbl-projector-status');
+        const btn = document.getElementById('btn-projector-win');
+        if (!dot || !lbl || !btn) return;
+        const alive = projectorConnected && (Date.now() - lastProjectorPong < 2500);
+        if (alive) {
+          dot.className = 'w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]';
+          lbl.textContent = 'Projector Live';
+          btn.className = 'h-8 px-2.5 rounded-lg bg-emerald-950/50 border border-emerald-500/40 hover:bg-emerald-900/50 text-xs font-medium text-emerald-200 flex items-center gap-1.5 transition';
+        } else {
+          projectorConnected = false;
+          dot.className = 'w-2 h-2 rounded-full bg-zinc-600';
+          lbl.textContent = 'Projector';
+          btn.className = 'h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs font-medium text-zinc-100 flex items-center gap-1.5 transition';
+        }
+      }
+
+      function buildProjectorChildHTML() {
+        const presetsJson = JSON.stringify(SHADER_PRESETS);
+        return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Live Projector Output</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100vw; height: 100vh; overflow: hidden;
+    background: #000000; display: flex; align-items: center; justify-content: center;
+    user-select: none; cursor: none;
+  }
+  body:hover { cursor: default; }
+  canvas {
+    width: 100vw; height: 100vh;
+    object-fit: contain; display: block; background: #000000;
+  }
+  #hint {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    padding: 8px 16px; border-radius: 999px;
+    background: rgba(18, 18, 21, 0.88); border: 1px solid rgba(255,255,255,0.14);
+    color: #e4e4e7; font-family: system-ui, -apple-system, sans-serif; font-size: 12px;
+    pointer-events: none; opacity: 1; transition: opacity 0.6s ease;
+  }
+</style>
+</head>
+<body>
+  <canvas id="out-canvas" width="1920" height="1080"></canvas>
+  <div id="hint">Double-click for Fullscreen • Press Esc to exit</div>
+  <script>
+    (() => {
+      const SHADER_PRESETS = ${presetsJson};
+      const MIRROR_KEY = 'pmap_live_mirror';
+      const channel = ('BroadcastChannel' in window) ? new BroadcastChannel('pmap_live_sync_v1') : null;
+      const canvas = document.getElementById('out-canvas');
+      const gl = canvas.getContext('webgl2', { alpha: false, antialias: true });
+      const hint = document.getElementById('hint');
+      setTimeout(() => { hint.style.opacity = '0'; }, 2200);
+
+      document.body.addEventListener('dblclick', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      });
+
+      const pState = {
+        outputWidth: 1920,
+        outputHeight: 1080,
+        layers: [],
+        clockOffsetSec: 0
+      };
+
+      const VS_SRC = ${JSON.stringify(VS_SRC)};
+      const FS_HEADER = ${JSON.stringify(FS_HEADER)};
+      const MASK_FS_SRC = ${JSON.stringify(MASK_FS_SRC)};
+
+      function buildFragmentShader(userCode) {
+        let body = userCode
+          .replace(/#version\\s+300\\s+es/g, '')
+          .replace(/precision\\s+(lowp|mediump|highp)\\s+float\\s*;/g, '')
+          .replace(/in\\s+vec2\\s+v_uv\\s*;/g, 'vec2 v_uv;')
+          .replace(/out\\s+vec4\\s+fragColor\\s*;/g, 'vec4 fragColor;')
+          .replace(/uniform\\s+float\\s+[^;]+;/g, '')
+          .replace(/uniform\\s+vec3\\s+[^;]+;/g, '')
+          .replace(/void\\s+main\\s*\\(\\s*\\)/g, 'vec4 evalUser(vec2 uv_in)');
+        body = body.replace(/vec4\\s+evalUser\\s*\\(\\s*vec2\\s+uv_in\\s*\\)\\s*\\{/,
+          'vec4 evalUser(vec2 uv_in) {\\n  v_uv = uv_in;\\n  fragColor = vec4(0.0, 0.0, 0.0, 1.0);');
+        const lastBrace = body.lastIndexOf('}');
+        if (lastBrace !== -1) body = body.slice(0, lastBrace) + '\\n  return fragColor;\\n}';
+        return FS_HEADER + '\\n' + body + \`
+void main() {
+  vec2 rawUv = resolveUV();
+  if (rawUv.x < -0.002 || rawUv.x > 1.002 || rawUv.y < -0.002 || rawUv.y > 1.002) discard;
+  float alphaShape = computeMask(rawUv);
+  if (alphaShape <= 0.001) discard;
+  vec2 uv = rawUv;
+  if (u_flip.x > 0.5) uv.x = 1.0 - uv.x;
+  if (u_flip.y > 0.5) uv.y = 1.0 - uv.y;
+  vec4 col;
+  if (u_sourceMode == 1) {
+    vec2 mUv = (uv - 0.5) * u_uvScale + 0.5;
+    if (mUv.x < 0.0 || mUv.x > 1.0 || mUv.y < 0.0 || mUv.y > 1.0) {
+      col = vec4(0.0, 0.0, 0.0, 0.0);
+    } else if (u_glow > 0.01) {
+      float off = u_glow * 0.012;
+      vec4 s0 = texture(u_tex, mUv);
+      vec4 s1 = texture(u_tex, clamp(mUv + vec2(off, 0.0), 0.0, 1.0));
+      vec4 s2 = texture(u_tex, clamp(mUv - vec2(off, 0.0), 0.0, 1.0));
+      vec4 s3 = texture(u_tex, clamp(mUv + vec2(0.0, off), 0.0, 1.0));
+      vec4 s4 = texture(u_tex, clamp(mUv - vec2(0.0, off), 0.0, 1.0));
+      col = (s0 * 2.0 + s1 + s2 + s3 + s4) / 6.0;
+    } else {
+      col = texture(u_tex, mUv);
+    }
+  } else {
+    col = evalUser(uv);
+  }
+  col.rgb = applyColorGrade(col.rgb);
+  outColor = vec4(col.rgb, col.a * u_opacity * alphaShape);
+}\`;
+      }
+
+      const shaderCache = new Map();
+      const vao = gl.createVertexArray();
+      const vbo = gl.createBuffer();
+
+      function compileShader(type, src) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { gl.deleteShader(s); return null; }
+        return s;
+      }
+
+      function buildProgram(vsSrc, fsSrc) {
+        const vs = compileShader(gl.VERTEX_SHADER, vsSrc);
+        const fs = compileShader(gl.FRAGMENT_SHADER, fsSrc);
+        if (!vs || !fs) return null;
+        const prog = gl.createProgram();
+        gl.attachShader(prog, vs);
+        gl.attachShader(prog, fs);
+        gl.linkProgram(prog);
+        gl.deleteShader(vs);
+        gl.deleteShader(fs);
+        return gl.getProgramParameter(prog, gl.LINK_STATUS) ? prog : null;
+      }
+
+      const maskProg = buildProgram(VS_SRC, MASK_FS_SRC);
+
+      function getProgramForLayer(layer) {
+        const key = layer.sourceType === 'custom'
+          ? 'custom:' + layer.id + ':' + layer.customGlsl
+          : 'preset:' + layer.shaderPreset;
+        if (shaderCache.has(key)) return shaderCache.get(key);
+        const src = layer.sourceType === 'custom'
+          ? layer.customGlsl
+          : (SHADER_PRESETS[layer.shaderPreset]?.code || SHADER_PRESETS.aurora.code);
+        const prog = buildProgram(VS_SRC, buildFragmentShader(src));
+        if (prog) { shaderCache.set(key, prog); return prog; }
+        if (!shaderCache.has('preset:aurora')) {
+          shaderCache.set('preset:aurora', buildProgram(VS_SRC, buildFragmentShader(SHADER_PRESETS.aurora.code)));
+        }
+        return shaderCache.get('preset:aurora');
+      }
+
+      const textureStore = new Map();
+      const textHashes = new Map();
+
+      function updateTextTexture(layer) {
+        const hash = JSON.stringify(layer.textProps);
+        if (textHashes.get(layer.id) === hash && textureStore.has(layer.id)) return;
+        textHashes.set(layer.id, hash);
+        const tp = layer.textProps || {};
+        const off = document.createElement('canvas');
+        off.width = 1600; off.height = 900;
+        const ctx = off.getContext('2d');
+        ctx.clearRect(0, 0, off.width, off.height);
+        ctx.font = (tp.fontWeight || '600') + ' ' + (tp.fontSize || 110) + 'px "' + (tp.fontFamily || 'Geist') + '", sans-serif';
+        ctx.textAlign = tp.align || 'center';
+        ctx.textBaseline = 'middle';
+        if ('letterSpacing' in ctx) ctx.letterSpacing = (tp.letterSpacing || 0) + 'em';
+        const lines = (tp.content || '').split('\\n');
+        const lineH = (tp.fontSize || 110) * (tp.lineHeight || 1.1);
+        const totalH = lines.length * lineH;
+        const startY = (off.height - totalH) * 0.5 + lineH * 0.5;
+        const anchorX = tp.align === 'left' ? 120 : (tp.align === 'right' ? off.width - 120 : off.width * 0.5);
+
+        if (tp.bgPill) {
+          let maxW = 0;
+          lines.forEach(l => { maxW = Math.max(maxW, ctx.measureText(l).width); });
+          const padX = 64, padY = 42;
+          const boxW = Math.min(off.width - 80, maxW + padX * 2);
+          const boxH = totalH + padY * 2;
+          const boxX = tp.align === 'left' ? anchorX - padX : (tp.align === 'right' ? anchorX - boxW + padX : anchorX - boxW * 0.5);
+          const boxY = (off.height - boxH) * 0.5;
+          ctx.fillStyle = tp.bgColor || '#18181b';
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(boxX, boxY, boxW, boxH, 32);
+          else ctx.rect(boxX, boxY, boxW, boxH);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = tp.color || '#ffffff';
+        lines.forEach((line, idx) => {
+          const y = startY + idx * lineH;
+          if ((tp.strokeWidth || 0) > 0) {
+            ctx.lineWidth = tp.strokeWidth * 2;
+            ctx.strokeStyle = tp.strokeColor || '#09090b';
+            ctx.lineJoin = 'round';
+            ctx.strokeText(line, anchorX, y);
+          }
+          ctx.fillText(line, anchorX, y);
+        });
+
+        let item = textureStore.get(layer.id);
+        if (!item || item.isVideo) {
+          if (item?.tex) gl.deleteTexture(item.tex);
+          const tex = gl.createTexture();
+          gl.bindTexture(gl.TEXTURE_2D, tex);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+          item = { tex, isVideo: false, ready: true, aspect: 1600 / 900 };
+          textureStore.set(layer.id, item);
+        }
+        gl.bindTexture(gl.TEXTURE_2D, item.tex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, off);
+        item.ready = true;
+      }
+
+      function installMediaData(layerId, bufferOrBlob, mimeType, mediaMeta) {
+        const blob = bufferOrBlob instanceof Blob ? bufferOrBlob : new Blob([bufferOrBlob], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const isVideo = (mimeType || '').startsWith('video/');
+
+        if (textureStore.has(layerId)) {
+          const prev = textureStore.get(layerId);
+          if (prev.video) { prev.video.pause(); prev.video.src = ''; }
+          gl.deleteTexture(prev.tex);
+        }
+        const tex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]));
+
+        if (isVideo) {
+          const video = document.createElement('video');
+          video.src = url;
+          video.loop = mediaMeta?.loop !== undefined ? mediaMeta.loop : true;
+          video.muted = true;
+          video.playbackRate = mediaMeta?.speed || 1.0;
+          video.playsInline = true;
+          video.play().catch(() => {});
+          textureStore.set(layerId, { tex, isVideo: true, video, ready: false, aspect: 16 / 9 });
+          video.addEventListener('loadeddata', () => {
+            const it = textureStore.get(layerId);
+            if (it) {
+              it.ready = true;
+              if (video.videoWidth && video.videoHeight) it.aspect = video.videoWidth / video.videoHeight;
+            }
+          });
+        } else {
+          const img = new Image();
+          img.onload = () => {
+            gl.bindTexture(gl.TEXTURE_2D, tex);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+            const it = textureStore.get(layerId);
+            if (it) {
+              it.ready = true;
+              if (img.naturalWidth && img.naturalHeight) it.aspect = img.naturalWidth / img.naturalHeight;
+            }
+          };
+          img.src = url;
+          textureStore.set(layerId, { tex, isVideo: false, img, ready: false, aspect: 16 / 9 });
+        }
+      }
+
+      function syncVideoStates(videoStates) {
+        if (!videoStates) return;
+        for (const [id, vs] of Object.entries(videoStates)) {
+          const it = textureStore.get(id);
+          if (it?.isVideo && it.video) {
+            it.video.loop = vs.loop;
+            it.video.playbackRate = vs.speed || 1.0;
+            if (vs.paused && !it.video.paused) it.video.pause();
+            if (!vs.paused && it.video.paused) it.video.play().catch(() => {});
+            if (Math.abs(it.video.currentTime - vs.currentTime) > 0.25) {
+              try { it.video.currentTime = vs.currentTime; } catch (e) {}
+            }
+          }
+        }
+      }
+
+      function applySyncPayload(data) {
+        if (!data) return;
+        if (data.outputWidth && data.outputHeight) {
+          if (canvas.width !== data.outputWidth || canvas.height !== data.outputHeight) {
+            canvas.width = data.outputWidth;
+            canvas.height = data.outputHeight;
+          }
+          pState.outputWidth = data.outputWidth;
+          pState.outputHeight = data.outputHeight;
+        }
+        if (typeof data.clockSec === 'number') {
+          pState.clockOffsetSec = data.clockSec - (performance.now() / 1000);
+        }
+        if (Array.isArray(data.layers)) {
+          pState.layers = data.layers;
+          for (const l of pState.layers) {
+            if (l.sourceType === 'text') updateTextTexture(l);
+            if (l.sourceType === 'media' && !textureStore.has(l.id)) {
+              notifyOpener({ type: 'REQUEST_MEDIA', layerId: l.id });
+            }
+          }
+        }
+        if (data.videoStates) syncVideoStates(data.videoStates);
+      }
+
+      function hexToRgb(hex) {
+        const clean = (hex || '#3b82f6').replace('#', '');
+        const full = clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean;
+        const num = parseInt(full, 16);
+        return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
+      }
+
+      function getBounds(layer) {
+        const pts = (layer.meshSubdiv > 1 && layer.meshGrid) ? layer.meshGrid : layer.vertices;
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (const p of pts) {
+          if (p.x < minX) minX = p.x; if (p.y < minY) minY = p.y;
+          if (p.x > maxX) maxX = p.x; if (p.y > maxY) maxY = p.y;
+        }
+        return { minX, minY, w: Math.max(0.002, maxX - minX), h: Math.max(0.002, maxY - minY) };
+      }
+
+      function computeHomography(src, dst) {
+        const A = [], b = [];
+        for (let i = 0; i < 4; i++) {
+          const x = src[i].x, y = src[i].y, u = dst[i].x, v = dst[i].y;
+          A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]); b.push(u);
+          A.push([0, 0, 0, x, y, 1, -v * x, -v * y]); b.push(v);
+        }
+        for (let i = 0; i < 8; i++) {
+          let maxRow = i;
+          for (let k = i + 1; k < 8; k++) if (Math.abs(A[k][i]) > Math.abs(A[maxRow][i])) maxRow = k;
+          [A[i], A[maxRow]] = [A[maxRow], A[i]];
+          [b[i], b[maxRow]] = [b[maxRow], b[i]];
+          const p = A[i][i];
+          if (Math.abs(p) < 1e-12) return [1, 0, 0, 0, 1, 0, 0, 0, 1];
+          for (let j = i; j < 8; j++) A[i][j] /= p;
+          b[i] /= p;
+          for (let k = 0; k < 8; k++) {
+            if (k !== i) {
+              const f = A[k][i];
+              for (let j = i; j < 8; j++) A[k][j] -= f * A[i][j];
+              b[k] -= f * b[i];
+            }
+          }
+        }
+        return [b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], 1];
+      }
+
+      function transpose3(m) {
+        return [m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]];
+      }
+
+      function triangulateLayer(layer) {
+        const v = layer.vertices, n = v.length;
+        if (n === 4 && layer.meshSubdiv > 1 && layer.meshGrid) {
+          const div = layer.meshSubdiv, stride = div + 1, arr = [];
+          for (let r = 0; r < div; r++) {
+            for (let c = 0; c < div; c++) {
+              const i0 = r * stride + c, i1 = i0 + 1, i2 = (r + 1) * stride + c + 1, i3 = (r + 1) * stride + c;
+              const u0 = c / div, v0 = r / div, u1 = (c + 1) / div, v1 = (r + 1) / div;
+              const p0 = layer.meshGrid[i0], p1 = layer.meshGrid[i1], p2 = layer.meshGrid[i2], p3 = layer.meshGrid[i3];
+              arr.push(p0.x, p0.y, u0, v0, p1.x, p1.y, u1, v0, p2.x, p2.y, u1, v1,
+                       p0.x, p0.y, u0, v0, p2.x, p2.y, u1, v1, p3.x, p3.y, u0, v1);
+            }
+          }
+          return new Float32Array(arr);
+        }
+        if (n === 4) {
+          return new Float32Array([v[0].x, v[0].y, 0, 0, v[1].x, v[1].y, 1, 0, v[2].x, v[2].y, 1, 1,
+                                   v[0].x, v[0].y, 0, 0, v[2].x, v[2].y, 1, 1, v[3].x, v[3].y, 0, 1]);
+        }
+        if (n === 3) {
+          return new Float32Array([v[0].x, v[0].y, 0.5, 0.0, v[1].x, v[1].y, 1.0, 1.0, v[2].x, v[2].y, 0.0, 1.0]);
+        }
+        const b = getBounds(layer);
+        let cx = 0, cy = 0;
+        for (const pt of v) { cx += pt.x; cy += pt.y; }
+        cx /= n; cy /= n;
+        const cU = (cx - b.minX) / b.w, cV = (cy - b.minY) / b.h, out = [];
+        for (let i = 0; i < n; i++) {
+          const pA = v[i], pB = v[(i + 1) % n];
+          out.push(cx, cy, cU, cV, pA.x, pA.y, (pA.x - b.minX) / b.w, (pA.y - b.minY) / b.h,
+                   pB.x, pB.y, (pB.x - b.minX) / b.w, (pB.y - b.minY) / b.h);
+        }
+        return new Float32Array(out);
+      }
+
+      const UNIT_QUAD = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }];
+
+      function renderLoop(nowMs) {
+        const timeSec = (nowMs / 1000) + pState.clockOffsetSec;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        gl.bindVertexArray(vao);
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+        gl.enableVertexAttribArray(0);
+        gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 16, 0);
+        gl.enableVertexAttribArray(1);
+        gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 16, 8);
+
+        const anySolo = pState.layers.some(l => l.solo && l.visible);
+
+        for (const layer of pState.layers) {
+          if (!layer.visible || !layer.vertices || layer.vertices.length < 3) continue;
+          if (anySolo && !layer.solo && layer.kind !== 'mask') continue;
+
+          const verts = triangulateLayer(layer);
+          gl.bufferData(gl.ARRAY_BUFFER, verts, gl.DYNAMIC_DRAW);
+          const count = verts.length / 4;
+          const useH = (layer.vertices.length === 4 && layer.meshSubdiv <= 1) ? 1 : 0;
+          const invH = useH === 1 ? transpose3(computeHomography(layer.vertices, UNIT_QUAD)) : [1, 0, 0, 0, 1, 0, 0, 0, 1];
+
+          if (layer.kind === 'mask') {
+            gl.useProgram(maskProg);
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+            gl.uniformMatrix3fv(gl.getUniformLocation(maskProg, 'u_invH'), false, invH);
+            gl.uniform1i(gl.getUniformLocation(maskProg, 'u_useH'), useH);
+            gl.uniform1f(gl.getUniformLocation(maskProg, 'u_feather'), layer.feather);
+            gl.uniform1f(gl.getUniformLocation(maskProg, 'u_cornerRadius'), layer.cornerRadius || 0);
+            gl.drawArrays(gl.TRIANGLES, 0, count);
+            continue;
+          }
+
+          const prog = getProgramForLayer(layer);
+          if (!prog) continue;
+          gl.useProgram(prog);
+          gl.enable(gl.BLEND);
+          if (layer.blendMode === 'add') gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+          else if (layer.blendMode === 'screen') gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_COLOR);
+          else if (layer.blendMode === 'multiply') gl.blendFunc(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA);
+          else gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+          gl.uniformMatrix3fv(gl.getUniformLocation(prog, 'u_invH'), false, invH);
+          gl.uniform1i(gl.getUniformLocation(prog, 'u_useH'), useH);
+          gl.uniform1i(gl.getUniformLocation(prog, 'u_isEllipse'), layer.shape === 'ellipse' ? 1 : 0);
+
+          let srcMode = 0, uvScaleX = 1.0, uvScaleY = 1.0;
+          if ((layer.sourceType === 'media' || layer.sourceType === 'text') && textureStore.has(layer.id)) {
+            const item = textureStore.get(layer.id);
+            if (item.ready) {
+              srcMode = 1;
+              gl.activeTexture(gl.TEXTURE0);
+              gl.bindTexture(gl.TEXTURE_2D, item.tex);
+              if (item.isVideo && item.video && item.video.readyState >= 2) {
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, item.video);
+              }
+              gl.uniform1i(gl.getUniformLocation(prog, 'u_tex'), 0);
+              if (layer.sourceType === 'media' && layer.media?.fit && layer.media.fit !== 'stretch') {
+                const b = getBounds(layer);
+                const surfAsp = (b.w * pState.outputWidth) / Math.max(1, b.h * pState.outputHeight);
+                const mediaAsp = item.aspect || 1.777;
+                if (layer.media.fit === 'cover') {
+                  if (surfAsp > mediaAsp) uvScaleY = mediaAsp / surfAsp; else uvScaleX = surfAsp / mediaAsp;
+                } else if (layer.media.fit === 'contain') {
+                  if (surfAsp > mediaAsp) uvScaleX = surfAsp / mediaAsp; else uvScaleY = mediaAsp / surfAsp;
+                }
+              }
+            }
+          }
+
+          gl.uniform1i(gl.getUniformLocation(prog, 'u_sourceMode'), srcMode);
+          gl.uniform2f(gl.getUniformLocation(prog, 'u_uvScale'), uvScaleX, uvScaleY);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_opacity'), layer.opacity);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_feather'), layer.feather);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_cornerRadius'), layer.cornerRadius || 0);
+          gl.uniform2f(gl.getUniformLocation(prog, 'u_flip'), layer.flipH ? 1 : 0, layer.flipV ? 1 : 0);
+
+          const c1 = hexToRgb(layer.uniforms.color1);
+          const c2 = hexToRgb(layer.uniforms.color2);
+          const c3 = hexToRgb(layer.uniforms.color3);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_time'), timeSec);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_speed'), layer.uniforms.speed);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_scale'), layer.uniforms.scale);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_complexity'), layer.uniforms.complexity ?? 2.0);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_brightness'), layer.uniforms.brightness);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_contrast'), layer.uniforms.contrast);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_saturation'), layer.uniforms.saturation ?? 1.0);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_hueShift'), layer.uniforms.hueShift ?? 0.0);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_glow'), layer.uniforms.glow ?? 0.0);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_invert'), layer.uniforms.invert ?? 0.0);
+          gl.uniform3f(gl.getUniformLocation(prog, 'u_color1'), c1[0], c1[1], c1[2]);
+          gl.uniform3f(gl.getUniformLocation(prog, 'u_color2'), c2[0], c2[1], c2[2]);
+          gl.uniform3f(gl.getUniformLocation(prog, 'u_color3'), c3[0], c3[1], c3[2]);
+
+          gl.drawArrays(gl.TRIANGLES, 0, count);
+        }
+        requestAnimationFrame(renderLoop);
+      }
+
+      function handleMessage(msg) {
+        if (!msg) return;
+        if (msg.type === 'PMAP_SYNC') {
+          applySyncPayload(msg.payload);
+          notifyOpener({ type: 'PROJECTOR_PONG' });
+        } else if (msg.type === 'PMAP_MEDIA') {
+          installMediaData(msg.layerId, msg.buffer, msg.mimeType, msg.mediaMeta);
+        }
+      }
+
+      function notifyOpener(msg) {
+        try { if (window.opener && !window.opener.closed) window.opener.postMessage(msg, '*'); } catch (e) {}
+        try { if (channel) channel.postMessage(msg); } catch (e) {}
+      }
+
+      window.addEventListener('message', (e) => handleMessage(e.data));
+      if (channel) channel.onmessage = (e) => handleMessage(e.data);
+      window.addEventListener('storage', (e) => {
+        if (e.key === MIRROR_KEY && e.newValue) {
+          try { applySyncPayload(JSON.parse(e.newValue)); } catch (err) {}
+        }
+      });
+
+      try {
+        const cached = localStorage.getItem(MIRROR_KEY);
+        if (cached) applySyncPayload(JSON.parse(cached));
+      } catch (e) {}
+
+      notifyOpener({ type: 'PROJECTOR_READY' });
+      setInterval(() => notifyOpener({ type: 'PROJECTOR_PONG' }), 600);
+      requestAnimationFrame(renderLoop);
+    })();
+  <\/script>
+</body>
+</html>`;
+      }
+
+      function collectVideoStates() {
+        const videoStates = {};
+        for (const l of state.layers) {
+          if (l.sourceType === 'media' && textureStore.has(l.id)) {
+            const it = textureStore.get(l.id);
+            if (it?.isVideo && it.video) {
+              videoStates[l.id] = {
+                currentTime: it.video.currentTime || 0,
+                paused: it.video.paused,
+                loop: it.video.loop,
+                speed: it.video.playbackRate || 1.0
+              };
+            }
+          }
+        }
+        return videoStates;
+      }
+
+      async function pushMediaToProjector(layerId, blob, fileName, mimeType) {
+        if (!blob) return;
+        try {
+          const buf = await blob.arrayBuffer();
+          const layer = state.layers.find(l => l.id === layerId);
+          const msg = {
+            type: 'PMAP_MEDIA',
+            layerId,
+            buffer: buf,
+            fileName,
+            mimeType: mimeType || blob.type,
+            mediaMeta: layer?.media || {}
+          };
+          if (projectorWin && !projectorWin.closed) {
+            projectorWin.postMessage(msg, '*');
+          }
+          if (syncChannel) {
+            syncChannel.postMessage(msg);
+          }
+        } catch (e) {}
+      }
+
+      async function pushAllMediaToProjector() {
+        for (const l of state.layers) {
+          if (l.sourceType === 'media') {
+            const it = textureStore.get(l.id);
+            if (it?.blob) {
+              await pushMediaToProjector(l.id, it.blob, l.media.name, it.mimeType);
+            } else if (l.media?.blobKey) {
+              const blob = await loadMediaBlob(l.media.blobKey);
+              if (blob) await pushMediaToProjector(l.id, blob, l.media.name, blob.type);
+            }
+          }
+        }
+      }
+
+      function pushProjectorSync() {
+        const payload = {
+          projectId: state.projectId,
+          projectName: state.projectName,
+          outputWidth: state.outputWidth,
+          outputHeight: state.outputHeight,
+          layers: state.layers,
+          isPlaying: state.isPlaying,
+          showTime: state.showTime,
+          activeCueIndex: state.activeCueIndex,
+          clockSec: performance.now() / 1000,
+          videoStates: collectVideoStates()
+        };
+        try { localStorage.setItem(MIRROR_KEY, JSON.stringify(payload)); } catch (e) {}
+        const msg = { type: 'PMAP_SYNC', payload };
+        try {
+          if (projectorWin && !projectorWin.closed) {
+            projectorWin.postMessage(msg, '*');
+          }
+        } catch (e) {}
+        try {
+          if (syncChannel) syncChannel.postMessage(msg);
+        } catch (e) {}
+      }
+
+      function handleChildControlMessage(msg) {
+        if (!msg) return;
+        if (msg.type === 'PROJECTOR_READY') {
+          projectorConnected = true;
+          lastProjectorPong = Date.now();
+          updateProjectorStatusUI();
+          pushProjectorSync();
+          pushAllMediaToProjector();
+        } else if (msg.type === 'PROJECTOR_PONG') {
+          projectorConnected = true;
+          lastProjectorPong = Date.now();
+          updateProjectorStatusUI();
+        } else if (msg.type === 'REQUEST_MEDIA' && msg.layerId) {
+          const l = state.layers.find(x => x.id === msg.layerId);
+          if (l) {
+            const it = textureStore.get(l.id);
+            if (it?.blob) pushMediaToProjector(l.id, it.blob, l.media.name, it.mimeType);
+          }
+        }
+      }
+
+      window.addEventListener('message', (e) => handleChildControlMessage(e.data));
+      if (syncChannel) syncChannel.onmessage = (e) => handleChildControlMessage(e.data);
+
+      /* 250ms Heartbeat for Real-Time Clock, Video Time, and Connection Status */
+      setInterval(() => {
+        updateProjectorStatusUI();
+        if ((projectorWin && !projectorWin.closed) || projectorConnected) {
+          pushProjectorSync();
+        }
+      }, 250);
+
+      document.getElementById('btn-projector-win').addEventListener('click', () => {
+        if (projectorWin && !projectorWin.closed) {
+          projectorWin.focus();
+          pushProjectorSync();
+          pushAllMediaToProjector();
+          showToast('Projector window focused & synced');
+          return;
+        }
+        const win = window.open(
+          '',
+          'ProjectorOutput',
+          `width=${Math.min(1280, state.outputWidth)},height=${Math.min(800, state.outputHeight)},menubar=no,toolbar=no,location=no,status=no`
+        );
+        if (!win) {
+          showToast('Enable pop-ups to open Live Projector Window');
+          return;
+        }
+        projectorWin = win;
+        win.document.open();
+        win.document.write(buildProjectorChildHTML());
+        win.document.close();
+        projectorConnected = true;
+        lastProjectorPong = Date.now();
+        updateProjectorStatusUI();
+        setTimeout(() => { pushProjectorSync(); pushAllMediaToProjector(); }, 150);
+        setTimeout(() => { pushProjectorSync(); }, 600);
+        showToast('Live Projector Window opened');
+      });
+
+      /* =========================================================================
+         2. INTERACTIVE VECTOR OVERLAY & MULTI-TOUCH HANDLING
+         ========================================================================= */
       const overlaySvg = document.getElementById('overlay-svg');
       const touchLoupe = document.getElementById('touch-loupe');
       let activeDrag = null;
       let snapGuides = [];
 
-      function isSelected(id) {
-        return state.selectedIds.includes(id);
-      }
+      function isSelected(id) { return state.selectedIds.includes(id); }
 
       function primarySelectedLayer() {
         const lastId = state.selectedIds[state.selectedIds.length - 1];
@@ -1698,14 +2526,14 @@ void main() {
       function renderOverlay() {
         const emptyEl = document.getElementById('empty-stage-overlay');
         if (emptyEl) {
-          if (state.layers.length === 0 && !document.body.classList.contains('stage-fullscreen') && !isProjectorWindow) {
+          if (state.layers.length === 0 && !document.body.classList.contains('stage-fullscreen')) {
             emptyEl.classList.remove('hidden');
           } else {
             emptyEl.classList.add('hidden');
           }
         }
 
-        if (document.body.classList.contains('stage-fullscreen') || isProjectorWindow) {
+        if (document.body.classList.contains('stage-fullscreen')) {
           overlaySvg.innerHTML = '';
           return;
         }
@@ -1748,7 +2576,16 @@ void main() {
             for (let i = 0; i < layer.vertices.length; i++) {
               const p1 = layer.vertices[i];
               const p2 = layer.vertices[(i + 1) % layer.vertices.length];
-              out += `<line x1="${p1.x * w}" y1="${p1.y * h}" x2="${p2.x * w}" y2="${p2.y * h}" stroke="transparent" stroke-width="16" data-id="${layer.id}" data-mode="edge" data-edge-idx="${i}" style="cursor: copy;"/>`;
+              const mx = ((p1.x + p2.x) * 0.5) * w;
+              const my = ((p1.y + p2.y) * 0.5) * h;
+              out += `<line x1="${p1.x * w}" y1="${p1.y * h}" x2="${p2.x * w}" y2="${p2.y * h}" stroke="transparent" stroke-width="14" data-id="${layer.id}" data-mode="edge" data-edge-idx="${i}" style="cursor: copy;"/>`;
+              out += `
+                <g data-id="${layer.id}" data-mode="add-edge-pt" data-edge-idx="${i}" style="cursor: copy;">
+                  <circle cx="${mx}" cy="${my}" r="11" fill="transparent"/>
+                  <circle cx="${mx}" cy="${my}" r="6" fill="#121215" stroke="#3b82f6" stroke-width="1.5"/>
+                  <line x1="${mx - 2.5}" y1="${my}" x2="${mx + 2.5}" y2="${my}" stroke="#3b82f6" stroke-width="1.5"/>
+                  <line x1="${mx}" y1="${my - 2.5}" x2="${mx}" y2="${my + 2.5}" stroke="#3b82f6" stroke-width="1.5"/>
+                </g>`;
             }
           }
 
@@ -1797,6 +2634,10 @@ void main() {
         if (!state.snapEnabled) return { x, y };
         const tol = 0.012;
         let sx = x, sy = y;
+        if (Math.abs(x) < tol) { sx = 0; snapGuides.push({ x: 0 }); }
+        if (Math.abs(x - 1) < tol) { sx = 1; snapGuides.push({ x: 1 }); }
+        if (Math.abs(y) < tol) { sy = 0; snapGuides.push({ y: 0 }); }
+        if (Math.abs(y - 1) < tol) { sy = 1; snapGuides.push({ y: 1 }); }
         if (Math.abs(x - 0.5) < tol) { sx = 0.5; snapGuides.push({ x: 0.5 }); }
         if (Math.abs(y - 0.5) < tol) { sy = 0.5; snapGuides.push({ y: 0.5 }); }
         if (state.showGrid) {
@@ -1830,35 +2671,132 @@ void main() {
         pushHistory();
         renderOverlay();
         renderInspector();
-        persistAndSync();
-        showToast('Vertex added');
+        persistAndSync(true);
+        showToast('Point added');
+      });
+
+      /* Right-Click Context Menu on Canvas & Layer Rows */
+      const contextMenu = document.getElementById('context-menu');
+      let contextTargetId = null;
+
+      function openContextMenu(x, y, layerId) {
+        contextTargetId = layerId;
+        state.selectedIds = [layerId];
+        renderLayerList();
+        renderInspector();
+        renderOverlay();
+        document.getElementById('ctx-paste-style').disabled = !state.copiedStyle;
+        contextMenu.classList.remove('hidden');
+        const menuW = 192, menuH = 290;
+        contextMenu.style.left = `${Math.min(window.innerWidth - menuW - 8, x)}px`;
+        contextMenu.style.top = `${Math.min(window.innerHeight - menuH - 8, y)}px`;
+      }
+
+      function closeContextMenu() {
+        contextMenu.classList.add('hidden');
+        contextTargetId = null;
+      }
+
+      window.addEventListener('click', (e) => {
+        if (!e.target.closest('#context-menu')) closeContextMenu();
+      });
+
+      contextMenu.querySelectorAll('.ctx-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const action = btn.getAttribute('data-ctx');
+          const id = contextTargetId || primarySelectedLayer()?.id;
+          closeContextMenu();
+          if (!id) return;
+          const idx = state.layers.findIndex(l => l.id === id);
+          const layer = state.layers[idx];
+          if (!layer) return;
+
+          if (action === 'duplicate') duplicateLayerById(id);
+          else if (action === 'copy-style') copyLayerStyle(layer);
+          else if (action === 'paste-style') pasteLayerStyle(layer);
+          else if (action === 'front' && idx < state.layers.length - 1) {
+            state.layers.push(state.layers.splice(idx, 1)[0]);
+            pushHistory(); refreshAll();
+          } else if (action === 'forward' && idx < state.layers.length - 1) {
+            [state.layers[idx], state.layers[idx + 1]] = [state.layers[idx + 1], state.layers[idx]];
+            pushHistory(); refreshAll();
+          } else if (action === 'backward' && idx > 0) {
+            [state.layers[idx], state.layers[idx - 1]] = [state.layers[idx - 1], state.layers[idx]];
+            pushHistory(); refreshAll();
+          } else if (action === 'back' && idx > 0) {
+            state.layers.unshift(state.layers.splice(idx, 1)[0]);
+            pushHistory(); refreshAll();
+          } else if (action === 'reset') {
+            layer.vertices = defaultVertices(layer.shape);
+            if (layer.meshSubdiv > 1) rebuildMeshGrid(layer);
+            pushHistory(); refreshAll();
+          } else if (action === 'delete') {
+            deleteLayersByIds([id]);
+          }
+        });
       });
 
       overlaySvg.addEventListener('contextmenu', (e) => {
-        const vtx = e.target.closest('[data-mode="vertex"]');
-        if (!vtx) return;
         e.preventDefault();
-        const id = vtx.getAttribute('data-id');
-        const idx = parseInt(vtx.getAttribute('data-idx'), 10);
-        const layer = state.layers.find(l => l.id === id);
-        if (layer && layer.shape === 'polygon' && layer.vertices.length > 3 && !layer.locked) {
-          layer.vertices.splice(idx, 1);
-          pushHistory();
-          renderOverlay();
-          renderInspector();
-          persistAndSync();
-          showToast('Vertex removed');
+        const vtx = e.target.closest('[data-mode="vertex"]');
+        if (vtx) {
+          const id = vtx.getAttribute('data-id');
+          const idx = parseInt(vtx.getAttribute('data-idx'), 10);
+          const layer = state.layers.find(l => l.id === id);
+          if (layer && layer.shape === 'polygon' && layer.vertices.length > 3 && !layer.locked) {
+            layer.vertices.splice(idx, 1);
+            pushHistory();
+            renderOverlay();
+            renderInspector();
+            persistAndSync(true);
+            showToast('Point removed');
+            return;
+          }
+        }
+        const poly = e.target.closest('[data-id]');
+        if (poly) {
+          openContextMenu(e.clientX, e.clientY, poly.getAttribute('data-id'));
         }
       });
 
       overlaySvg.addEventListener('pointerdown', (e) => {
+        if (e.button === 2) return;
         if (activePointers.size >= 1) return;
         const el = e.target.closest('[data-id]');
         if (!el) return;
         const id = el.getAttribute('data-id');
         const mode = el.getAttribute('data-mode');
         if (mode === 'edge') return;
+
+        if (mode === 'add-edge-pt') {
+          const edgeIdx = parseInt(el.getAttribute('data-edge-idx'), 10);
+          const layer = state.layers.find(l => l.id === id);
+          if (layer && layer.shape === 'polygon' && !layer.locked) {
+            const p1 = layer.vertices[edgeIdx];
+            const p2 = layer.vertices[(edgeIdx + 1) % layer.vertices.length];
+            layer.vertices.splice(edgeIdx + 1, 0, { x: (p1.x + p2.x) * 0.5, y: (p1.y + p2.y) * 0.5 });
+            pushHistory();
+            renderOverlay();
+            renderInspector();
+            persistAndSync(true);
+            showToast('Point added');
+          }
+          return;
+        }
+
         const idx = parseInt(el.getAttribute('data-idx') || '0', 10);
+        if (mode === 'vertex' && e.altKey) {
+          const layer = state.layers.find(l => l.id === id);
+          if (layer && layer.shape === 'polygon' && layer.vertices.length > 3 && !layer.locked) {
+            layer.vertices.splice(idx, 1);
+            pushHistory();
+            renderOverlay();
+            renderInspector();
+            persistAndSync(true);
+            showToast('Point removed');
+            return;
+          }
+        }
 
         if (e.shiftKey) {
           if (isSelected(id)) {
@@ -1953,6 +2891,7 @@ void main() {
         }
         renderOverlay();
         syncInspectorNumbers();
+        pushProjectorSync();
       });
 
       overlaySvg.addEventListener('pointerup', (e) => {
@@ -1962,7 +2901,7 @@ void main() {
           touchLoupe.classList.add('hidden');
           renderOverlay();
           pushHistory();
-          persistAndSync();
+          persistAndSync(true);
         }
       });
 
@@ -1977,7 +2916,7 @@ void main() {
       let spaceDown = false;
 
       function applyStageLayout() {
-        if (document.body.classList.contains('stage-fullscreen') || isProjectorWindow) {
+        if (document.body.classList.contains('stage-fullscreen')) {
           stageBox.style.transform = 'none';
           return;
         }
@@ -2059,25 +2998,68 @@ void main() {
       viewportWrap.addEventListener('pointerup', releasePointer);
       viewportWrap.addEventListener('pointercancel', releasePointer);
 
-      document.getElementById('btn-zoom-in').addEventListener('click', () => {
-        state.zoom = Math.min(4.0, state.zoom + 0.15);
-        applyStageLayout();
-      });
-      document.getElementById('btn-zoom-out').addEventListener('click', () => {
-        state.zoom = Math.max(0.3, state.zoom - 0.15);
-        applyStageLayout();
-      });
-      document.getElementById('btn-zoom-fit').addEventListener('click', () => {
-        state.zoom = 1.0;
-        state.panX = 0;
-        state.panY = 0;
-        applyStageLayout();
-      });
+      document.getElementById('btn-zoom-in').addEventListener('click', () => { state.zoom = Math.min(4.0, state.zoom + 0.15); applyStageLayout(); });
+      document.getElementById('btn-zoom-out').addEventListener('click', () => { state.zoom = Math.max(0.3, state.zoom - 0.15); applyStageLayout(); });
+      document.getElementById('btn-zoom-fit').addEventListener('click', () => { state.zoom = 1.0; state.panX = 0; state.panY = 0; applyStageLayout(); });
 
-      /* Delete Layer Helper (Zero Restrictions) */
+      /* =========================================================================
+         3. SEAMLESS LAYER CONTROLS: DUPLICATE, STYLE COPY/PASTE, ONE-CLICK DELETE
+         ========================================================================= */
+      function duplicateLayerById(id) {
+        const lyr = state.layers.find(l => l.id === id);
+        if (!lyr) return;
+        const copy = clone(lyr);
+        copy.id = genId(copy.kind === 'mask' ? 'msk' : 'lyr');
+        copy.name = `${lyr.name} Copy`;
+        transformVertices(copy, p => ({ x: Math.min(0.98, p.x + 0.03), y: Math.min(0.98, p.y + 0.03) }));
+        state.layers.push(copy);
+        state.selectedIds = [copy.id];
+        if (copy.sourceType === 'text') updateTextTexture(copy);
+        pushHistory();
+        refreshAll();
+        showToast(`Duplicated ${lyr.name}`);
+      }
+
+      function copyLayerStyle(layer) {
+        if (!layer) return;
+        state.copiedStyle = {
+          opacity: layer.opacity,
+          feather: layer.feather,
+          cornerRadius: layer.cornerRadius,
+          blendMode: layer.blendMode,
+          sourceType: layer.sourceType === 'media' ? 'preset' : layer.sourceType,
+          shaderPreset: layer.shaderPreset,
+          customGlsl: layer.customGlsl,
+          uniforms: clone(layer.uniforms)
+        };
+        showToast(`Copied style from ${layer.name}`);
+      }
+
+      function pasteLayerStyle(layer) {
+        if (!layer || !state.copiedStyle) return;
+        const s = clone(state.copiedStyle);
+        layer.opacity = s.opacity;
+        layer.feather = s.feather;
+        layer.cornerRadius = s.cornerRadius;
+        layer.blendMode = s.blendMode;
+        if (layer.kind === 'surface') {
+          layer.sourceType = s.sourceType;
+          layer.shaderPreset = s.shaderPreset;
+          layer.customGlsl = s.customGlsl;
+          layer.uniforms = s.uniforms;
+          if (layer.sourceType === 'text') updateTextTexture(layer);
+        }
+        pushHistory();
+        refreshAll();
+        showToast(`Pasted style to ${layer.name}`);
+      }
+
       function deleteLayersByIds(ids) {
         if (!ids || !ids.length) return;
+        const removedNames = [];
         for (const id of ids) {
+          const found = state.layers.find(l => l.id === id);
+          if (found) removedNames.push(found.name);
           if (textureStore.has(id)) {
             const it = textureStore.get(id);
             if (it.video) { it.video.pause(); it.video.src = ''; }
@@ -2092,6 +3074,7 @@ void main() {
         }
         pushHistory();
         refreshAll();
+        showUndoToast(`Deleted ${removedNames[0] || 'layer'}`);
       }
 
       function clearAllLayers() {
@@ -2107,12 +3090,12 @@ void main() {
         state.selectedIds = [];
         pushHistory();
         refreshAll();
-        showToast('Canvas cleared');
+        showUndoToast('Cleared all layers');
       }
 
       document.getElementById('btn-clear-canvas').addEventListener('click', clearAllLayers);
 
-      /* Left Layers Drawer */
+      /* Left Layers Drawer with Always-Accessible Inline Action Strip */
       let draggedLayerId = null;
 
       function renderLayerList() {
@@ -2141,27 +3124,27 @@ void main() {
 
           const row = document.createElement('div');
           row.draggable = true;
-          row.className = `group px-2 py-2 lg:py-1.5 rounded-lg flex items-center justify-between gap-1 cursor-pointer transition ${
-            sel ? 'bg-bgControl text-white hairline-all' : 'text-zinc-400 hover:bg-bgControl/60 hover:text-zinc-200'
+          row.className = `px-2 py-2 lg:py-1.5 rounded-lg flex items-center justify-between gap-1 cursor-pointer transition ${
+            sel ? 'bg-bgControl text-white hairline-all' : 'text-zinc-300 hover:bg-bgControl/60'
           }`;
 
           row.innerHTML = `
-            <div class="flex items-center gap-1.5 min-w-0">
-              <i class="ph ph-dots-six-vertical text-xs text-zinc-600 cursor-grab shrink-0"></i>
+            <div class="flex items-center gap-1.5 min-w-0 flex-1">
+              <i class="ph ph-dots-six-vertical text-xs text-zinc-600 cursor-grab shrink-0" title="Drag to reorder"></i>
               <i class="ph ${icon} text-sm ${isMask ? 'text-red-400' : (sel ? 'text-accent' : 'text-zinc-500')} shrink-0"></i>
-              <span class="text-xs font-medium truncate">${layer.name}</span>
+              <span class="layer-title text-xs font-medium truncate" title="Double-click to rename">${layer.name}</span>
             </div>
             <div class="flex items-center gap-0.5 shrink-0">
-              ${!isMask ? `
-                <button class="act-solo w-5 h-6 rounded hover:bg-white/10 text-[10px] font-mono font-semibold transition ${layer.solo ? 'text-amber-400' : 'text-zinc-600 opacity-0 group-hover:opacity-100'}" title="Solo Layer">S</button>
-              ` : ''}
-              <button class="act-lock w-5 h-6 rounded hover:bg-white/10 flex items-center justify-center transition ${layer.locked ? 'text-zinc-200' : 'text-zinc-600 opacity-0 group-hover:opacity-100'}" title="Lock Geometry">
+              <button class="act-vis w-6 h-6 rounded hover:bg-white/10 flex items-center justify-center ${layer.visible ? 'text-zinc-300' : 'text-zinc-600'} transition" title="Toggle Visibility">
+                <i class="ph ${layer.visible ? 'ph-eye' : 'ph-eye-slash'} text-xs"></i>
+              </button>
+              <button class="act-lock w-6 h-6 rounded hover:bg-white/10 flex items-center justify-center ${layer.locked ? 'text-amber-400' : 'text-zinc-500 hover:text-zinc-300'} transition" title="Toggle Lock">
                 <i class="ph ${layer.locked ? 'ph-lock-simple' : 'ph-lock-simple-open'} text-xs"></i>
               </button>
-              <button class="act-vis w-5 h-6 rounded hover:bg-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition" title="Toggle Visibility">
-                <i class="ph ${layer.visible ? 'ph-eye' : 'ph-eye-slash text-zinc-600'} text-xs"></i>
+              <button class="act-dup w-6 h-6 rounded hover:bg-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition" title="Duplicate Layer">
+                <i class="ph ph-copy text-xs"></i>
               </button>
-              <button class="act-del w-5 h-6 rounded hover:bg-red-950/70 flex items-center justify-center text-zinc-500 hover:text-red-400 transition" title="Delete Layer">
+              <button class="act-del w-6 h-6 rounded hover:bg-red-950/80 flex items-center justify-center text-zinc-400 hover:text-red-400 transition" title="Delete Layer">
                 <i class="ph ph-trash text-xs"></i>
               </button>
             </div>
@@ -2181,33 +3164,50 @@ void main() {
               state.layers.splice(toIdx, 0, moved);
               pushHistory();
               renderLayerList();
-              persistAndSync();
+              persistAndSync(true);
             }
             draggedLayerId = null;
           });
 
+          row.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            openContextMenu(e.clientX, e.clientY, layer.id);
+          });
+
+          const titleEl = row.querySelector('.layer-title');
+          titleEl.addEventListener('dblclick', (e) => {
+            e.stopPropagation();
+            const inp = document.createElement('input');
+            inp.type = 'text';
+            inp.value = layer.name;
+            inp.className = 'w-full h-6 bg-bgBase hairline-all rounded px-1.5 text-xs text-white outline-none';
+            titleEl.replaceWith(inp);
+            inp.focus();
+            inp.select();
+            const commit = () => {
+              layer.name = inp.value.trim() || layer.name;
+              renderLayerList();
+              renderInspector();
+              persistAndSync(true);
+            };
+            inp.addEventListener('blur', commit);
+            inp.addEventListener('keydown', (ev) => {
+              if (ev.key === 'Enter') commit();
+              if (ev.key === 'Escape') renderLayerList();
+            });
+          });
+
           row.addEventListener('click', (e) => {
-            if (e.target.closest('.act-del')) {
-              deleteLayersByIds([layer.id]);
-              return;
-            }
+            if (e.target.closest('.act-del')) { deleteLayersByIds([layer.id]); return; }
+            if (e.target.closest('.act-dup')) { duplicateLayerById(layer.id); return; }
             if (e.target.closest('.act-vis')) {
               layer.visible = !layer.visible;
-              renderLayerList();
-              renderOverlay();
-              persistAndSync();
+              renderLayerList(); renderOverlay(); persistAndSync(true);
               return;
             }
             if (e.target.closest('.act-lock')) {
               layer.locked = !layer.locked;
-              renderLayerList();
-              renderOverlay();
-              return;
-            }
-            if (e.target.closest('.act-solo')) {
-              layer.solo = !layer.solo;
-              renderLayerList();
-              persistAndSync();
+              renderLayerList(); renderOverlay();
               return;
             }
             if (e.shiftKey) {
@@ -2301,7 +3301,7 @@ void main() {
 
             <div>
               <div class="flex justify-between text-[11px] text-zinc-400 mb-1">
-                <span>Soft Edge Feather</span>
+                <span>Feather / Soft Edge</span>
                 <span id="lbl-feather" class="font-mono text-zinc-200">${Math.round(layer.feather * 250)} px</span>
               </div>
               <input id="inp-feather" type="range" min="0" max="0.4" step="0.005" value="${layer.feather}" class="w-full" />
@@ -2375,9 +3375,14 @@ void main() {
 
         host.innerHTML = `
           <div class="space-y-3.5">
-            <div>
-              <label class="block text-[11px] text-zinc-400 mb-1">Name</label>
-              <input id="inp-name" type="text" value="${layer.name}" class="w-full h-8 bg-bgControl hairline-all rounded-lg px-2.5 text-xs text-white outline-none focus:border-accent" />
+            <div class="flex items-end gap-1.5">
+              <div class="flex-1 min-w-0">
+                <label class="block text-[11px] text-zinc-400 mb-1">Name</label>
+                <input id="inp-name" type="text" value="${layer.name}" class="w-full h-8 bg-bgControl hairline-all rounded-lg px-2.5 text-xs text-white outline-none focus:border-accent" />
+              </div>
+              <button id="btn-solo-layer" class="h-8 px-2.5 rounded-lg hairline-all text-[11px] font-mono transition ${layer.solo ? 'bg-amber-500/20 border-amber-400/50 text-amber-300' : 'bg-bgControl text-zinc-400 hover:text-white'}" title="Solo Layer">
+                Solo
+              </button>
             </div>
 
             <div class="space-y-2">
@@ -2389,7 +3394,7 @@ void main() {
                 <button data-src="custom" class="src-btn py-1 rounded text-[11px] font-medium transition ${layer.sourceType === 'custom' ? 'bg-bgPanel text-white' : 'text-zinc-400 hover:text-white'}">GLSL</button>
               </div>
 
-              ${layer.sourceType === 'preset' ? `<div class="grid grid-cols-2 gap-1.5">${swatchesHtml}</div>` : ''}
+              ${layer.sourceType === 'preset' ? `<div class="grid grid-cols-2 gap-1.5 max-h-56 overflow-y-auto pr-0.5">${swatchesHtml}</div>` : ''}
 
               ${layer.sourceType === 'text' ? `
                 <div class="space-y-2 p-2.5 rounded-xl bg-bgControl/60 hairline-all">
@@ -2397,10 +3402,11 @@ void main() {
                   <div class="grid grid-cols-2 gap-1.5">
                     <select id="sel-text-font" class="h-7 bg-bgControl hairline-all rounded-lg px-2 text-[11px] text-zinc-200 outline-none">
                       <option value="Geist" ${layer.textProps.fontFamily === 'Geist' ? 'selected' : ''}>Geist</option>
+                      <option value="Plus Jakarta Sans" ${layer.textProps.fontFamily === 'Plus Jakarta Sans' ? 'selected' : ''}>Jakarta Sans</option>
+                      <option value="Syne" ${layer.textProps.fontFamily === 'Syne' ? 'selected' : ''}>Syne</option>
+                      <option value="Space Grotesk" ${layer.textProps.fontFamily === 'Space Grotesk' ? 'selected' : ''}>Space Grotesk</option>
+                      <option value="Instrument Serif" ${layer.textProps.fontFamily === 'Instrument Serif' ? 'selected' : ''}>Instrument Serif</option>
                       <option value="Geist Mono" ${layer.textProps.fontFamily === 'Geist Mono' ? 'selected' : ''}>Geist Mono</option>
-                      <option value="Georgia" ${layer.textProps.fontFamily === 'Georgia' ? 'selected' : ''}>Georgia</option>
-                      <option value="Arial Black" ${layer.textProps.fontFamily === 'Arial Black' ? 'selected' : ''}>Arial Black</option>
-                      <option value="Courier New" ${layer.textProps.fontFamily === 'Courier New' ? 'selected' : ''}>Courier New</option>
                     </select>
                     <select id="sel-text-weight" class="h-7 bg-bgControl hairline-all rounded-lg px-2 text-[11px] text-zinc-200 outline-none">
                       <option value="400" ${layer.textProps.fontWeight === '400' ? 'selected' : ''}>Regular</option>
@@ -2410,20 +3416,23 @@ void main() {
                   </div>
                   <div class="grid grid-cols-3 gap-1.5 items-center">
                     <label class="flex items-center justify-between bg-bgControl hairline-all rounded-lg px-2 h-7 cursor-pointer">
-                      <span class="text-[10px] text-zinc-400">Fill</span>
+                      <span class="text-[10px] text-zinc-400">Text</span>
                       <input id="inp-text-color" type="color" value="${layer.textProps.color}" class="w-4 h-4 bg-transparent border-0" />
                     </label>
                     <label class="flex items-center justify-between bg-bgControl hairline-all rounded-lg px-2 h-7 cursor-pointer">
-                      <span class="text-[10px] text-zinc-400">Edge</span>
-                      <input id="inp-text-stroke-col" type="color" value="${layer.textProps.strokeColor || '#09090b'}" class="w-4 h-4 bg-transparent border-0" />
+                      <span class="text-[10px] text-zinc-400">Pill</span>
+                      <input id="inp-text-bg-col" type="color" value="${layer.textProps.bgColor || '#18181b'}" class="w-4 h-4 bg-transparent border-0" />
                     </label>
-                    <div class="flex bg-bgControl hairline-all rounded-lg p-0.5 h-7">
-                      ${['left', 'center', 'right'].map(al => `
-                        <button data-align="${al}" class="btn-text-align flex-1 rounded text-[11px] ${layer.textProps.align === al ? 'bg-bgPanel text-white' : 'text-zinc-400'}">
-                          <i class="ph ph-text-align-${al}"></i>
-                        </button>
-                      `).join('')}
-                    </div>
+                    <button id="btn-text-pill" class="h-7 rounded-lg hairline-all text-[10px] transition ${layer.textProps.bgPill ? 'bg-accent text-white' : 'bg-bgControl text-zinc-400'}">
+                      Pill: ${layer.textProps.bgPill ? 'On' : 'Off'}
+                    </button>
+                  </div>
+                  <div class="flex bg-bgControl hairline-all rounded-lg p-0.5 h-7">
+                    ${['left', 'center', 'right'].map(al => `
+                      <button data-align="${al}" class="btn-text-align flex-1 rounded text-[11px] ${layer.textProps.align === al ? 'bg-bgPanel text-white' : 'text-zinc-400'}">
+                        <i class="ph ph-text-align-${al}"></i>
+                      </button>
+                    `).join('')}
                   </div>
                   <div class="grid grid-cols-2 gap-2">
                     <div>
@@ -2434,19 +3443,13 @@ void main() {
                     </div>
                     <div>
                       <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
-                        <span>Outline</span><span id="lbl-txt-str" class="font-mono">${layer.textProps.strokeWidth || 0}px</span>
-                      </div>
-                      <input id="inp-text-stroke" type="range" min="0" max="24" step="1" value="${layer.textProps.strokeWidth || 0}" class="w-full" />
-                    </div>
-                    <div>
-                      <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
                         <span>Tracking</span><span id="lbl-txt-trk" class="font-mono">${(layer.textProps.letterSpacing ?? 0.04).toFixed(2)}em</span>
                       </div>
                       <input id="inp-text-track" type="range" min="-0.05" max="0.4" step="0.01" value="${layer.textProps.letterSpacing ?? 0.04}" class="w-full" />
                     </div>
-                    <div>
+                    <div class="col-span-2">
                       <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
-                        <span>Leading</span><span id="lbl-txt-lh" class="font-mono">${(layer.textProps.lineHeight ?? 1.08).toFixed(2)}</span>
+                        <span>Line Height</span><span id="lbl-txt-lh" class="font-mono">${(layer.textProps.lineHeight ?? 1.08).toFixed(2)}</span>
                       </div>
                       <input id="inp-text-lh" type="range" min="0.8" max="2.0" step="0.04" value="${layer.textProps.lineHeight ?? 1.08}" class="w-full" />
                     </div>
@@ -2537,9 +3540,13 @@ void main() {
             <div class="space-y-2 pt-3 hairline-t">
               <div class="flex items-center justify-between">
                 <span class="text-[11px] font-medium text-zinc-400">Compositing & Grade</span>
-                <button id="btn-invert" class="px-2 h-6 rounded hairline-all text-[10px] transition ${(layer.uniforms.invert ?? 0) > 0.5 ? 'bg-accent text-white' : 'bg-bgControl text-zinc-400 hover:text-white'}">
-                  Invert
-                </button>
+                <div class="flex items-center gap-1">
+                  <button id="btn-copy-style" class="px-2 h-6 rounded bg-bgControl hover:bg-bgHover hairline-all text-[10px] text-zinc-300" title="Copy Style">Copy</button>
+                  <button id="btn-paste-style" class="px-2 h-6 rounded bg-bgControl hover:bg-bgHover hairline-all text-[10px] text-zinc-300 disabled:opacity-35" ${!state.copiedStyle ? 'disabled' : ''} title="Paste Style">Paste</button>
+                  <button id="btn-invert" class="px-2 h-6 rounded hairline-all text-[10px] transition ${(layer.uniforms.invert ?? 0) > 0.5 ? 'bg-accent text-white' : 'bg-bgControl text-zinc-400 hover:text-white'}">
+                    Invert
+                  </button>
+                </div>
               </div>
               <div>
                 <div class="flex justify-between text-[11px] text-zinc-400 mb-0.5">
@@ -2573,6 +3580,12 @@ void main() {
                   </div>
                   <input id="inp-hue" type="range" min="0" max="1" step="0.02" value="${layer.uniforms.hueShift ?? 0}" class="w-full" />
                 </div>
+                <div class="col-span-2">
+                  <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                    <span>Blur / Glow</span><span id="lbl-glow" class="font-mono">${Math.round((layer.uniforms.glow ?? 0) * 100)}%</span>
+                  </div>
+                  <input id="inp-glow" type="range" min="0" max="1" step="0.02" value="${layer.uniforms.glow ?? 0}" class="w-full" />
+                </div>
               </div>
 
               <div class="flex items-center justify-between gap-1.5 pt-1">
@@ -2597,12 +3610,24 @@ void main() {
 
         bindTransformEvents(layer);
 
+        const btnSolo = document.getElementById('btn-solo-layer');
+        if (btnSolo) btnSolo.addEventListener('click', () => {
+          layer.solo = !layer.solo;
+          renderInspector();
+          persistAndSync(true);
+        });
+
+        const btnCopySt = document.getElementById('btn-copy-style');
+        if (btnCopySt) btnCopySt.addEventListener('click', () => { copyLayerStyle(layer); renderInspector(); });
+        const btnPasteSt = document.getElementById('btn-paste-style');
+        if (btnPasteSt) btnPasteSt.addEventListener('click', () => pasteLayerStyle(layer));
+
         host.querySelectorAll('.src-btn').forEach(btn => {
           btn.addEventListener('click', () => {
             layer.sourceType = btn.getAttribute('data-src');
             if (layer.sourceType === 'text') updateTextTexture(layer);
             renderInspector();
-            persistAndSync();
+            persistAndSync(true);
           });
         });
 
@@ -2612,7 +3637,7 @@ void main() {
             layer.sourceType = 'preset';
             renderInspector();
             pushHistory();
-            persistAndSync();
+            persistAndSync(true);
           });
         });
 
@@ -2620,66 +3645,66 @@ void main() {
         if (txtContent) txtContent.addEventListener('input', (e) => {
           layer.textProps.content = e.target.value;
           updateTextTexture(layer);
-          persistAndSync();
+          persistAndSync(true);
         });
         const selFont = document.getElementById('sel-text-font');
         if (selFont) selFont.addEventListener('change', (e) => {
           layer.textProps.fontFamily = e.target.value;
           updateTextTexture(layer);
-          persistAndSync();
+          persistAndSync(true);
         });
         const selWeight = document.getElementById('sel-text-weight');
         if (selWeight) selWeight.addEventListener('change', (e) => {
           layer.textProps.fontWeight = e.target.value;
           updateTextTexture(layer);
-          persistAndSync();
+          persistAndSync(true);
         });
         const inpTxtCol = document.getElementById('inp-text-color');
         if (inpTxtCol) inpTxtCol.addEventListener('input', (e) => {
           layer.textProps.color = e.target.value;
           updateTextTexture(layer);
-          persistAndSync();
+          persistAndSync(true);
         });
-        const inpTxtStrCol = document.getElementById('inp-text-stroke-col');
-        if (inpTxtStrCol) inpTxtStrCol.addEventListener('input', (e) => {
-          layer.textProps.strokeColor = e.target.value;
+        const inpTxtBgCol = document.getElementById('inp-text-bg-col');
+        if (inpTxtBgCol) inpTxtBgCol.addEventListener('input', (e) => {
+          layer.textProps.bgColor = e.target.value;
           updateTextTexture(layer);
-          persistAndSync();
+          persistAndSync(true);
+        });
+        const btnTxtPill = document.getElementById('btn-text-pill');
+        if (btnTxtPill) btnTxtPill.addEventListener('click', () => {
+          layer.textProps.bgPill = !layer.textProps.bgPill;
+          updateTextTexture(layer);
+          renderInspector();
+          persistAndSync(true);
         });
         const inpTxtSz = document.getElementById('inp-text-size');
         if (inpTxtSz) inpTxtSz.addEventListener('input', (e) => {
           layer.textProps.fontSize = parseInt(e.target.value, 10);
           document.getElementById('lbl-txt-sz').textContent = `${layer.textProps.fontSize}px`;
           updateTextTexture(layer);
-          persistAndSync();
-        });
-        const inpTxtStr = document.getElementById('inp-text-stroke');
-        if (inpTxtStr) inpTxtStr.addEventListener('input', (e) => {
-          layer.textProps.strokeWidth = parseInt(e.target.value, 10);
-          document.getElementById('lbl-txt-str').textContent = `${layer.textProps.strokeWidth}px`;
-          updateTextTexture(layer);
-          persistAndSync();
+          persistAndSync(true);
         });
         const inpTxtTrk = document.getElementById('inp-text-track');
         if (inpTxtTrk) inpTxtTrk.addEventListener('input', (e) => {
           layer.textProps.letterSpacing = parseFloat(e.target.value);
           document.getElementById('lbl-txt-trk').textContent = `${layer.textProps.letterSpacing.toFixed(2)}em`;
           updateTextTexture(layer);
-          persistAndSync();
+          persistAndSync(true);
         });
         const inpTxtLh = document.getElementById('inp-text-lh');
         if (inpTxtLh) inpTxtLh.addEventListener('input', (e) => {
           layer.textProps.lineHeight = parseFloat(e.target.value);
           document.getElementById('lbl-txt-lh').textContent = layer.textProps.lineHeight.toFixed(2);
           updateTextTexture(layer);
-          persistAndSync();
+          persistAndSync(true);
         });
         host.querySelectorAll('.btn-text-align').forEach(btn => {
           btn.addEventListener('click', () => {
             layer.textProps.align = btn.getAttribute('data-align');
             updateTextTexture(layer);
             renderInspector();
-            persistAndSync();
+            persistAndSync(true);
           });
         });
 
@@ -2695,7 +3720,7 @@ void main() {
           btn.addEventListener('click', () => {
             layer.media.fit = btn.getAttribute('data-fit');
             renderInspector();
-            persistAndSync();
+            persistAndSync(true);
           });
         });
         const vidSpd = document.getElementById('inp-vid-spd');
@@ -2704,6 +3729,7 @@ void main() {
           document.getElementById('lbl-vid-spd').textContent = `${layer.media.speed.toFixed(1)}×`;
           const it = textureStore.get(layer.id);
           if (it?.video) it.video.playbackRate = layer.media.speed;
+          pushProjectorSync();
         });
         const vidLoop = document.getElementById('btn-vid-loop');
         if (vidLoop) vidLoop.addEventListener('click', () => {
@@ -2711,6 +3737,7 @@ void main() {
           const it = textureStore.get(layer.id);
           if (it?.video) it.video.loop = layer.media.loop;
           renderInspector();
+          pushProjectorSync();
         });
         const vidMute = document.getElementById('btn-vid-mute');
         if (vidMute) vidMute.addEventListener('click', () => {
@@ -2729,7 +3756,7 @@ void main() {
 
         const bindColor = (id, key) => {
           const el = document.getElementById(id);
-          if (el) el.addEventListener('input', (e) => { layer.uniforms[key] = e.target.value; persistAndSync(); });
+          if (el) el.addEventListener('input', (e) => { layer.uniforms[key] = e.target.value; persistAndSync(true); });
         };
         bindColor('inp-c1', 'color1');
         bindColor('inp-c2', 'color2');
@@ -2741,7 +3768,7 @@ void main() {
             obj[key] = parseFloat(e.target.value);
             const lbl = document.getElementById(lblId);
             if (lbl) lbl.textContent = fmt(obj[key]);
-            persistAndSync();
+            persistAndSync(true);
           });
         };
         bindSlider('inp-spd', 'lbl-spd', layer.uniforms, 'speed', v => `${v.toFixed(1)}×`);
@@ -2752,20 +3779,21 @@ void main() {
         bindSlider('inp-ct', 'lbl-ct', layer.uniforms, 'contrast', v => `${Math.round(v * 100)}%`);
         bindSlider('inp-sat', 'lbl-sat', layer.uniforms, 'saturation', v => `${Math.round(v * 100)}%`);
         bindSlider('inp-hue', 'lbl-hue', layer.uniforms, 'hueShift', v => `${Math.round(v * 360)}°`);
+        bindSlider('inp-glow', 'lbl-glow', layer.uniforms, 'glow', v => `${Math.round(v * 100)}%`);
 
         const btnInv = document.getElementById('btn-invert');
         if (btnInv) btnInv.addEventListener('click', () => {
           layer.uniforms.invert = (layer.uniforms.invert ?? 0) > 0.5 ? 0.0 : 1.0;
           renderInspector();
-          persistAndSync();
+          persistAndSync(true);
         });
 
         const selBlend = document.getElementById('sel-blend');
-        if (selBlend) selBlend.addEventListener('change', (e) => { layer.blendMode = e.target.value; persistAndSync(); });
+        if (selBlend) selBlend.addEventListener('change', (e) => { layer.blendMode = e.target.value; persistAndSync(true); });
         const flipH = document.getElementById('btn-flip-h');
-        if (flipH) flipH.addEventListener('click', () => { layer.flipH = !layer.flipH; renderInspector(); persistAndSync(); });
+        if (flipH) flipH.addEventListener('click', () => { layer.flipH = !layer.flipH; renderInspector(); persistAndSync(true); });
         const flipV = document.getElementById('btn-flip-v');
-        if (flipV) flipV.addEventListener('click', () => { layer.flipV = !layer.flipV; renderInspector(); persistAndSync(); });
+        if (flipV) flipV.addEventListener('click', () => { layer.flipV = !layer.flipV; renderInspector(); persistAndSync(true); });
       }
 
       function bindTransformEvents(layer) {
@@ -2779,26 +3807,23 @@ void main() {
             if (layer.meshSubdiv > 1) rebuildMeshGrid(layer);
           } else {
             const b = getBounds(layer);
-            transformVertices(layer, p => ({
-              x: (p.x - b.minX) / b.w,
-              y: (p.y - b.minY) / b.h
-            }));
+            transformVertices(layer, p => ({ x: (p.x - b.minX) / b.w, y: (p.y - b.minY) / b.h }));
           }
-          renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync();
+          renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync(true);
         });
 
         const inpFeather = document.getElementById('inp-feather');
         if (inpFeather) inpFeather.addEventListener('input', (e) => {
           layer.feather = parseFloat(e.target.value);
           document.getElementById('lbl-feather').textContent = `${Math.round(layer.feather * 250)} px`;
-          persistAndSync();
+          persistAndSync(true);
         });
 
         const inpRad = document.getElementById('inp-radius');
         if (inpRad) inpRad.addEventListener('input', (e) => {
           layer.cornerRadius = parseFloat(e.target.value);
           document.getElementById('lbl-radius').textContent = `${Math.round(layer.cornerRadius * 100)}%`;
-          persistAndSync();
+          persistAndSync(true);
         });
 
         const ix = document.getElementById('inp-x'), iy = document.getElementById('inp-y');
@@ -2808,7 +3833,7 @@ void main() {
             const dx = Math.max(0, Math.min(1, (parseFloat(ix.value) || 0) / state.outputWidth)) - b.cx;
             const dy = Math.max(0, Math.min(1, (parseFloat(iy.value) || 0) / state.outputHeight)) - b.cy;
             transformVertices(layer, p => ({ x: Math.max(0, Math.min(1, p.x + dx)), y: Math.max(0, Math.min(1, p.y + dy)) }));
-            renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync();
+            renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync(true);
           };
           ix.addEventListener('change', onPos);
           iy.addEventListener('change', onPos);
@@ -2824,7 +3849,7 @@ void main() {
               x: Math.max(0, Math.min(1, b.cx + (p.x - b.cx) * sx)),
               y: Math.max(0, Math.min(1, b.cy + (p.y - b.cy) * sy))
             }));
-            renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync();
+            renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync(true);
           };
           iw.addEventListener('change', onDim);
           ih.addEventListener('change', onDim);
@@ -2838,7 +3863,7 @@ void main() {
               x: Math.max(0, Math.min(1, b.cx + (p.x - b.cx) * f)),
               y: Math.max(0, Math.min(1, b.cy + (p.y - b.cy) * f))
             }));
-            renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync();
+            renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync(true);
           });
         });
 
@@ -2855,7 +3880,7 @@ void main() {
                 y: Math.max(0, Math.min(1, b.cy + (dx * sa + dy * ca)))
               };
             });
-            renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync();
+            renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync(true);
           });
         });
 
@@ -2865,14 +3890,14 @@ void main() {
             layer.meshSubdiv = d;
             if (d > 1) rebuildMeshGrid(layer);
             else layer.meshGrid = null;
-            renderInspector(); renderOverlay(); pushHistory(); persistAndSync();
+            renderInspector(); renderOverlay(); pushHistory(); persistAndSync(true);
           });
         });
 
         const resetMesh = document.getElementById('btn-reset-mesh');
         if (resetMesh) resetMesh.addEventListener('click', () => {
           rebuildMeshGrid(layer);
-          renderOverlay(); pushHistory(); persistAndSync();
+          renderOverlay(); pushHistory(); persistAndSync(true);
         });
 
         document.querySelectorAll('.vtx-inp').forEach(inp => {
@@ -2883,7 +3908,7 @@ void main() {
             if (axis === 'x') layer.vertices[idx].x = Math.max(0, Math.min(1, val / state.outputWidth));
             else layer.vertices[idx].y = Math.max(0, Math.min(1, val / state.outputHeight));
             if (layer.meshSubdiv > 1) rebuildMeshGrid(layer);
-            renderOverlay(); pushHistory(); persistAndSync();
+            renderOverlay(); pushHistory(); persistAndSync(true);
           });
         });
 
@@ -2892,7 +3917,7 @@ void main() {
             const idx = parseInt(btn.getAttribute('data-del-vtx'), 10);
             if (layer.vertices.length > 3) {
               layer.vertices.splice(idx, 1);
-              renderInspector(); renderOverlay(); pushHistory(); persistAndSync();
+              renderInspector(); renderOverlay(); pushHistory(); persistAndSync(true);
             }
           });
         });
@@ -2902,7 +3927,7 @@ void main() {
           const n = layer.vertices.length;
           const p0 = layer.vertices[n - 1], p1 = layer.vertices[0];
           layer.vertices.push({ x: (p0.x + p1.x) * 0.5, y: (p0.y + p1.y) * 0.5 });
-          renderInspector(); renderOverlay(); pushHistory();
+          renderInspector(); renderOverlay(); pushHistory(); persistAndSync(true);
         });
       }
 
@@ -2926,10 +3951,12 @@ void main() {
         st.className = 'px-3 py-2 rounded-lg bg-emerald-950/60 border border-emerald-500/40 text-xs font-mono text-emerald-300';
         st.textContent = 'Compiled & applied';
         renderInspector();
-        persistAndSync();
+        persistAndSync(true);
       });
 
-      /* Time-Based Show Sequencer */
+      /* =========================================================================
+         4. TIME-BASED SHOW SEQUENCER
+         ========================================================================= */
       function captureCue(name, duration = 8.0, fade = 1.5, ease = 'cubic', holdMode = 'inherit') {
         const snapshot = {};
         for (const l of state.layers) {
@@ -3011,6 +4038,7 @@ void main() {
             l.uniforms.contrast = src.uniforms.contrast + (dst.uniforms.contrast - src.uniforms.contrast) * t;
             l.uniforms.saturation = (src.uniforms.saturation ?? 1) + ((dst.uniforms.saturation ?? 1) - (src.uniforms.saturation ?? 1)) * t;
             l.uniforms.hueShift = (src.uniforms.hueShift ?? 0) + ((dst.uniforms.hueShift ?? 0) - (src.uniforms.hueShift ?? 0)) * t;
+            l.uniforms.glow = (src.uniforms.glow ?? 0) + ((dst.uniforms.glow ?? 0) - (src.uniforms.glow ?? 0)) * t;
             l.uniforms.color1 = lerpHex(src.uniforms.color1, dst.uniforms.color1, t);
             l.uniforms.color2 = lerpHex(src.uniforms.color2, dst.uniforms.color2, t);
             l.uniforms.color3 = lerpHex(src.uniforms.color3 || '#e4e4e7', dst.uniforms.color3 || '#e4e4e7', t);
@@ -3104,7 +4132,7 @@ void main() {
               state.cues.splice(idx, 0, moved);
               renderCueTrack();
               renderCueSidebar();
-              persistAndSync();
+              persistAndSync(true);
             }
             draggedCueIdx = null;
           });
@@ -3121,7 +4149,7 @@ void main() {
             renderCueSidebar();
             renderOverlay();
             renderInspector();
-            persistAndSync();
+            persistAndSync(true);
           });
 
           track.appendChild(card);
@@ -3169,10 +4197,10 @@ void main() {
             <div>
               <label class="block text-[9px] text-zinc-500 mb-0.5">Easing</label>
               <select id="sel-cue-ease" class="w-full h-7 bg-bgControl hairline-all rounded px-1 text-[10px] text-zinc-200 outline-none">
-                <option value="cubic" ${cue.ease === 'cubic' ? 'selected' : ''}>Cubic</option>
-                <option value="easeInOut" ${cue.ease === 'easeInOut' ? 'selected' : ''}>Ease</option>
+                <option value="cubic" ${cue.ease === 'cubic' ? 'selected' : ''}>Ease In Out</option>
+                <option value="easeInOut" ${cue.ease === 'easeInOut' ? 'selected' : ''}>Ease Out</option>
                 <option value="linear" ${cue.ease === 'linear' ? 'selected' : ''}>Linear</option>
-                <option value="snap" ${cue.ease === 'snap' ? 'selected' : ''}>Snap</option>
+                <option value="snap" ${cue.ease === 'snap' ? 'selected' : ''}>Cut</option>
               </select>
             </div>
           </div>
@@ -3180,28 +4208,28 @@ void main() {
             <select id="sel-cue-hold" class="w-full h-7 bg-bgControl hairline-all rounded px-2 text-[10px] text-zinc-300 outline-none">
               <option value="inherit" ${(cue.holdMode || 'inherit') === 'inherit' ? 'selected' : ''}>Follow Global Playback Mode</option>
               <option value="auto" ${cue.holdMode === 'auto' ? 'selected' : ''}>Auto-Advance After Duration</option>
-              <option value="wait" ${cue.holdMode === 'wait' ? 'selected' : ''}>Wait for Presenter Trigger</option>
+              <option value="wait" ${cue.holdMode === 'wait' ? 'selected' : ''}>Presenter Manual Hold</option>
             </select>
           </div>
         `;
 
         document.getElementById('inp-cue-name').addEventListener('input', (e) => { cue.name = e.target.value; renderCueTrack(); });
-        document.getElementById('inp-cue-dur').addEventListener('change', (e) => { cue.duration = Math.max(0.5, parseFloat(e.target.value) || 4); renderCueTrack(); persistAndSync(); });
-        document.getElementById('inp-cue-fade').addEventListener('change', (e) => { cue.fade = Math.max(0, Math.min(cue.duration, parseFloat(e.target.value) || 0)); renderCueTrack(); persistAndSync(); });
-        document.getElementById('sel-cue-ease').addEventListener('change', (e) => { cue.ease = e.target.value; persistAndSync(); });
-        document.getElementById('sel-cue-hold').addEventListener('change', (e) => { cue.holdMode = e.target.value; renderCueTrack(); persistAndSync(); });
+        document.getElementById('inp-cue-dur').addEventListener('change', (e) => { cue.duration = Math.max(0.5, parseFloat(e.target.value) || 4); renderCueTrack(); persistAndSync(true); });
+        document.getElementById('inp-cue-fade').addEventListener('change', (e) => { cue.fade = Math.max(0, Math.min(cue.duration, parseFloat(e.target.value) || 0)); renderCueTrack(); persistAndSync(true); });
+        document.getElementById('sel-cue-ease').addEventListener('change', (e) => { cue.ease = e.target.value; persistAndSync(true); });
+        document.getElementById('sel-cue-hold').addEventListener('change', (e) => { cue.holdMode = e.target.value; renderCueTrack(); persistAndSync(true); });
         document.getElementById('btn-cue-dup').addEventListener('click', () => {
           const copy = clone(cue);
           copy.id = genId('cue');
           copy.name = `${cue.name} Copy`;
           state.cues.splice(idx + 1, 0, copy);
           state.selectedCueId = copy.id;
-          renderCueTrack(); renderCueSidebar(); persistAndSync();
+          renderCueTrack(); renderCueSidebar(); persistAndSync(true);
         });
         document.getElementById('btn-cue-del').addEventListener('click', () => {
           state.cues.splice(idx, 1);
           state.selectedCueId = state.cues[Math.max(0, idx - 1)]?.id || null;
-          renderCueTrack(); renderCueSidebar(); persistAndSync();
+          renderCueTrack(); renderCueSidebar(); persistAndSync(true);
         });
       }
 
@@ -3212,7 +4240,7 @@ void main() {
         evaluateShow(state.showTime);
         updatePlayhead();
         renderOverlay();
-        persistAndSync();
+        persistAndSync(true);
       });
 
       function updatePlayUI() {
@@ -3238,6 +4266,7 @@ void main() {
         if (state.waitingNextCue) { goNextCue(); return; }
         state.isPlaying = !state.isPlaying;
         updatePlayUI();
+        pushProjectorSync();
       }
 
       function goNextCue() {
@@ -3251,7 +4280,7 @@ void main() {
         updatePlayhead();
         renderOverlay();
         updatePlayUI();
-        persistAndSync();
+        persistAndSync(true);
       }
 
       function goPrevCue() {
@@ -3265,7 +4294,7 @@ void main() {
         updatePlayhead();
         renderOverlay();
         updatePlayUI();
-        persistAndSync();
+        persistAndSync(true);
       }
 
       document.getElementById('btn-play').addEventListener('click', togglePlayback);
@@ -3277,7 +4306,7 @@ void main() {
         updatePlayhead();
         renderOverlay();
         updatePlayUI();
-        persistAndSync();
+        persistAndSync(true);
       });
       document.getElementById('btn-cue-next').addEventListener('click', goNextCue);
       document.getElementById('btn-cue-prev').addEventListener('click', goPrevCue);
@@ -3292,17 +4321,17 @@ void main() {
       document.getElementById('btn-cue-mode').addEventListener('click', () => {
         state.presenterMode = !state.presenterMode;
         document.getElementById('ico-cue-mode').className = state.presenterMode ? 'ph ph-hand-pointing text-xs text-accent' : 'ph ph-play-circle text-xs text-accent';
-        document.getElementById('lbl-cue-mode').textContent = state.presenterMode ? 'Presenter Hold' : 'Auto-Play';
+        document.getElementById('lbl-cue-mode').textContent = state.presenterMode ? 'Manual Hold' : 'Auto-Advance';
         if (!state.presenterMode) state.waitingNextCue = false;
         updatePlayUI();
-        showToast(state.presenterMode ? 'Presenter Hold: Pauses at each cue' : 'Timed Auto-Play');
+        showToast(state.presenterMode ? 'Presenter Manual Hold: Pauses at each cue' : 'Auto-Advance Mode');
       });
 
       document.getElementById('btn-cue-capture').addEventListener('click', () => {
         const cue = captureCue();
         state.cues.push(cue);
         state.selectedCueId = cue.id;
-        renderCueTrack(); renderCueSidebar(); persistAndSync();
+        renderCueTrack(); renderCueSidebar(); persistAndSync(true);
         showToast(`Captured ${cue.name}`);
       });
 
@@ -3310,40 +4339,35 @@ void main() {
         const cue = state.cues.find(c => c.id === state.selectedCueId);
         if (!cue) return;
         cue.snapshot = captureCue(cue.name, cue.duration, cue.fade, cue.ease, cue.holdMode).snapshot;
-        persistAndSync();
+        persistAndSync(true);
         showToast(`Updated ${cue.name}`);
       });
 
-      /* Local Project Library & Portable .pmap Export / Import */
+      /* =========================================================================
+         5. LOCAL PROJECT LIBRARY & PORTABLE .PMAP FILE EXPORT / IMPORT
+         ========================================================================= */
       function getProjectLibrary() {
         try {
           const raw = localStorage.getItem(LIBRARY_KEY);
           return raw ? JSON.parse(raw) : [];
-        } catch (e) {
-          return [];
-        }
+        } catch (e) { return []; }
       }
 
       function setProjectLibrary(list) {
-        try {
-          localStorage.setItem(LIBRARY_KEY, JSON.stringify(list));
-        } catch (e) {}
+        try { localStorage.setItem(LIBRARY_KEY, JSON.stringify(list)); } catch (e) {}
       }
 
       function captureStageThumbnail() {
         try {
           renderGL(performance.now() / 1000);
           const thumb = document.createElement('canvas');
-          thumb.width = 320;
-          thumb.height = 180;
+          thumb.width = 320; thumb.height = 180;
           const ctx = thumb.getContext('2d');
           ctx.fillStyle = '#000000';
           ctx.fillRect(0, 0, 320, 180);
           ctx.drawImage(canvas, 0, 0, 320, 180);
           return thumb.toDataURL('image/jpeg', 0.72);
-        } catch (e) {
-          return '';
-        }
+        } catch (e) { return ''; }
       }
 
       function saveCurrentToLibrary(asNewSnapshot = false) {
@@ -3405,6 +4429,7 @@ void main() {
         document.getElementById('inp-project-name').value = state.projectName;
         rebuildAllTextTextures();
         await restorePersistedMedia();
+        await pushAllMediaToProjector();
         historyStack.length = 0;
         redoStack.length = 0;
         pushHistory();
@@ -3447,6 +4472,9 @@ void main() {
             </div>
             <div class="px-2.5 py-2 hairline-t flex items-center justify-between gap-1.5 bg-bgBase/30">
               <button class="act-open-proj flex-1 h-7 rounded-lg bg-accent hover:bg-blue-500 text-white text-[11px] font-medium transition">Open</button>
+              <button class="act-dup-proj w-7 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300" title="Duplicate Project">
+                <i class="ph ph-copy text-xs"></i>
+              </button>
               <button class="act-ren-proj w-7 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300" title="Rename">
                 <i class="ph ph-pencil-simple text-xs"></i>
               </button>
@@ -3460,6 +4488,19 @@ void main() {
             await loadProjectRecord(proj.data);
             document.getElementById('projects-modal').classList.add('hidden');
             showToast(`Opened ${proj.name}`);
+          });
+
+          card.querySelector('.act-dup-proj').addEventListener('click', () => {
+            const copy = clone(proj);
+            copy.id = genId('proj');
+            copy.name = `${proj.name} Copy`;
+            copy.data.projectId = copy.id;
+            copy.data.projectName = copy.name;
+            copy.updatedAt = Date.now();
+            lib.unshift(copy);
+            setProjectLibrary(lib);
+            renderProjectsModal();
+            showToast(`Duplicated ${proj.name}`);
           });
 
           card.querySelector('.act-ren-proj').addEventListener('click', () => {
@@ -3489,7 +4530,7 @@ void main() {
             const nextLib = lib.filter(x => x.id !== proj.id);
             setProjectLibrary(nextLib);
             renderProjectsModal();
-            showToast('Deleted snapshot');
+            showToast('Deleted project');
           });
 
           grid.appendChild(card);
@@ -3502,7 +4543,7 @@ void main() {
         for (const l of state.layers) {
           if (l.sourceType === 'media' && l.media?.blobKey) {
             const blob = await loadMediaBlob(l.media.blobKey);
-            if (blob && blob.size <= 15 * 1024 * 1024) {
+            if (blob && blob.size <= 18 * 1024 * 1024) {
               const dataUrl = await blobToDataURL(blob);
               if (dataUrl) embeddedMedia[l.media.blobKey] = { name: l.media.name, type: blob.type, dataUrl };
             }
@@ -3638,7 +4679,7 @@ void main() {
 
       document.getElementById('inp-project-name').addEventListener('input', (e) => {
         state.projectName = e.target.value;
-        persistAndSync();
+        persistAndSync(true);
       });
 
       /* Responsive Desktop Drawers & Mobile Bottom Sheets */
@@ -3728,7 +4769,7 @@ void main() {
         applyStageLayout();
         syncInspectorNumbers();
         pushHistory();
-        persistAndSync();
+        persistAndSync(true);
       }
 
       document.querySelectorAll('.res-btn').forEach(btn => {
@@ -3781,16 +4822,7 @@ void main() {
 
       document.getElementById('btn-dup-layer').addEventListener('click', () => {
         const lyr = primarySelectedLayer();
-        if (!lyr) return;
-        const copy = clone(lyr);
-        copy.id = genId(copy.kind === 'mask' ? 'msk' : 'lyr');
-        copy.name = `${lyr.name} Copy`;
-        transformVertices(copy, p => ({ x: Math.min(0.98, p.x + 0.03), y: Math.min(0.98, p.y + 0.03) }));
-        state.layers.push(copy);
-        state.selectedIds = [copy.id];
-        if (copy.sourceType === 'text') updateTextTexture(copy);
-        pushHistory();
-        refreshAll();
+        if (lyr) duplicateLayerById(lyr.id);
       });
 
       document.getElementById('btn-reset-layer').addEventListener('click', () => {
@@ -3809,7 +4841,7 @@ void main() {
       document.getElementById('btn-undo').addEventListener('click', undo);
       document.getElementById('btn-redo').addEventListener('click', redo);
 
-      /* Fullscreen & External Projector Output Window */
+      /* Full-Screen Stage Preview */
       function enterFullscreen() {
         document.body.classList.add('stage-fullscreen');
         canvas.width = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2);
@@ -3826,20 +4858,6 @@ void main() {
       }
 
       document.getElementById('btn-fullscreen').addEventListener('click', enterFullscreen);
-
-      document.getElementById('btn-projector-win').addEventListener('click', () => {
-        const win = window.open(
-          `${window.location.pathname}?projector=1`,
-          'ProjectionOutputDisplay',
-          `width=${Math.min(1280, state.outputWidth)},height=${Math.min(800, state.outputHeight)},menubar=no,toolbar=no,location=no,status=no`
-        );
-        if (win) {
-          showToast('Projector output window opened');
-          setTimeout(persistAndSync, 400);
-        } else {
-          showToast('Enable pop-ups to open projector output');
-        }
-      });
 
       /* Drag & Drop .pmap / Media Files */
       const dropBanner = document.getElementById('drop-zone-banner');
@@ -3886,6 +4904,12 @@ void main() {
           else undo();
           return;
         }
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'd') {
+          e.preventDefault();
+          const lyr = primarySelectedLayer();
+          if (lyr) duplicateLayerById(lyr.id);
+          return;
+        }
         if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
           e.preventDefault();
           saveCurrentToLibrary(false);
@@ -3917,77 +4941,49 @@ void main() {
           const dx = (e.key === 'ArrowRight' ? px : (e.key === 'ArrowLeft' ? -px : 0)) / state.outputWidth;
           const dy = (e.key === 'ArrowDown' ? px : (e.key === 'ArrowUp' ? -px : 0)) / state.outputHeight;
           transformVertices(lyr, p => ({ x: Math.max(0, Math.min(1, p.x + dx)), y: Math.max(0, Math.min(1, p.y + dy)) }));
-          renderOverlay(); syncInspectorNumbers(); persistAndSync();
+          renderOverlay(); syncInspectorNumbers(); persistAndSync(true);
         }
       });
 
       window.addEventListener('keyup', (e) => { if (e.code === 'Space') spaceDown = false; });
 
-      /* Cross-Window Projector Sync & Continuous Autosave */
+      /* Autosave & Live Projector Push */
       let saveBadgeTimer = null;
-      function persistAndSync() {
-        const payload = {
-          projectId: state.projectId,
-          projectName: state.projectName,
-          outputWidth: state.outputWidth,
-          outputHeight: state.outputHeight,
-          selectedIds: state.selectedIds,
-          layers: state.layers,
-          cues: state.cues,
-          selectedCueId: state.selectedCueId
-        };
-        try { localStorage.setItem(ACTIVE_KEY, JSON.stringify(payload)); } catch (e) {}
-        if (syncChannel && !isProjectorWindow) {
-          syncChannel.postMessage({ type: 'SYNC', ...payload });
-        }
-        const badge = document.getElementById('lbl-save-status');
-        if (badge && !isProjectorWindow) {
-          badge.textContent = 'Saving...';
-          badge.className = 'text-[10px] font-mono text-accent shrink-0';
-          clearTimeout(saveBadgeTimer);
-          saveBadgeTimer = setTimeout(() => {
-            badge.textContent = 'Saved';
-            badge.className = 'text-[10px] font-mono text-zinc-500 shrink-0';
-          }, 450);
-        }
-      }
+      let persistDebounce = null;
+      function persistAndSync(immediateStorage = false) {
+        pushProjectorSync();
 
-      if (syncChannel) {
-        syncChannel.onmessage = (e) => {
-          if (e.data?.type === 'SYNC' && isProjectorWindow) {
-            state.layers = e.data.layers;
-            state.outputWidth = e.data.outputWidth;
-            state.outputHeight = e.data.outputHeight;
-            rebuildAllTextTextures();
-            fitProjectorWindow();
-          } else if (e.data?.type === 'HELLO' && !isProjectorWindow) {
-            persistAndSync();
+        const writeStorage = () => {
+          const payload = {
+            projectId: state.projectId,
+            projectName: state.projectName,
+            outputWidth: state.outputWidth,
+            outputHeight: state.outputHeight,
+            selectedIds: state.selectedIds,
+            layers: state.layers,
+            cues: state.cues,
+            selectedCueId: state.selectedCueId
+          };
+          try { localStorage.setItem(ACTIVE_KEY, JSON.stringify(payload)); } catch (e) {}
+          const badge = document.getElementById('lbl-save-status');
+          if (badge) {
+            badge.textContent = 'Saving...';
+            badge.className = 'text-[10px] font-mono text-accent shrink-0';
+            clearTimeout(saveBadgeTimer);
+            saveBadgeTimer = setTimeout(() => {
+              badge.textContent = 'Saved';
+              badge.className = 'text-[10px] font-mono text-zinc-500 shrink-0';
+            }, 400);
           }
         };
-      }
 
-      window.addEventListener('storage', (e) => {
-        if (e.key === ACTIVE_KEY && isProjectorWindow && e.newValue) {
-          try {
-            const parsed = JSON.parse(e.newValue);
-            state.layers = parsed.layers || [];
-            state.outputWidth = parsed.outputWidth || 1920;
-            state.outputHeight = parsed.outputHeight || 1080;
-            rebuildAllTextTextures();
-            fitProjectorWindow();
-          } catch (err) {}
+        if (immediateStorage) {
+          clearTimeout(persistDebounce);
+          writeStorage();
+        } else {
+          clearTimeout(persistDebounce);
+          persistDebounce = setTimeout(writeStorage, 120);
         }
-      });
-
-      function fitProjectorWindow() {
-        const asp = state.outputWidth / state.outputHeight;
-        let w = window.innerWidth, h = w / asp;
-        if (h > window.innerHeight) { h = window.innerHeight; w = h * asp; }
-        stageBox.style.width = `${Math.round(w)}px`;
-        stageBox.style.height = `${Math.round(h)}px`;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        canvas.width = Math.max(1, Math.round(w * dpr));
-        canvas.height = Math.max(1, Math.round(h * dpr));
       }
 
       function showToast(msg) {
@@ -3999,27 +4995,40 @@ void main() {
         setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2000);
       }
 
+      function showUndoToast(msg) {
+        const host = document.getElementById('toast-host');
+        const el = document.createElement('div');
+        el.className = 'pointer-events-auto px-3 py-1.5 rounded-full bg-bgPanel/95 backdrop-blur-md hairline-all text-xs text-zinc-200 shadow-xl flex items-center gap-2.5 transition-opacity duration-300';
+        el.innerHTML = `<span>${msg}</span><button class="text-accent font-medium hover:underline">Undo</button>`;
+        el.querySelector('button').addEventListener('click', () => {
+          undo();
+          el.remove();
+        });
+        host.appendChild(el);
+        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3500);
+      }
+
       function initDefaultScene() {
         const top = createLayer({
           name: 'Top Plane',
           shape: 'quad',
           vertices: [{ x: 0.50, y: 0.16 }, { x: 0.68, y: 0.31 }, { x: 0.50, y: 0.46 }, { x: 0.32, y: 0.31 }],
           shaderPreset: 'aurora',
-          uniforms: { color1: '#60a5fa', color2: '#09090b', color3: '#f4f4f6', speed: 0.8, scale: 1.2, complexity: 2.2, brightness: 1.05, contrast: 1.05, saturation: 1.0, hueShift: 0.0, invert: 0.0 }
+          uniforms: { color1: '#60a5fa', color2: '#09090b', color3: '#f4f4f6', speed: 0.8, scale: 1.2, complexity: 2.2, brightness: 1.05, contrast: 1.05, saturation: 1.0, hueShift: 0.0, glow: 0.0, invert: 0.0 }
         });
         const left = createLayer({
           name: 'Left Facet',
           shape: 'quad',
           vertices: [{ x: 0.32, y: 0.31 }, { x: 0.50, y: 0.46 }, { x: 0.50, y: 0.82 }, { x: 0.32, y: 0.67 }],
           shaderPreset: 'grid',
-          uniforms: { color1: '#3b82f6', color2: '#09090b', color3: '#93c5fd', speed: 1.0, scale: 1.0, complexity: 2.0, brightness: 1.0, contrast: 1.05, saturation: 1.0, hueShift: 0.0, invert: 0.0 }
+          uniforms: { color1: '#3b82f6', color2: '#09090b', color3: '#93c5fd', speed: 1.0, scale: 1.0, complexity: 2.0, brightness: 1.0, contrast: 1.05, saturation: 1.0, hueShift: 0.0, glow: 0.0, invert: 0.0 }
         });
         const right = createLayer({
           name: 'Right Facet',
           shape: 'quad',
           vertices: [{ x: 0.50, y: 0.46 }, { x: 0.68, y: 0.31 }, { x: 0.68, y: 0.67 }, { x: 0.50, y: 0.82 }],
           shaderPreset: 'waves',
-          uniforms: { color1: '#2563eb', color2: '#09090b', color3: '#e4e4e7', speed: 0.9, scale: 1.1, complexity: 2.0, brightness: 1.0, contrast: 1.05, saturation: 1.0, hueShift: 0.0, invert: 0.0 }
+          uniforms: { color1: '#2563eb', color2: '#09090b', color3: '#e4e4e7', speed: 0.9, scale: 1.1, complexity: 2.0, brightness: 1.0, contrast: 1.05, saturation: 1.0, hueShift: 0.0, glow: 0.0, invert: 0.0 }
         });
         state.layers = [top, left, right];
         state.selectedIds = [top.id];
@@ -4052,20 +5061,17 @@ void main() {
         renderCueTrack();
         renderCueSidebar();
         renderOverlay();
-        persistAndSync();
+        persistAndSync(true);
       }
 
-      window.addEventListener('resize', () => {
-        if (isProjectorWindow) fitProjectorWindow();
-        else applyStageLayout();
-      });
+      window.addEventListener('resize', applyStageLayout);
 
       let lastMs = performance.now();
       function loop(nowMs) {
         const dt = Math.min(0.1, (nowMs - lastMs) / 1000);
         lastMs = nowMs;
 
-        if (state.isPlaying && !state.waitingNextCue && !isProjectorWindow && state.cues.length > 0) {
+        if (state.isPlaying && !state.waitingNextCue && state.cues.length > 0) {
           const tot = totalShowSec();
           const curIdx = state.activeCueIndex;
           const activeCue = state.cues[curIdx];
@@ -4090,7 +5096,7 @@ void main() {
           }
           evaluateShow(state.showTime);
           updatePlayhead();
-          persistAndSync();
+          pushProjectorSync();
         }
 
         renderGL(nowMs / 1000);
@@ -4098,49 +5104,31 @@ void main() {
       }
 
       (async () => {
-        if (isProjectorWindow) {
-          document.body.classList.add('stage-fullscreen');
-          try {
-            const raw = localStorage.getItem(ACTIVE_KEY);
-            if (raw) {
-              const p = JSON.parse(raw);
+        let loaded = false;
+        try {
+          const raw = localStorage.getItem(ACTIVE_KEY);
+          if (raw) {
+            const p = JSON.parse(raw);
+            if (Array.isArray(p.layers)) {
+              state.projectId = p.projectId || 'proj_default';
+              state.projectName = p.projectName || 'Untitled Mapping';
               state.outputWidth = p.outputWidth || 1920;
               state.outputHeight = p.outputHeight || 1080;
-              state.layers = p.layers || [];
+              state.layers = p.layers;
+              state.selectedIds = p.selectedIds || (p.layers[0] ? [p.layers[0].id] : []);
+              state.cues = p.cues || [];
+              state.selectedCueId = p.selectedCueId || state.cues[0]?.id || null;
               rebuildAllTextTextures();
               await restorePersistedMedia();
+              loaded = true;
             }
-          } catch (e) {}
-          fitProjectorWindow();
-          if (syncChannel) syncChannel.postMessage({ type: 'HELLO' });
-        } else {
-          let loaded = false;
-          try {
-            const raw = localStorage.getItem(ACTIVE_KEY);
-            if (raw) {
-              const p = JSON.parse(raw);
-              if (Array.isArray(p.layers)) {
-                state.projectId = p.projectId || 'proj_default';
-                state.projectName = p.projectName || 'Untitled Mapping';
-                state.outputWidth = p.outputWidth || 1920;
-                state.outputHeight = p.outputHeight || 1080;
-                state.layers = p.layers;
-                state.selectedIds = p.selectedIds || (p.layers[0] ? [p.layers[0].id] : []);
-                state.cues = p.cues || [];
-                state.selectedCueId = p.selectedCueId || state.cues[0]?.id || null;
-                rebuildAllTextTextures();
-                await restorePersistedMedia();
-                loaded = true;
-              }
-            }
-          } catch (e) {}
+          }
+        } catch (e) {}
 
-          if (!loaded) initDefaultScene();
-          pushHistory();
-          refreshAll();
-          if (!getProjectLibrary().length) saveCurrentToLibrary(false);
-        }
-
+        if (!loaded) initDefaultScene();
+        pushHistory();
+        refreshAll();
+        if (!getProjectLibrary().length) saveCurrentToLibrary(false);
         requestAnimationFrame(loop);
       })();
     })();
