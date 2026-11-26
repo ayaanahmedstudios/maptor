@@ -6,7 +6,7 @@
   <title>Projection Mapping Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -19,10 +19,10 @@
             mono: ['Geist Mono', 'monospace'],
           },
           colors: {
-            bgBase: '#0a0a0c',
-            bgPanel: '#121215',
-            bgControl: '#1a1a1f',
-            bgHover: '#23232a',
+            bgBase: '#09090b',
+            bgPanel: '#111114',
+            bgControl: '#18181d',
+            bgHover: '#222229',
             accent: '#3b82f6',
           }
         }
@@ -32,10 +32,16 @@
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body {
-      margin: 0; padding: 0; width: 100%; height: 100%;
-      background-color: #0a0a0c; color: #f4f4f6; overflow: hidden;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #09090b;
+      color: #f4f4f5;
+      overflow: hidden;
       font-family: 'Geist', 'Plus Jakarta Sans', system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased; touch-action: none;
+      -webkit-font-smoothing: antialiased;
+      touch-action: none;
     }
     .hairline-b { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
     .hairline-t { border-top: 1px solid rgba(255, 255, 255, 0.08); }
@@ -49,43 +55,70 @@
     ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
 
     input[type="range"] {
-      -webkit-appearance: none; appearance: none;
-      background: rgba(255, 255, 255, 0.12); height: 3px; border-radius: 999px; outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255, 255, 255, 0.12);
+      height: 3px;
+      border-radius: 999px;
+      outline: none;
     }
     input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none; appearance: none;
-      width: 13px; height: 13px; border-radius: 50%; background: #ffffff;
-      cursor: pointer; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      -webkit-appearance: none;
+      appearance: none;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #f4f4f5;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
     }
     input[type="range"]::-moz-range-thumb {
-      width: 13px; height: 13px; border-radius: 50%; background: #ffffff; cursor: pointer; border: none;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #f4f4f5;
+      cursor: pointer;
+      border: none;
     }
     input[type="number"]::-webkit-inner-spin-button { opacity: 0.35; }
     .no-select { user-select: none; -webkit-user-select: none; }
 
-    @media (min-width: 1025px) {
+    @media (min-width: 901px) {
       #left-drawer.collapsed { width: 0 !important; border-right: none !important; overflow: hidden; }
       #right-drawer.collapsed { width: 0 !important; border-left: none !important; overflow: hidden; }
       #bottom-drawer.collapsed { height: 36px !important; }
       #bottom-drawer.collapsed #timeline-body { display: none !important; }
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 900px) {
       #left-drawer, #right-drawer, #bottom-drawer {
-        position: fixed !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
-        width: 100% !important; height: 58vh !important; max-height: 560px !important;
-        z-index: 45 !important; border-left: none !important; border-right: none !important;
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 60vh !important;
+        max-height: 580px !important;
+        z-index: 45 !important;
+        border-left: none !important;
+        border-right: none !important;
         border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
-        border-top-left-radius: 18px !important; border-top-right-radius: 18px !important;
+        border-top-left-radius: 16px !important;
+        border-top-right-radius: 16px !important;
         box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.85) !important;
-        transform: translateY(105%); transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+        transform: translateY(105%);
+        transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
         padding-bottom: env(safe-area-inset-bottom);
       }
-      #left-drawer.sheet-open, #right-drawer.sheet-open, #bottom-drawer.sheet-open { transform: translateY(0%); }
+      #left-drawer.sheet-open, #right-drawer.sheet-open, #bottom-drawer.sheet-open {
+        transform: translateY(0%);
+      }
       #bottom-drawer #timeline-body { flex-direction: column !important; }
       #bottom-drawer #cue-sidebar {
-        width: 100% !important; height: auto !important;
-        border-right: none !important; border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        width: 100% !important;
+        height: auto !important;
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
       }
     }
 
@@ -96,16 +129,25 @@
     .stage-fullscreen #mobile-dock,
     .stage-fullscreen #mobile-sheet-backdrop,
     .stage-fullscreen #zoom-hud,
+    .stage-fullscreen #pen-hud,
     .stage-fullscreen #overlay-svg,
     .stage-fullscreen #ref-image-layer,
-    .stage-fullscreen #empty-stage-overlay { display: none !important; }
+    .stage-fullscreen #empty-stage-overlay {
+      display: none !important;
+    }
     .stage-fullscreen #viewport-wrap {
-      position: fixed !important; inset: 0 !important;
-      width: 100vw !important; height: 100vh !important;
-      background: #000000 !important; z-index: 60 !important;
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      background: #000000 !important;
+      z-index: 60 !important;
     }
     .stage-fullscreen #stage-box {
-      transform: none !important; border: none !important; border-radius: 0 !important; box-shadow: none !important;
+      transform: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
     }
   </style>
 </head>
@@ -117,7 +159,6 @@
     0, 0
   </div>
 
-  <!-- Right-Click Context Menu -->
   <div id="context-menu" class="hidden fixed z-[85] w-48 bg-bgPanel/95 backdrop-blur-md hairline-all rounded-xl shadow-2xl p-1 text-xs text-zinc-200">
     <button data-ctx="duplicate" class="ctx-btn w-full px-2.5 py-1.5 rounded-lg hover:bg-bgControl flex items-center justify-between">
       <span class="flex items-center gap-2"><i class="ph ph-copy text-zinc-400"></i>Duplicate</span>
@@ -153,19 +194,18 @@
   </div>
 
   <div id="app-shell" class="w-screen h-[100dvh] flex flex-col overflow-hidden bg-bgBase">
-    <!-- Top Header -->
-    <header id="top-bar" class="h-11 shrink-0 bg-bgPanel hairline-b px-2.5 lg:px-3 flex items-center justify-between gap-2 z-30">
+    <header id="top-bar" class="h-11 shrink-0 bg-bgPanel hairline-b px-2.5 flex items-center justify-between gap-2 z-30">
       <div class="flex items-center gap-1.5 min-w-0">
-        <button id="btn-toggle-left" class="hidden lg:flex w-8 h-8 rounded-lg hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white transition" title="Toggle Layers Panel">
+        <button id="btn-toggle-left" class="hidden min-[901px]:flex w-8 h-8 rounded-lg hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white transition" title="Toggle Layers Panel">
           <i class="ph ph-sidebar-simple text-base"></i>
         </button>
 
-        <button id="btn-projects" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Local Projects & File Export">
+        <button id="btn-projects" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Projects & File Export">
           <i class="ph ph-folder-notch text-sm text-accent"></i>
           <span class="hidden sm:inline font-medium">Projects</span>
         </button>
 
-        <div class="flex items-center gap-1.5 bg-bgControl/60 hairline-all rounded-lg px-2 h-8 max-w-[130px] sm:max-w-[190px]">
+        <div class="flex items-center gap-1.5 bg-bgControl/60 hairline-all rounded-lg px-2 h-8 max-w-[125px] sm:max-w-[180px]">
           <input id="inp-project-name" type="text" value="Untitled Mapping" class="w-full bg-transparent text-xs font-medium text-zinc-100 outline-none truncate" title="Project Name" />
           <span id="lbl-save-status" class="text-[10px] font-mono text-zinc-500 shrink-0">Saved</span>
         </div>
@@ -180,8 +220,8 @@
             <button data-add="quad" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
               <i class="ph ph-polygon text-base text-accent"></i>
               <div>
-                <div class="text-xs font-medium text-zinc-100">4-Point Quad</div>
-                <div class="text-[10px] text-zinc-500">True perspective homography</div>
+                <div class="text-xs font-medium text-zinc-100">Quad</div>
+                <div class="text-[10px] text-zinc-500">4-point perspective surface</div>
               </div>
             </button>
             <button data-add="triangle" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
@@ -194,31 +234,51 @@
             <button data-add="ellipse" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
               <i class="ph ph-circle text-base text-accent"></i>
               <div>
-                <div class="text-xs font-medium text-zinc-100">Circle / Ellipse</div>
+                <div class="text-xs font-medium text-zinc-100">Circle</div>
                 <div class="text-[10px] text-zinc-500">Perspective-warped oval</div>
               </div>
             </button>
-            <div class="grid grid-cols-3 gap-1 px-1 py-1">
-              <button data-add="pentagon" class="add-item py-1.5 rounded-lg bg-bgControl/60 hover:bg-bgControl text-center text-[11px] text-zinc-200 transition">Pentagon</button>
-              <button data-add="hexagon" class="add-item py-1.5 rounded-lg bg-bgControl/60 hover:bg-bgControl text-center text-[11px] text-zinc-200 transition">Hexagon</button>
-              <button data-add="polygon" class="add-item py-1.5 rounded-lg bg-bgControl/60 hover:bg-bgControl text-center text-[11px] text-zinc-200 transition">Polygon</button>
-            </div>
+            <button data-add="polygon" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
+              <i class="ph ph-pentagon text-base text-accent"></i>
+              <div>
+                <div class="text-xs font-medium text-zinc-100">Polygon</div>
+                <div class="text-[10px] text-zinc-500">Multi-vertex editable shape</div>
+              </div>
+            </button>
             <button data-add="text" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
               <i class="ph ph-text-t text-base text-accent"></i>
               <div>
-                <div class="text-xs font-medium text-zinc-100">Text Layer</div>
-                <div class="text-[10px] text-zinc-500">Perspective-mapped typography</div>
+                <div class="text-xs font-medium text-zinc-100">Text</div>
+                <div class="text-[10px] text-zinc-500">High-DPI perspective typography</div>
               </div>
             </button>
             <div class="my-1 hairline-t"></div>
             <button data-add="mask" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
               <i class="ph ph-selection-slash text-base text-red-400"></i>
               <div>
-                <div class="text-xs font-medium text-zinc-100">Cutout Mask</div>
-                <div class="text-[10px] text-zinc-500">Blocks light spill in pure #000</div>
+                <div class="text-xs font-medium text-zinc-100">Mask</div>
+                <div class="text-[10px] text-zinc-500">Pure #000000 light-bleed cutout</div>
               </div>
             </button>
           </div>
+        </div>
+
+        <div class="flex items-center bg-bgControl p-0.5 rounded-lg hairline-all">
+          <button id="btn-tool-box" class="h-7 px-2 rounded-md text-xs font-medium flex items-center gap-1 bg-accent text-white transition" title="Transform Box Mode (V)">
+            <i class="ph ph-bounding-box text-sm"></i>
+            <span class="hidden md:inline">Box</span>
+            <span class="hidden xl:inline text-[10px] font-mono opacity-75">V</span>
+          </button>
+          <button id="btn-tool-warp" class="h-7 px-2 rounded-md text-xs font-medium flex items-center gap-1 text-zinc-400 hover:text-white transition" title="Direct Vertex & Mesh Warp Mode (A)">
+            <i class="ph ph-corners-out text-sm"></i>
+            <span class="hidden md:inline">Warp</span>
+            <span class="hidden xl:inline text-[10px] font-mono opacity-75">A</span>
+          </button>
+          <button id="btn-tool-pen" class="h-7 px-2 rounded-md text-xs font-medium flex items-center gap-1 text-zinc-400 hover:text-white transition" title="Custom Polygon Pen Tool (P)">
+            <i class="ph ph-pen-nib text-sm"></i>
+            <span class="hidden md:inline">Pen</span>
+            <span class="hidden xl:inline text-[10px] font-mono opacity-75">P</span>
+          </button>
         </div>
 
         <button id="btn-undo" class="hidden md:flex w-8 h-8 rounded-lg hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white disabled:opacity-30 transition" title="Undo (Cmd/Ctrl+Z)">
@@ -227,14 +287,16 @@
         <button id="btn-redo" class="hidden md:flex w-8 h-8 rounded-lg hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white disabled:opacity-30 transition" title="Redo (Cmd/Ctrl+Shift+Z)">
           <i class="ph ph-arrow-u-up-right text-base"></i>
         </button>
+      </div>
 
+      <div class="flex items-center gap-1.5">
         <div class="relative" id="wrap-output-menu">
-          <button id="btn-output-menu" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Output Resolution & Reference Guide">
+          <button id="btn-output-menu" class="h-8 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Output Resolution & Reference Photo">
             <i class="ph ph-monitor text-zinc-400 text-sm"></i>
-            <span id="lbl-output-res" class="font-mono text-[11px]">1920×1080</span>
+            <span id="lbl-output-res" class="hidden sm:inline font-mono text-[11px]">1920×1080</span>
             <i class="ph ph-caret-down text-[10px] text-zinc-500"></i>
           </button>
-          <div id="menu-output" class="hidden absolute left-0 sm:left-auto sm:right-0 mt-1.5 w-72 bg-bgPanel hairline-all rounded-xl shadow-2xl p-2.5 z-50 space-y-2.5">
+          <div id="menu-output" class="hidden absolute right-0 mt-1.5 w-72 bg-bgPanel hairline-all rounded-xl shadow-2xl p-2.5 z-50 space-y-2.5">
             <div class="text-[11px] font-medium text-zinc-400">Output Dimensions (px)</div>
             <div class="grid grid-cols-2 gap-1">
               <button data-res="1920x1080" class="res-btn px-2 py-1.5 rounded-lg bg-bgControl hover:bg-bgHover text-left text-[11px] flex justify-between text-zinc-200">
@@ -248,9 +310,6 @@
               </button>
               <button data-res="1080x1920" class="res-btn px-2 py-1.5 rounded-lg bg-bgControl hover:bg-bgHover text-left text-[11px] flex justify-between text-zinc-200">
                 <span>Portrait</span><span class="font-mono text-zinc-500">1080×1920</span>
-              </button>
-              <button data-res="1080x1080" class="res-btn px-2 py-1.5 rounded-lg bg-bgControl hover:bg-bgHover text-left text-[11px] flex justify-between text-zinc-200 col-span-2">
-                <span>Square Canvas</span><span class="font-mono text-zinc-500">1080×1080</span>
               </button>
             </div>
             <div class="flex items-center gap-1.5">
@@ -280,53 +339,41 @@
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="flex items-center gap-1.5">
-        <button id="btn-grid" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-300 flex items-center gap-1.5 transition" title="Calibration Grid (G)">
+        <button id="btn-grid" class="h-8 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-300 flex items-center gap-1 transition" title="Calibration Grid (G)">
           <i class="ph ph-grid-four text-sm"></i>
-          <span class="hidden md:inline">Grid</span>
+          <span class="hidden xl:inline">Grid</span>
         </button>
 
-        <button id="btn-snap" class="h-8 px-2.5 rounded-lg bg-accent/15 border border-accent/40 text-xs text-blue-300 flex items-center gap-1.5 transition" title="Snap Vertices">
+        <button id="btn-snap" class="h-8 px-2 rounded-lg bg-accent/15 border border-accent/40 text-xs text-blue-300 flex items-center gap-1 transition" title="Snap Vertices">
           <i class="ph ph-magnet text-sm"></i>
-          <span class="hidden md:inline">Snap</span>
+          <span class="hidden xl:inline">Snap</span>
         </button>
 
-        <div class="hidden sm:block h-4 w-px bg-white/[0.08] mx-0.5"></div>
-
-        <button id="btn-export-pmap" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Export Portable .pmap File">
-          <i class="ph ph-export text-sm text-accent"></i>
-          <span class="hidden xl:inline">Export .pmap</span>
-        </button>
-
-        <button id="btn-import-pmap" class="w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Import .pmap File">
-          <i class="ph ph-upload-simple text-sm"></i>
-        </button>
-        <input id="inp-import-pmap" type="file" accept=".pmap,.json" class="hidden" />
-
-        <!-- Live Projector Output Button with Connection Status Indicator -->
-        <button id="btn-projector-win" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs font-medium text-zinc-100 flex items-center gap-1.5 transition" title="Open or Focus Synchronized Live Projector Window">
-          <span id="dot-projector-status" class="w-2 h-2 rounded-full bg-zinc-600 transition-colors"></span>
-          <i class="ph ph-projector-screen text-sm text-accent"></i>
-          <span id="lbl-projector-status" class="hidden sm:inline">Projector</span>
-        </button>
+        <div class="flex items-center gap-1">
+          <button id="btn-projector-win" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs font-medium text-zinc-100 flex items-center gap-1.5 transition" title="Open or Focus Live Projector Output Window">
+            <span id="dot-projector-status" class="w-2 h-2 rounded-full bg-zinc-600 transition-colors"></span>
+            <i class="ph ph-projector-screen text-sm text-accent"></i>
+            <span id="lbl-projector-status" class="hidden sm:inline">Projector</span>
+          </button>
+          <button id="btn-resync-media" class="hidden w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all items-center justify-center text-zinc-300 hover:text-white transition" title="Resync Media Buffers to Projector">
+            <i class="ph ph-arrows-clockwise text-sm text-emerald-400"></i>
+          </button>
+        </div>
 
         <button id="btn-fullscreen" class="w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Full-Screen Stage Preview (F)">
           <i class="ph ph-corners-out text-sm"></i>
         </button>
 
-        <button id="btn-toggle-right" class="hidden lg:flex w-8 h-8 rounded-lg hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white transition" title="Toggle Inspector Panel">
+        <button id="btn-toggle-right" class="hidden min-[901px]:flex w-8 h-8 rounded-lg hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white transition" title="Toggle Inspector Panel">
           <i class="ph ph-sliders-horizontal text-base"></i>
         </button>
       </div>
     </header>
 
-    <!-- Main Workspace -->
     <div class="flex-1 min-h-0 flex relative overflow-hidden">
-      <!-- Left Layers Drawer -->
-      <aside id="left-drawer" class="w-[272px] shrink-0 bg-bgPanel hairline-r flex flex-col overflow-hidden">
-        <div class="lg:hidden flex justify-center pt-2 pb-1">
+      <aside id="left-drawer" class="w-[260px] shrink-0 bg-bgPanel hairline-r flex flex-col overflow-hidden">
+        <div class="min-[901px]:hidden flex justify-center pt-2 pb-1">
           <div class="w-9 h-1 rounded-full bg-white/20"></div>
         </div>
         <div class="px-3 py-2 hairline-b flex items-center justify-between">
@@ -335,10 +382,13 @@
             <span id="lbl-layer-count" class="text-[11px] font-mono text-zinc-500">0</span>
           </div>
           <div class="flex items-center gap-1">
-            <button id="btn-clear-canvas" class="h-6 px-2 rounded bg-bgControl hover:bg-red-950/60 hover:text-red-300 hairline-all text-[10px] text-zinc-400 transition" title="Delete All Layers">
-              Clear All
+            <button id="btn-load-demo" class="h-6 px-2 rounded bg-bgControl hover:bg-bgHover hairline-all text-[10px] text-zinc-300 transition" title="Load Demo Scene">
+              Load Demo Scene
             </button>
-            <button class="lg:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400">
+            <button id="btn-clear-canvas" class="h-6 px-2 rounded bg-bgControl hover:bg-red-950/60 hover:text-red-300 hairline-all text-[10px] text-zinc-400 transition" title="Delete All Layers">
+              Clear
+            </button>
+            <button class="min-[901px]:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400">
               <i class="ph ph-x text-xs"></i>
             </button>
           </div>
@@ -347,44 +397,45 @@
         <div id="layer-list" class="flex-1 overflow-y-auto p-1.5 space-y-1"></div>
 
         <div class="p-2 hairline-t bg-bgBase/40 grid grid-cols-6 gap-1">
-          <button data-add="quad" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Quad">
+          <button data-add="quad" class="add-item h-9 min-[901px]:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Quad">
             <i class="ph ph-polygon text-sm"></i>
           </button>
-          <button data-add="triangle" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Triangle">
+          <button data-add="triangle" class="add-item h-9 min-[901px]:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Triangle">
             <i class="ph ph-triangle text-sm"></i>
           </button>
-          <button data-add="ellipse" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Circle / Ellipse">
+          <button data-add="ellipse" class="add-item h-9 min-[901px]:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Circle">
             <i class="ph ph-circle text-sm"></i>
           </button>
-          <button data-add="polygon" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Polygon">
+          <button data-add="polygon" class="add-item h-9 min-[901px]:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Polygon">
             <i class="ph ph-pentagon text-sm"></i>
           </button>
-          <button data-add="text" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Text Layer">
+          <button data-add="text" class="add-item h-9 min-[901px]:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Text">
             <i class="ph ph-text-t text-sm"></i>
           </button>
-          <button data-add="mask" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Cutout Mask">
+          <button data-add="mask" class="add-item h-9 min-[901px]:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Add Mask">
             <i class="ph ph-selection-slash text-sm"></i>
           </button>
         </div>
       </aside>
 
-      <!-- Central Stage Viewport -->
       <main id="viewport-wrap" class="flex-1 min-w-0 relative bg-bgBase flex items-center justify-center overflow-hidden">
         <div id="stage-box" class="relative bg-black rounded-md overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.8)] hairline-all" style="width: 960px; height: 540px;">
           <img id="ref-image-layer" alt="" class="hidden absolute inset-0 w-full h-full object-cover pointer-events-none opacity-35" />
           <canvas id="gl-canvas" class="w-full h-full block"></canvas>
           <svg id="overlay-svg" class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg"></svg>
 
-          <!-- Empty State Launcher -->
           <div id="empty-stage-overlay" class="hidden absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none z-10">
             <div class="pointer-events-auto max-w-md bg-bgPanel/90 backdrop-blur-md hairline-all rounded-2xl p-5 shadow-2xl space-y-3.5">
               <div class="space-y-1">
                 <div class="text-sm font-medium text-zinc-100">Empty Canvas</div>
-                <div class="text-xs text-zinc-400">Add a projection surface or load a starter layout to begin mapping.</div>
+                <div class="text-xs text-zinc-400">Add a projection surface or load the demo layout to begin mapping.</div>
               </div>
               <div class="flex flex-wrap items-center justify-center gap-1.5">
                 <button data-add="quad" class="add-item h-8 px-3 rounded-full bg-accent hover:bg-blue-500 text-white text-xs font-medium flex items-center gap-1 transition">
                   <i class="ph ph-plus text-xs"></i><span>Quad</span>
+                </button>
+                <button data-add="triangle" class="add-item h-8 px-3 rounded-full bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1 transition">
+                  <i class="ph ph-plus text-xs"></i><span>Triangle</span>
                 </button>
                 <button data-add="ellipse" class="add-item h-8 px-3 rounded-full bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1 transition">
                   <i class="ph ph-plus text-xs"></i><span>Circle</span>
@@ -400,15 +451,21 @@
                 </button>
               </div>
               <div class="pt-1 hairline-t">
-                <button id="btn-empty-load-starter" class="text-xs text-accent hover:text-blue-400 font-medium transition">
-                  Load Starter Scene
+                <button id="btn-empty-load-demo" class="text-xs text-accent hover:text-blue-400 font-medium transition">
+                  Load Demo Scene
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Zoom HUD -->
+        <div id="pen-hud" class="hidden absolute top-3 left-1/2 -translate-x-1/2 bg-bgPanel/95 backdrop-blur-md hairline-all rounded-full px-3 py-1.5 flex items-center gap-2 text-xs text-zinc-200 shadow-xl z-20">
+          <i class="ph ph-pen-nib text-accent"></i>
+          <span>Click stage to place points (<span id="lbl-pen-pts" class="font-mono">0</span>)</span>
+          <button id="btn-pen-finish" class="px-2 py-0.5 rounded-full bg-accent hover:bg-blue-500 text-white text-[11px] font-medium">Close Shape</button>
+          <button id="btn-pen-cancel" class="px-2 py-0.5 rounded-full bg-bgControl hover:bg-bgHover text-zinc-300 text-[11px]">Cancel</button>
+        </div>
+
         <div id="zoom-hud" class="absolute top-3 right-3 bg-bgPanel/90 backdrop-blur-md hairline-all rounded-full px-2 py-1 flex items-center gap-1 text-[11px] font-mono text-zinc-300 shadow-lg">
           <button id="btn-zoom-out" class="w-6 h-6 rounded-full hover:bg-bgControl flex items-center justify-center transition" title="Zoom Out">
             <i class="ph ph-minus text-xs"></i>
@@ -423,16 +480,14 @@
           </button>
         </div>
 
-        <!-- Drag & Drop Banner -->
         <div id="drop-zone-banner" class="hidden absolute inset-4 rounded-2xl border border-dashed border-accent bg-bgPanel/85 backdrop-blur-md flex flex-col items-center justify-center pointer-events-none z-40">
           <i class="ph ph-file-arrow-up text-3xl text-accent mb-2"></i>
           <div class="text-xs font-medium text-white">Drop .pmap Project, Video, or Image</div>
         </div>
       </main>
 
-      <!-- Right Inspector Drawer -->
-      <aside id="right-drawer" class="w-[292px] shrink-0 bg-bgPanel hairline-l flex flex-col overflow-hidden">
-        <div class="lg:hidden flex justify-center pt-2 pb-1">
+      <aside id="right-drawer" class="w-[300px] shrink-0 bg-bgPanel hairline-l flex flex-col overflow-hidden">
+        <div class="min-[901px]:hidden flex justify-center pt-2 pb-1">
           <div class="w-9 h-1 rounded-full bg-white/20"></div>
         </div>
         <div class="px-3 py-2 hairline-b flex items-center justify-between">
@@ -447,7 +502,7 @@
             <button id="btn-del-layer" class="w-7 h-7 rounded-lg hover:bg-red-950/60 flex items-center justify-center text-zinc-400 hover:text-red-400 transition" title="Delete Layer (Delete/Backspace)">
               <i class="ph ph-trash text-sm"></i>
             </button>
-            <button class="lg:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400 ml-1">
+            <button class="min-[901px]:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400 ml-1">
               <i class="ph ph-x text-xs"></i>
             </button>
           </div>
@@ -457,14 +512,13 @@
       </aside>
     </div>
 
-    <!-- Bottom Time-Based Show Sequencer -->
     <section id="bottom-drawer" class="h-[188px] shrink-0 bg-bgPanel hairline-t flex flex-col overflow-hidden z-20">
-      <div class="lg:hidden flex justify-center pt-2 pb-1">
+      <div class="min-[901px]:hidden flex justify-center pt-2 pb-1">
         <div class="w-9 h-1 rounded-full bg-white/20"></div>
       </div>
       <div class="h-9 shrink-0 px-3 hairline-b flex items-center justify-between gap-2">
         <div class="flex items-center gap-1.5">
-          <button id="btn-toggle-bottom" class="hidden lg:flex w-6 h-6 rounded hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white transition" title="Collapse/Expand Timeline">
+          <button id="btn-toggle-bottom" class="hidden min-[901px]:flex w-6 h-6 rounded hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white transition" title="Collapse/Expand Timeline">
             <i id="ico-bottom-chevron" class="ph ph-caret-down text-xs"></i>
           </button>
 
@@ -492,9 +546,9 @@
             <i class="ph ph-repeat text-xs"></i>
           </button>
 
-          <button id="btn-cue-mode" class="h-7 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] text-zinc-300 flex items-center gap-1.5 transition" title="Cue Trigger Mode">
+          <button id="btn-cue-mode" class="h-7 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] text-zinc-300 flex items-center gap-1.5 transition" title="Playback Mode">
             <i id="ico-cue-mode" class="ph ph-play-circle text-xs text-accent"></i>
-            <span id="lbl-cue-mode" class="hidden sm:inline">Auto-Advance</span>
+            <span id="lbl-cue-mode" class="hidden sm:inline">Auto-Advance Timeline</span>
           </button>
         </div>
 
@@ -507,7 +561,7 @@
             <i class="ph ph-plus text-xs"></i>
             <span>Capture Cue</span>
           </button>
-          <button class="lg:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400">
+          <button class="min-[901px]:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400">
             <i class="ph ph-x text-xs"></i>
           </button>
         </div>
@@ -527,23 +581,8 @@
       </div>
     </section>
 
-    <!-- Floating Transform Mode Pill -->
-    <div id="mode-hud" class="fixed top-14 left-1/2 -translate-x-1/2 z-20 bg-bgPanel/90 backdrop-blur-md hairline-all rounded-full p-1 flex items-center gap-0.5 shadow-xl">
-      <button id="btn-mode-box" class="h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 bg-accent text-white transition" title="Bounding Box Transform (V)">
-        <i class="ph ph-bounding-box text-sm"></i>
-        <span>Box</span>
-        <span class="hidden sm:inline text-[10px] font-mono opacity-75">V</span>
-      </button>
-      <button id="btn-mode-warp" class="h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 text-zinc-300 hover:text-white transition" title="Direct Vertex & Mesh Warp (A)">
-        <i class="ph ph-corners-out text-sm"></i>
-        <span>Warp</span>
-        <span class="hidden sm:inline text-[10px] font-mono opacity-75">A</span>
-      </button>
-    </div>
-
-    <!-- Mobile Dock -->
-    <div id="mobile-sheet-backdrop" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
-    <nav id="mobile-dock" class="lg:hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-30 bg-bgPanel/95 backdrop-blur-md hairline-all rounded-full p-1 flex items-center gap-1 shadow-2xl" style="margin-bottom: env(safe-area-inset-bottom);">
+    <div id="mobile-sheet-backdrop" class="hidden min-[901px]:hidden fixed inset-0 bg-black/50 z-40"></div>
+    <nav id="mobile-dock" class="min-[901px]:hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-30 bg-bgPanel/95 backdrop-blur-md hairline-all rounded-full p-1 flex items-center gap-1 shadow-2xl" style="margin-bottom: env(safe-area-inset-bottom);">
       <button data-sheet="add" class="mobile-tab h-10 px-3.5 rounded-full text-xs font-medium text-zinc-300 hover:text-white flex items-center gap-1.5 transition">
         <i class="ph ph-plus text-base text-accent"></i>
         <span>Add</span>
@@ -563,7 +602,6 @@
     </nav>
   </div>
 
-  <!-- Projects & File Export Modal -->
   <div id="projects-modal" class="hidden fixed inset-0 z-[70] bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-bgPanel hairline-all rounded-2xl w-full max-w-3xl max-h-[88dvh] shadow-2xl flex flex-col overflow-hidden">
       <div class="px-4 py-3 hairline-b flex items-center justify-between gap-2">
@@ -581,7 +619,7 @@
           </button>
           <button id="btn-proj-new-preset" class="h-8 px-3 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition">
             <i class="ph ph-cube text-sm text-accent"></i>
-            <span>New from Starter Layout</span>
+            <span>Load Demo Scene</span>
           </button>
           <button id="btn-proj-save-snapshot" class="h-8 px-3 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition">
             <i class="ph ph-floppy-disk text-sm text-accent"></i>
@@ -592,15 +630,16 @@
         <div class="flex flex-wrap items-center gap-1.5">
           <button id="btn-modal-export-pmap" class="h-8 px-3 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition">
             <i class="ph ph-export text-sm text-accent"></i>
-            <span>Export .pmap</span>
+            <span>Export .pmap File</span>
           </button>
           <button id="btn-modal-import-pmap" class="h-8 px-3 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition">
             <i class="ph ph-upload-simple text-sm"></i>
-            <span>Import .pmap</span>
+            <span>Import .pmap File</span>
           </button>
+          <input id="inp-import-pmap" type="file" accept=".pmap,.json" class="hidden" />
           <button id="btn-modal-export-png" class="h-8 px-3 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition">
             <i class="ph ph-image text-sm"></i>
-            <span>Export PNG Frame</span>
+            <span>Export PNG Snapshot</span>
           </button>
         </div>
       </div>
@@ -609,7 +648,6 @@
     </div>
   </div>
 
-  <!-- Custom GLSL Shader Modal -->
   <div id="glsl-modal" class="hidden fixed inset-0 z-[70] bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-bgPanel hairline-all rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col overflow-hidden">
       <div class="px-4 py-3 hairline-b flex items-center justify-between">
@@ -634,13 +672,22 @@
 
   <script>
     (() => {
-      const ACTIVE_KEY = 'pm_studio_active_v5';
-      const MIRROR_KEY = 'pmap_live_mirror';
-      const LIBRARY_KEY = 'pm_studio_library_v5';
-      const DB_NAME = 'pm_studio_media_db_v5';
-      const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('pmap_sync_v3') : null;
+      const ACTIVE_KEY = 'pm_studio_active_v6';
+      const MIRROR_KEY = 'pmap_live_mirror_v6';
+      const LIBRARY_KEY = 'pm_studio_library_v6';
+      const DB_NAME = 'pm_studio_media_db_v6';
+      const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('pmap_live_sync') : null;
 
-      /* IndexedDB Media Blob Store */
+      function $(id) {
+        return document.getElementById(id);
+      }
+
+      function on(id, event, handler, opts) {
+        const el = $(id);
+        if (el) el.addEventListener(event, handler, opts);
+        return el;
+      }
+
       function openMediaDB() {
         return new Promise((resolve) => {
           if (!('indexedDB' in window)) return resolve(null);
@@ -694,10 +741,9 @@
         return new Blob([arr], { type: mime });
       }
 
-      /* 12 Built-in WebGL2 Procedural Shaders */
       const SHADER_PRESETS = {
         aurora: {
-          name: 'Liquid Aurora',
+          name: 'Aurora Flow',
           swatch: 'linear-gradient(135deg, #3b82f6 0%, #0ea5e9 55%, #09090b 100%)',
           code: `#version 300 es
 precision highp float;
@@ -723,7 +769,7 @@ void main() {
 }`
         },
         grid: {
-          name: 'Architectural Grid',
+          name: 'Iridescent Grid',
           swatch: 'radial-gradient(circle, #1e293b 0%, #09090b 100%)',
           code: `#version 300 es
 precision highp float;
@@ -746,9 +792,9 @@ void main() {
   fragColor = vec4(col, 1.0);
 }`
         },
-        waves: {
-          name: 'Plasma Wave',
-          swatch: 'linear-gradient(120deg, #09090b 0%, #3b82f6 50%, #f4f4f6 100%)',
+        chrome: {
+          name: 'Liquid Chrome',
+          swatch: 'linear-gradient(120deg, #09090b 0%, #93c5fd 50%, #f4f4f6 100%)',
           code: `#version 300 es
 precision highp float;
 in vec2 v_uv;
@@ -756,138 +802,12 @@ out vec4 fragColor;
 uniform float u_time, u_speed, u_scale, u_complexity;
 uniform vec3 u_color1, u_color2, u_color3;
 void main() {
-  float t = u_time * u_speed * 1.4;
-  float freq = max(1.0, u_scale * 6.0);
-  float wave = sin(v_uv.x * freq + t + sin(v_uv.y * freq * 0.5 - t) * u_complexity * 0.6);
-  float band = smoothstep(-0.35, 0.65, wave);
-  float crest = smoothstep(0.75, 0.98, wave);
-  vec3 col = mix(u_color2, u_color1, band);
-  col = mix(col, u_color3, crest * 0.75);
-  fragColor = vec4(col, 1.0);
-}`
-        },
-        grain: {
-          name: 'Volumetric Noise',
-          swatch: 'linear-gradient(180deg, #27272a 0%, #09090b 100%)',
-          code: `#version 300 es
-precision highp float;
-in vec2 v_uv;
-out vec4 fragColor;
-uniform float u_time, u_speed, u_scale, u_complexity;
-uniform vec3 u_color1, u_color2, u_color3;
-float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
-float noise(vec2 p) {
-  vec2 i = floor(p), f = fract(p);
-  vec2 u = f * f * (3.0 - 2.0 * f);
-  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
-             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
-}
-void main() {
-  float t = u_time * u_speed * 0.4;
-  vec2 uv = v_uv * max(1.0, u_scale * 3.5);
-  float n = noise(uv + vec2(t, -t * 0.5));
-  n += 0.5 * noise(uv * 2.2 - t);
-  float fine = (hash(v_uv * 400.0 + fract(u_time * 12.0)) - 0.5) * 0.14 * u_complexity;
-  float mask = smoothstep(0.3, 0.95, n * 0.7 + fine);
-  vec3 col = mix(u_color2, u_color1, mask);
-  fragColor = vec4(col, 1.0);
-}`
-        },
-        caustics: {
-          name: 'Caustics',
-          swatch: 'radial-gradient(circle at 30% 30%, #38bdf8, #0f172a 85%)',
-          code: `#version 300 es
-precision highp float;
-in vec2 v_uv;
-out vec4 fragColor;
-uniform float u_time, u_speed, u_scale, u_complexity;
-uniform vec3 u_color1, u_color2, u_color3;
-void main() {
-  vec2 p = mod(v_uv * max(1.0, u_scale * 3.0) * 6.28318, 6.28318) - 250.0;
-  vec2 i = p;
-  float c = 1.0;
-  float inten = 0.005;
-  float t = u_time * u_speed * 0.7;
-  for (int n = 0; n < 4; n++) {
-    float lt = t * (1.0 - (3.5 / float(n + 1)));
-    i = p + vec2(cos(lt - i.x) + sin(lt + i.y), sin(lt - i.y) + cos(lt + i.x));
-    c += 1.0 / length(vec2(p.x / (sin(i.x + lt) / inten), p.y / (cos(i.y + lt) / inten)));
-  }
-  c /= 4.0;
-  c = 1.17 - pow(c, 1.4);
-  float val = pow(abs(c), 6.0 + u_complexity);
-  vec3 col = mix(u_color2, u_color1, clamp(val, 0.0, 1.0));
-  col = mix(col, u_color3, clamp(val * 0.6, 0.0, 1.0));
-  fragColor = vec4(col, 1.0);
-}`
-        },
-        kaleidoscope: {
-          name: 'Geometric Kaleidoscope',
-          swatch: 'conic-gradient(from 45deg, #3b82f6, #09090b, #60a5fa, #09090b, #3b82f6)',
-          code: `#version 300 es
-precision highp float;
-in vec2 v_uv;
-out vec4 fragColor;
-uniform float u_time, u_speed, u_scale, u_complexity;
-uniform vec3 u_color1, u_color2, u_color3;
-void main() {
-  vec2 p = (v_uv - 0.5) * 2.0;
-  float r = length(p);
-  float a = atan(p.y, p.x);
-  float segs = max(3.0, floor(u_complexity * 3.0));
-  float slice = 6.2831853 / segs;
-  a = mod(a, slice);
-  a = abs(a - slice * 0.5);
-  vec2 kp = vec2(cos(a), sin(a)) * r * max(0.5, u_scale * 2.5);
-  float t = u_time * u_speed;
-  float pat = sin(kp.x * 5.0 + t) * cos(kp.y * 5.0 - t);
-  float m = smoothstep(-0.2, 0.6, pat);
-  vec3 col = mix(u_color2, u_color1, m);
-  col = mix(col, u_color3, smoothstep(0.65, 0.95, pat) * 0.6);
-  fragColor = vec4(col, 1.0);
-}`
-        },
-        pulse: {
-          name: 'Scanline Pulse',
-          swatch: 'radial-gradient(circle, #3b82f6 15%, #111114 60%, #3b82f6 95%)',
-          code: `#version 300 es
-precision highp float;
-in vec2 v_uv;
-out vec4 fragColor;
-uniform float u_time, u_speed, u_scale, u_complexity;
-uniform vec3 u_color1, u_color2, u_color3;
-void main() {
-  vec2 p = v_uv - 0.5;
-  float d = length(p);
-  float t = u_time * u_speed * 2.4;
-  float w = sin(d * (18.0 * u_scale) - t) * 0.5 + 0.5;
-  float ring = smoothstep(0.45, 0.92, w) * smoothstep(0.8, 0.01, d);
-  float core = smoothstep(0.22 / max(0.5, u_complexity * 0.5), 0.0, d);
-  vec3 col = mix(u_color2 * 0.2, u_color1, ring);
-  col = mix(col, u_color3, core);
-  fragColor = vec4(col, 1.0);
-}`
-        },
-        tunnel: {
-          name: 'Laser Tunnel',
-          swatch: 'radial-gradient(circle, #09090b 10%, #2563eb 55%, #09090b 95%)',
-          code: `#version 300 es
-precision highp float;
-in vec2 v_uv;
-out vec4 fragColor;
-uniform float u_time, u_speed, u_scale, u_complexity;
-uniform vec3 u_color1, u_color2, u_color3;
-void main() {
-  vec2 p = (v_uv - 0.5) * 2.0;
-  float r = max(0.04, length(p));
-  float a = atan(p.y, p.x);
-  float z = (1.0 / r) * max(0.4, u_scale) + u_time * u_speed * 2.0;
-  float beams = abs(sin(a * floor(u_complexity * 3.0) + z * 0.4));
-  float rings = smoothstep(0.7, 0.98, sin(z * 3.14159));
-  float m = smoothstep(0.82, 0.99, beams) + rings * 0.65;
-  vec3 col = mix(u_color2, u_color1, clamp(m, 0.0, 1.0));
-  col = mix(col, u_color3, rings * 0.5);
-  col *= smoothstep(0.02, 0.25, r);
+  float t = u_time * u_speed * 1.1;
+  vec2 p = (v_uv - 0.5) * max(1.0, u_scale * 4.0);
+  float v = sin(p.x * 2.0 + t + cos(p.y * 2.2 - t) * u_complexity);
+  float spec = pow(0.5 + 0.5 * sin(v * 3.14159), 4.0);
+  vec3 col = mix(u_color2, u_color1, 0.5 + 0.5 * cos(v * 2.0));
+  col = mix(col, u_color3, spec * 0.85);
   fragColor = vec4(col, 1.0);
 }`
         },
@@ -923,9 +843,9 @@ void main() {
   fragColor = vec4(col, 1.0);
 }`
         },
-        plasma: {
-          name: 'Gradient Mesh',
-          swatch: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #06b6d4 100%)',
+        rings: {
+          name: 'Hypnotic Rings',
+          swatch: 'radial-gradient(circle, #3b82f6 15%, #111114 60%, #3b82f6 95%)',
           code: `#version 300 es
 precision highp float;
 in vec2 v_uv;
@@ -933,20 +853,20 @@ out vec4 fragColor;
 uniform float u_time, u_speed, u_scale, u_complexity;
 uniform vec3 u_color1, u_color2, u_color3;
 void main() {
-  float t = u_time * u_speed * 0.9;
-  vec2 uv = (v_uv - 0.5) * max(0.8, u_scale * 4.0);
-  float v = sin(uv.x + t) + sin(uv.y + t * 0.8) + sin((uv.x + uv.y) * 0.7 + t);
-  v += sin(length(uv * u_complexity) - t * 1.2);
-  float m1 = 0.5 + 0.5 * sin(v * 1.5);
-  float m2 = 0.5 + 0.5 * cos(v * 1.5 + 1.2);
-  vec3 col = mix(u_color2, u_color1, m1);
-  col = mix(col, u_color3, m2 * 0.55);
+  vec2 p = v_uv - 0.5;
+  float d = length(p);
+  float t = u_time * u_speed * 2.4;
+  float w = sin(d * (18.0 * u_scale) - t) * 0.5 + 0.5;
+  float ring = smoothstep(0.45, 0.92, w) * smoothstep(0.85, 0.01, d);
+  float core = smoothstep(0.22 / max(0.5, u_complexity * 0.5), 0.0, d);
+  vec3 col = mix(u_color2 * 0.2, u_color1, ring);
+  col = mix(col, u_color3, core);
   fragColor = vec4(col, 1.0);
 }`
         },
-        strobe: {
-          name: 'Strobe / Pulse',
-          swatch: 'linear-gradient(90deg, #09090b 0%, #ffffff 50%, #09090b 100%)',
+        scanline: {
+          name: 'Scanline Matrix',
+          swatch: 'linear-gradient(180deg, #1d4ed8 0%, #09090b 50%, #3b82f6 100%)',
           code: `#version 300 es
 precision highp float;
 in vec2 v_uv;
@@ -954,12 +874,111 @@ out vec4 fragColor;
 uniform float u_time, u_speed, u_scale, u_complexity;
 uniform vec3 u_color1, u_color2, u_color3;
 void main() {
-  float freq = max(0.5, u_speed * 3.0);
-  float beat = fract(u_time * freq);
-  float env = pow(1.0 - beat, max(1.0, u_complexity * 1.5));
-  float grad = smoothstep(0.0, 1.0, v_uv.y * u_scale);
-  vec3 base = mix(u_color2, u_color1, grad);
-  vec3 col = mix(base, u_color3, env);
+  float t = u_time * u_speed * 2.0;
+  float rows = max(8.0, floor(u_scale * 24.0));
+  float cols = max(4.0, floor(u_complexity * 6.0));
+  float colId = floor(v_uv.x * cols);
+  float rowMask = smoothstep(0.3, 0.85, sin(v_uv.y * rows * 6.28318));
+  float drop = fract(v_uv.y * 1.5 + t * (0.4 + fract(sin(colId * 91.7) * 437.5) * 0.7));
+  float beam = pow(1.0 - drop, 3.0);
+  vec3 col = mix(u_color2, u_color1, beam * rowMask);
+  col = mix(col, u_color3, pow(beam, 5.0) * rowMask * 0.8);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        mist: {
+          name: 'Perlin Mist',
+          swatch: 'linear-gradient(180deg, #27272a 0%, #09090b 100%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+float noise(vec2 p) {
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+void main() {
+  float t = u_time * u_speed * 0.4;
+  vec2 uv = v_uv * max(1.0, u_scale * 3.5);
+  float n = noise(uv + vec2(t, -t * 0.5));
+  n += 0.5 * noise(uv * 2.2 - t);
+  float fine = (hash(v_uv * 400.0 + fract(u_time * 12.0)) - 0.5) * 0.14 * u_complexity;
+  float mask = smoothstep(0.3, 0.95, n * 0.7 + fine);
+  vec3 col = mix(u_color2, u_color1, mask);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        prism: {
+          name: 'Neon Prism',
+          swatch: 'conic-gradient(from 45deg, #3b82f6, #09090b, #60a5fa, #09090b, #3b82f6)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  vec2 p = (v_uv - 0.5) * 2.0;
+  float r = length(p);
+  float a = atan(p.y, p.x);
+  float segs = max(3.0, floor(u_complexity * 3.0));
+  float slice = 6.2831853 / segs;
+  a = mod(a, slice);
+  a = abs(a - slice * 0.5);
+  vec2 kp = vec2(cos(a), sin(a)) * r * max(0.5, u_scale * 2.5);
+  float t = u_time * u_speed;
+  float pat = sin(kp.x * 5.0 + t) * cos(kp.y * 5.0 - t);
+  float m = smoothstep(-0.2, 0.6, pat);
+  vec3 col = mix(u_color2, u_color1, m);
+  col = mix(col, u_color3, smoothstep(0.65, 0.95, pat) * 0.6);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        checker: {
+          name: 'Checker Calibration',
+          swatch: 'repeating-conic-gradient(#27272a 0% 25%, #09090b 0% 50%) 50% / 14px 14px',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  float tiles = max(2.0, floor(u_scale * 8.0));
+  vec2 c = floor(v_uv * tiles);
+  float chk = mod(c.x + c.y, 2.0);
+  float border = step(v_uv.x, 0.02) + step(0.98, v_uv.x) + step(v_uv.y, 0.02) + step(0.98, v_uv.y);
+  float cross = step(abs(v_uv.x - 0.5), 0.004) + step(abs(v_uv.y - 0.5), 0.004);
+  vec3 col = mix(u_color2, u_color1, chk);
+  col = mix(col, u_color3, clamp(border + cross, 0.0, 1.0));
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        pulse: {
+          name: 'Wireframe Pulse',
+          swatch: 'radial-gradient(circle, #09090b 10%, #2563eb 55%, #09090b 95%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  vec2 p = (v_uv - 0.5) * 2.0;
+  float r = max(0.04, length(p));
+  float a = atan(p.y, p.x);
+  float z = (1.0 / r) * max(0.4, u_scale) + u_time * u_speed * 2.0;
+  float beams = abs(sin(a * floor(u_complexity * 3.0) + z * 0.4));
+  float rings = smoothstep(0.7, 0.98, sin(z * 3.14159));
+  float m = smoothstep(0.82, 0.99, beams) + rings * 0.65;
+  vec3 col = mix(u_color2, u_color1, clamp(m, 0.0, 1.0));
+  col = mix(col, u_color3, rings * 0.5);
+  col *= smoothstep(0.02, 0.25, r);
   fragColor = vec4(col, 1.0);
 }`
         },
@@ -977,21 +996,25 @@ void main() {
   vec3 col = mix(u_color1, u_color2, mixAmt);
   fragColor = vec4(col, 1.0);
 }`
-        }
-      };
-
-      const STARTER_GLSL = `#version 300 es
+        },
+        custom: {
+          name: 'Custom GLSL',
+          swatch: 'linear-gradient(135deg, #18181d 0%, #3b82f6 100%)',
+          code: `#version 300 es
 precision highp float;
 in vec2 v_uv;
 out vec4 fragColor;
 uniform float u_time, u_speed, u_scale, u_complexity;
 uniform vec3 u_color1, u_color2, u_color3;
-
 void main() {
   float wave = 0.5 + 0.5 * sin(v_uv.x * 8.0 * u_scale + u_time * u_speed * 2.0);
   vec3 col = mix(u_color2, u_color1, wave);
   fragColor = vec4(col, 1.0);
-}`;
+}`
+        }
+      };
+
+      const STARTER_GLSL = SHADER_PRESETS.custom.code;
 
       const state = {
         projectId: 'proj_default',
@@ -1001,7 +1024,8 @@ void main() {
         zoom: 1.0,
         panX: 0,
         panY: 0,
-        transformMode: 'box',
+        toolMode: 'box',
+        penPoints: [],
         lockAspect: true,
         showGrid: false,
         snapEnabled: true,
@@ -1065,8 +1089,9 @@ void main() {
       }
 
       function updateUndoRedoUI() {
-        document.getElementById('btn-undo').disabled = historyStack.length <= 1;
-        document.getElementById('btn-redo').disabled = redoStack.length === 0;
+        const u = $('btn-undo'), r = $('btn-redo');
+        if (u) u.disabled = historyStack.length <= 1;
+        if (r) r.disabled = redoStack.length === 0;
       }
 
       let idCounter = 1;
@@ -1105,8 +1130,7 @@ void main() {
 
       function defaultVertices(shape) {
         if (shape === 'triangle') return [{ x: 0.50, y: 0.24 }, { x: 0.67, y: 0.72 }, { x: 0.33, y: 0.72 }];
-        if (shape === 'pentagon') return regularPoly(5);
-        if (shape === 'hexagon' || shape === 'polygon') return regularPoly(6);
+        if (shape === 'polygon') return regularPoly(6);
         if (shape === 'text') {
           return [{ x: 0.28, y: 0.38 }, { x: 0.72, y: 0.38 }, { x: 0.72, y: 0.62 }, { x: 0.28, y: 0.62 }];
         }
@@ -1117,13 +1141,11 @@ void main() {
         const rawShape = opts.shape || 'quad';
         const isMask = rawShape === 'mask';
         const isText = rawShape === 'text';
-        const normShape = isMask ? 'quad' : ((rawShape === 'pentagon' || rawShape === 'hexagon') ? 'polygon' : rawShape);
+        const normShape = isMask ? 'quad' : rawShape;
         const names = {
           quad: 'Quad Surface',
           triangle: 'Triangle',
-          ellipse: 'Circle / Ellipse',
-          pentagon: 'Pentagon',
-          hexagon: 'Hexagon',
+          ellipse: 'Circle',
           polygon: 'Polygon',
           text: 'Text Layer',
           mask: 'Cutout Mask'
@@ -1172,9 +1194,7 @@ void main() {
             align: opts.textProps?.align || 'center',
             color: opts.textProps?.color || '#ffffff',
             bgPill: opts.textProps?.bgPill || false,
-            bgColor: opts.textProps?.bgColor || '#18181b',
-            strokeWidth: opts.textProps?.strokeWidth ?? 0,
-            strokeColor: opts.textProps?.strokeColor || '#09090b'
+            bgColor: opts.textProps?.bgColor || '#18181d'
           },
           media: {
             name: opts.media?.name || '',
@@ -1269,8 +1289,7 @@ void main() {
         return [m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]];
       }
 
-      /* WebGL2 Engine */
-      const canvas = document.getElementById('gl-canvas');
+      const canvas = $('gl-canvas');
       const gl = canvas.getContext('webgl2', { alpha: false, antialias: true, preserveDrawingBuffer: true });
 
       const VS_SRC = `#version 300 es
@@ -1530,6 +1549,7 @@ void main() {
       }
 
       const textureStore = new Map();
+      const mediaBufferCache = new Map();
 
       function updateTextTexture(layer) {
         if (!layer || layer.sourceType !== 'text') return;
@@ -1560,7 +1580,7 @@ void main() {
           const boxH = totalH + padY * 2;
           const boxX = tp.align === 'left' ? anchorX - padX : (tp.align === 'right' ? anchorX - boxW + padX : anchorX - boxW * 0.5);
           const boxY = (off.height - boxH) * 0.5;
-          ctx.fillStyle = tp.bgColor || '#18181b';
+          ctx.fillStyle = tp.bgColor || '#18181d';
           ctx.beginPath();
           if (ctx.roundRect) ctx.roundRect(boxX, boxY, boxW, boxH, 32);
           else ctx.rect(boxX, boxY, boxW, boxH);
@@ -1570,14 +1590,18 @@ void main() {
         ctx.fillStyle = tp.color || '#ffffff';
         lines.forEach((line, idx) => {
           const y = startY + idx * lineH;
-          if ((tp.strokeWidth || 0) > 0) {
-            ctx.lineWidth = tp.strokeWidth * 2;
-            ctx.strokeStyle = tp.strokeColor || '#09090b';
-            ctx.lineJoin = 'round';
-            ctx.strokeText(line, anchorX, y);
-          }
           ctx.fillText(line, anchorX, y);
         });
+
+        let item = textureStore.get(layer.id);
+        if (!item || item.isVideo) {
+          if (item) gl.deleteTexture(item.tex);
+          const tex = gl.createTexture();
+          gl.bindTexture(gl.TEXTURE_2D, tex);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
           item = { tex, isVideo: false, ready: true, width: 1600, height: 900, aspect: 1600 / 900 };
           textureStore.set(layer.id, item);
         }
@@ -1592,9 +1616,13 @@ void main() {
         }
       }
 
-      function attachMediaBlobToLayer(layer, blob, fileName, mimeType) {
-        const url = URL.createObjectURL(blob);
-        const isVideo = mimeType.startsWith('video/');
+      async function attachMediaBlobToLayer(layer, blob, fileName, mimeType) {
+        const resolvedMime = mimeType || blob.type || (fileName.match(/\.(mp4|webm|mov)$/i) ? 'video/mp4' : 'image/png');
+        const arrayBuf = await blob.arrayBuffer();
+        mediaBufferCache.set(layer.id, { buffer: arrayBuf, mimeType: resolvedMime, fileName });
+
+        const url = URL.createObjectURL(new Blob([arrayBuf], { type: resolvedMime }));
+        const isVideo = resolvedMime.startsWith('video/');
 
         if (textureStore.has(layer.id)) {
           const prev = textureStore.get(layer.id);
@@ -1619,7 +1647,7 @@ void main() {
           video.playbackRate = layer.media.speed || 1.0;
           video.playsInline = true;
           video.play().catch(() => {});
-          textureStore.set(layer.id, { tex, isVideo: true, video, blob, mimeType, ready: false, width: 1920, height: 1080, aspect: 16 / 9 });
+          textureStore.set(layer.id, { tex, isVideo: true, video, blob, mimeType: resolvedMime, ready: false, width: 1920, height: 1080, aspect: 16 / 9 });
           video.addEventListener('loadeddata', () => {
             const it = textureStore.get(layer.id);
             if (it) {
@@ -1649,7 +1677,7 @@ void main() {
             }
           };
           img.src = url;
-          textureStore.set(layer.id, { tex, isVideo: false, img, blob, mimeType, ready: false, width: 1920, height: 1080, aspect: 16 / 9 });
+          textureStore.set(layer.id, { tex, isVideo: false, img, blob, mimeType: resolvedMime, ready: false, width: 1920, height: 1080, aspect: 16 / 9 });
         }
 
         layer.sourceType = 'media';
@@ -1663,8 +1691,8 @@ void main() {
         const blobKey = `blob_${layer.id}`;
         layer.media.blobKey = blobKey;
         await saveMediaBlob(blobKey, file);
-        attachMediaBlobToLayer(layer, file, file.name, file.type);
-        await pushMediaToProjector(layer.id, file, file.name, file.type);
+        await attachMediaBlobToLayer(layer, file, file.name, file.type);
+        await pushMediaToProjector(layer.id);
         renderInspector();
         renderLayerList();
         persistAndSync(true);
@@ -1676,7 +1704,7 @@ void main() {
           if (l.sourceType === 'media' && l.media?.blobKey) {
             const blob = await loadMediaBlob(l.media.blobKey);
             if (blob) {
-              attachMediaBlobToLayer(l, blob, l.media.name || 'media', blob.type || (l.media.type === 'video' ? 'video/mp4' : 'image/png'));
+              await attachMediaBlobToLayer(l, blob, l.media.name || 'media', blob.type || (l.media.type === 'video' ? 'video/mp4' : 'image/png'));
             }
           }
         }
@@ -1853,31 +1881,28 @@ void main() {
         }
       }
 
-      /* =========================================================================
-         1. ROCK-SOLID REAL-TIME LIVE PROJECTOR WINDOW SYNC
-         Self-contained popup builder (window.open('', 'ProjectorOutput')) +
-         Multi-transport bridge: direct postMessage + BroadcastChannel +
-         localStorage mirror + PROJECTOR_READY handshake + Transferable Blobs
-         ========================================================================= */
       let projectorWin = null;
       let projectorConnected = false;
       let lastProjectorPong = 0;
 
       function updateProjectorStatusUI() {
-        const dot = document.getElementById('dot-projector-status');
-        const lbl = document.getElementById('lbl-projector-status');
-        const btn = document.getElementById('btn-projector-win');
+        const dot = $('dot-projector-status');
+        const lbl = $('lbl-projector-status');
+        const btn = $('btn-projector-win');
+        const resyncBtn = $('btn-resync-media');
         if (!dot || !lbl || !btn) return;
         const alive = projectorConnected && (Date.now() - lastProjectorPong < 2500);
         if (alive) {
           dot.className = 'w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]';
-          lbl.textContent = 'Projector Live';
+          lbl.textContent = 'Connected';
           btn.className = 'h-8 px-2.5 rounded-lg bg-emerald-950/50 border border-emerald-500/40 hover:bg-emerald-900/50 text-xs font-medium text-emerald-200 flex items-center gap-1.5 transition';
+          if (resyncBtn) { resyncBtn.classList.remove('hidden'); resyncBtn.classList.add('flex'); }
         } else {
           projectorConnected = false;
           dot.className = 'w-2 h-2 rounded-full bg-zinc-600';
           lbl.textContent = 'Projector';
           btn.className = 'h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs font-medium text-zinc-100 flex items-center gap-1.5 transition';
+          if (resyncBtn) { resyncBtn.classList.add('hidden'); resyncBtn.classList.remove('flex'); }
         }
       }
 
@@ -1891,7 +1916,7 @@ void main() {
 <title>Live Projector Output</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -1907,24 +1932,29 @@ void main() {
   #hint {
     position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
     padding: 8px 16px; border-radius: 999px;
-    background: rgba(18, 18, 21, 0.88); border: 1px solid rgba(255,255,255,0.14);
-    color: #e4e4e7; font-family: system-ui, -apple-system, sans-serif; font-size: 12px;
+    background: rgba(17, 17, 20, 0.9); border: 1px solid rgba(255,255,255,0.14);
+    color: #f4f4f5; font-family: system-ui, -apple-system, sans-serif; font-size: 12px;
     pointer-events: none; opacity: 1; transition: opacity 0.6s ease;
   }
 </style>
 </head>
 <body>
   <canvas id="out-canvas" width="1920" height="1080"></canvas>
-  <div id="hint">Double-click for Fullscreen • Press Esc to exit</div>
+  <div id="hint">Double-click for Fullscreen • Press C for Calibration Grid</div>
   <script>
     (() => {
       const SHADER_PRESETS = ${presetsJson};
-      const MIRROR_KEY = 'pmap_live_mirror';
-      const channel = ('BroadcastChannel' in window) ? new BroadcastChannel('pmap_sync_v3') : null;
+      const MIRROR_KEY = 'pmap_live_mirror_v6';
+      const channel = ('BroadcastChannel' in window) ? new BroadcastChannel('pmap_live_sync') : null;
       const canvas = document.getElementById('out-canvas');
       const gl = canvas.getContext('webgl2', { alpha: false, antialias: true });
       const hint = document.getElementById('hint');
-      setTimeout(() => { hint.style.opacity = '0'; }, 2200);
+      setTimeout(() => { hint.style.opacity = '0'; }, 2400);
+
+      let showCalib = false;
+      window.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() === 'c') showCalib = !showCalib;
+      });
 
       document.body.addEventListener('dblclick', () => {
         if (!document.fullscreenElement) {
@@ -2036,6 +2066,7 @@ void main() {
       }
 
       const maskProg = buildProgram(VS_SRC, MASK_FS_SRC);
+      const calibProg = buildProgram(VS_SRC, buildFragmentShader(SHADER_PRESETS.checker.code));
 
       function getProgramForLayer(layer) {
         const key = layer.sourceType === 'custom'
@@ -2083,7 +2114,7 @@ void main() {
           const boxH = totalH + padY * 2;
           const boxX = tp.align === 'left' ? anchorX - padX : (tp.align === 'right' ? anchorX - boxW + padX : anchorX - boxW * 0.5);
           const boxY = (off.height - boxH) * 0.5;
-          ctx.fillStyle = tp.bgColor || '#18181b';
+          ctx.fillStyle = tp.bgColor || '#18181d';
           ctx.beginPath();
           if (ctx.roundRect) ctx.roundRect(boxX, boxY, boxW, boxH, 32);
           else ctx.rect(boxX, boxY, boxW, boxH);
@@ -2093,11 +2124,18 @@ void main() {
         ctx.fillStyle = tp.color || '#ffffff';
         lines.forEach((line, idx) => {
           const y = startY + idx * lineH;
-          if ((tp.strokeWidth || 0) > 0) {
-            ctx.lineWidth = tp.strokeWidth * 2;
-            ctx.strokeStyle = tp.strokeColor || '#09090b';
-            ctx.lineJoin = 'round';
-            ctx.strokeText(line, anchorX, y);
+          ctx.fillText(line, anchorX, y);
+        });
+
+        let item = textureStore.get(layer.id);
+        if (!item || item.isVideo) {
+          if (item) gl.deleteTexture(item.tex);
+          const tex = gl.createTexture();
+          gl.bindTexture(gl.TEXTURE_2D, tex);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
           item = { tex, isVideo: false, ready: true, width: 1600, height: 900, aspect: 1600 / 900 };
           textureStore.set(layer.id, item);
         }
@@ -2203,7 +2241,7 @@ void main() {
             if (l.sourceType === 'media' && !textureStore.has(l.id) && !pendingMediaReq.has(l.id)) {
               pendingMediaReq.add(l.id);
               notifyOpener({ type: 'REQUEST_MEDIA', layerId: l.id });
-              setTimeout(() => pendingMediaReq.delete(l.id), 1500);
+              setTimeout(() => pendingMediaReq.delete(l.id), 1200);
             }
           }
         }
@@ -2308,6 +2346,28 @@ void main() {
         gl.enableVertexAttribArray(1);
         gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 16, 8);
 
+        if (showCalib && calibProg) {
+          gl.useProgram(calibProg);
+          gl.disable(gl.BLEND);
+          const full = new Float32Array([0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1]);
+          gl.bufferData(gl.ARRAY_BUFFER, full, gl.DYNAMIC_DRAW);
+          gl.uniform1i(gl.getUniformLocation(calibProg, 'u_useH'), 0);
+          gl.uniform1i(gl.getUniformLocation(calibProg, 'u_isEllipse'), 0);
+          gl.uniform1i(gl.getUniformLocation(calibProg, 'u_sourceMode'), 0);
+          gl.uniform1f(gl.getUniformLocation(calibProg, 'u_opacity'), 1.0);
+          gl.uniform1f(gl.getUniformLocation(calibProg, 'u_feather'), 0.0);
+          gl.uniform1f(gl.getUniformLocation(calibProg, 'u_cornerRadius'), 0.0);
+          gl.uniform2f(gl.getUniformLocation(calibProg, 'u_flip'), 0, 0);
+          gl.uniform1f(gl.getUniformLocation(calibProg, 'u_scale'), 2.0);
+          gl.uniform1f(gl.getUniformLocation(calibProg, 'u_brightness'), 1.0);
+          gl.uniform1f(gl.getUniformLocation(calibProg, 'u_contrast'), 1.0);
+          gl.uniform1f(gl.getUniformLocation(calibProg, 'u_saturation'), 1.0);
+          gl.uniform3f(gl.getUniformLocation(calibProg, 'u_color1'), 0.16, 0.16, 0.2);
+          gl.uniform3f(gl.getUniformLocation(calibProg, 'u_color2'), 0.05, 0.05, 0.07);
+          gl.uniform3f(gl.getUniformLocation(calibProg, 'u_color3'), 0.23, 0.51, 0.96);
+          gl.drawArrays(gl.TRIANGLES, 0, 6);
+        }
+
         const anySolo = pState.layers.some(l => l.solo && l.visible);
 
         for (const layer of pState.layers) {
@@ -2342,6 +2402,9 @@ void main() {
           else gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
           gl.uniformMatrix3fv(gl.getUniformLocation(prog, 'u_invH'), false, invH);
+          gl.uniform1i(gl.getUniformLocation(prog, 'u_useH'), useH);
+          gl.uniform1i(gl.getUniformLocation(prog, 'u_isEllipse'), layer.shape === 'ellipse' ? 1 : 0);
+
           let srcMode = 0, fitMode = 0, mW = 1920, mH = 1080;
           const b = getBounds(layer);
           if ((layer.sourceType === 'media' || layer.sourceType === 'text') && textureStore.has(layer.id)) {
@@ -2453,21 +2516,33 @@ void main() {
         return videoStates;
       }
 
-      async function pushMediaToProjector(layerId, blob, fileName, mimeType) {
-        if (!blob) return;
+      async function pushMediaToProjector(layerId) {
+        const layer = state.layers.find(l => l.id === layerId);
+        if (!layer) return;
+
+        let cached = mediaBufferCache.get(layerId);
+        if (!cached && layer.media?.blobKey) {
+          const blob = await loadMediaBlob(layer.media.blobKey);
+          if (blob) {
+            const buf = await blob.arrayBuffer();
+            cached = { buffer: buf, mimeType: blob.type, fileName: layer.media.name };
+            mediaBufferCache.set(layerId, cached);
+          }
+        }
+        if (!cached?.buffer) return;
+
         try {
-          const buf = await blob.arrayBuffer();
-          const layer = state.layers.find(l => l.id === layerId);
+          const bufCopy = cached.buffer.slice(0);
           const msg = {
             type: 'PMAP_MEDIA',
             layerId,
-            buffer: buf,
-            fileName,
-            mimeType: mimeType || blob.type,
-            mediaMeta: layer?.media || {}
+            buffer: bufCopy,
+            fileName: cached.fileName,
+            mimeType: cached.mimeType,
+            mediaMeta: layer.media || {}
           };
           if (projectorWin && !projectorWin.closed) {
-            projectorWin.postMessage(msg, '*', [buf]);
+            projectorWin.postMessage(msg, '*', [bufCopy]);
           } else if (syncChannel) {
             syncChannel.postMessage(msg);
           }
@@ -2477,13 +2552,7 @@ void main() {
       async function pushAllMediaToProjector() {
         for (const l of state.layers) {
           if (l.sourceType === 'media') {
-            const it = textureStore.get(l.id);
-            if (it?.blob) {
-              await pushMediaToProjector(l.id, it.blob, l.media.name, it.mimeType);
-            } else if (l.media?.blobKey) {
-              const blob = await loadMediaBlob(l.media.blobKey);
-              if (blob) await pushMediaToProjector(l.id, blob, l.media.name, blob.type);
-            }
+            await pushMediaToProjector(l.id);
           }
         }
       }
@@ -2504,9 +2573,7 @@ void main() {
         try { localStorage.setItem(MIRROR_KEY, JSON.stringify(payload)); } catch (e) {}
         const msg = { type: 'PMAP_SYNC', payload };
         try {
-          if (projectorWin && !projectorWin.closed) {
-            projectorWin.postMessage(msg, '*');
-          }
+          if (projectorWin && !projectorWin.closed) projectorWin.postMessage(msg, '*');
         } catch (e) {}
         try {
           if (syncChannel) syncChannel.postMessage(msg);
@@ -2526,24 +2593,13 @@ void main() {
           lastProjectorPong = Date.now();
           updateProjectorStatusUI();
         } else if (msg.type === 'REQUEST_MEDIA' && msg.layerId) {
-          const l = state.layers.find(x => x.id === msg.layerId);
-          if (l) {
-            const it = textureStore.get(l.id);
-            if (it?.blob) {
-              pushMediaToProjector(l.id, it.blob, l.media.name, it.mimeType);
-            } else if (l.media?.blobKey) {
-              loadMediaBlob(l.media.blobKey).then(b => {
-                if (b) pushMediaToProjector(l.id, b, l.media.name, b.type);
-              });
-            }
-          }
+          pushMediaToProjector(msg.layerId);
         }
       }
 
       window.addEventListener('message', (e) => handleChildControlMessage(e.data));
       if (syncChannel) syncChannel.onmessage = (e) => handleChildControlMessage(e.data);
 
-      /* 250ms Heartbeat for Real-Time Clock, Video Time, and Connection Status */
       setInterval(() => {
         updateProjectorStatusUI();
         if ((projectorWin && !projectorWin.closed) || projectorConnected) {
@@ -2551,7 +2607,7 @@ void main() {
         }
       }, 250);
 
-      document.getElementById('btn-projector-win').addEventListener('click', () => {
+      on('btn-projector-win', 'click', () => {
         if (projectorWin && !projectorWin.closed) {
           projectorWin.focus();
           pushProjectorSync();
@@ -2565,7 +2621,7 @@ void main() {
           `width=${Math.min(1280, state.outputWidth)},height=${Math.min(800, state.outputHeight)},menubar=no,toolbar=no,location=no,status=no`
         );
         if (!win) {
-          showToast('Enable pop-ups to open Live Projector Window');
+          showToast('Allow pop-ups to open Live Projector Window');
           return;
         }
         projectorWin = win;
@@ -2575,36 +2631,72 @@ void main() {
         projectorConnected = true;
         lastProjectorPong = Date.now();
         updateProjectorStatusUI();
-        setTimeout(() => { pushProjectorSync(); pushAllMediaToProjector(); }, 150);
-        setTimeout(() => { pushProjectorSync(); }, 600);
+        setTimeout(() => { pushProjectorSync(); pushAllMediaToProjector(); }, 180);
+        setTimeout(() => { pushProjectorSync(); pushAllMediaToProjector(); }, 650);
         showToast('Live Projector Window opened');
       });
 
-      /* =========================================================================
-         2. ILLUSTRATOR BOUNDING BOX & FREEFORM VERTEX DUAL-MODE TRANSFORM
-         ========================================================================= */
-      const overlaySvg = document.getElementById('overlay-svg');
-      const touchLoupe = document.getElementById('touch-loupe');
+      on('btn-resync-media', 'click', async () => {
+        pushProjectorSync();
+        await pushAllMediaToProjector();
+        showToast('Resynced media & stage to Projector');
+      });
+
+      const overlaySvg = $('overlay-svg');
+      const touchLoupe = $('touch-loupe');
       let activeDrag = null;
       let snapGuides = [];
 
-      function setTransformMode(mode) {
-        state.transformMode = mode;
-        const btnBox = document.getElementById('btn-mode-box');
-        const btnWarp = document.getElementById('btn-mode-warp');
-        if (btnBox && btnWarp) {
-          btnBox.className = mode === 'box'
-            ? 'h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 bg-accent text-white transition'
-            : 'h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 text-zinc-300 hover:text-white transition';
-          btnWarp.className = mode === 'warp'
-            ? 'h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 bg-accent text-white transition'
-            : 'h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 text-zinc-300 hover:text-white transition';
+      function setToolMode(mode) {
+        state.toolMode = mode;
+        if (mode !== 'pen') {
+          state.penPoints = [];
+          const penHud = $('pen-hud');
+          if (penHud) penHud.classList.add('hidden');
+        } else {
+          const penHud = $('pen-hud');
+          const penPts = $('lbl-pen-pts');
+          if (penHud) penHud.classList.remove('hidden');
+          if (penPts) penPts.textContent = state.penPoints.length;
         }
+
+        const btnBox = $('btn-tool-box');
+        const btnWarp = $('btn-tool-warp');
+        const btnPen = $('btn-tool-pen');
+        const baseOff = 'h-7 px-2 rounded-md text-xs font-medium flex items-center gap-1 text-zinc-400 hover:text-white transition';
+        const baseOn = 'h-7 px-2 rounded-md text-xs font-medium flex items-center gap-1 bg-accent text-white transition';
+        if (btnBox) btnBox.className = mode === 'box' ? baseOn : baseOff;
+        if (btnWarp) btnWarp.className = mode === 'warp' ? baseOn : baseOff;
+        if (btnPen) btnPen.className = mode === 'pen' ? baseOn : baseOff;
         renderOverlay();
       }
 
-      document.getElementById('btn-mode-box').addEventListener('click', () => setTransformMode('box'));
-      document.getElementById('btn-mode-warp').addEventListener('click', () => setTransformMode('warp'));
+      on('btn-tool-box', 'click', () => setToolMode('box'));
+      on('btn-tool-warp', 'click', () => setToolMode('warp'));
+      on('btn-tool-pen', 'click', () => setToolMode('pen'));
+
+      function finishPenPolygon() {
+        if (state.penPoints.length >= 3) {
+          const lyr = createLayer({
+            shape: 'polygon',
+            name: 'Custom Polygon',
+            vertices: clone(state.penPoints)
+          });
+          state.layers.push(lyr);
+          state.selectedIds = [lyr.id];
+          pushHistory();
+          refreshAll();
+          showToast('Created Custom Polygon');
+        }
+        state.penPoints = [];
+        setToolMode('box');
+      }
+
+      on('btn-pen-finish', 'click', finishPenPolygon);
+      on('btn-pen-cancel', 'click', () => {
+        state.penPoints = [];
+        setToolMode('box');
+      });
 
       function isSelected(id) { return state.selectedIds.includes(id); }
 
@@ -2614,9 +2706,9 @@ void main() {
       }
 
       function renderOverlay() {
-        const emptyEl = document.getElementById('empty-stage-overlay');
+        const emptyEl = $('empty-stage-overlay');
         if (emptyEl) {
-          if (state.layers.length === 0 && !document.body.classList.contains('stage-fullscreen')) {
+          if (state.layers.length === 0 && !document.body.classList.contains('stage-fullscreen') && state.toolMode !== 'pen') {
             emptyEl.classList.remove('hidden');
           } else {
             emptyEl.classList.add('hidden');
@@ -2647,7 +2739,21 @@ void main() {
           if (g.y !== undefined) out += `<line x1="0" y1="${g.y * h}" x2="${w}" y2="${g.y * h}" stroke="#22d3ee" stroke-width="1" stroke-dasharray="3,3" opacity="0.9"/>`;
         }
 
-        const isTouchDevice = window.innerWidth < 1025;
+        if (state.toolMode === 'pen') {
+          out += `<rect x="0" y="0" width="${w}" height="${h}" fill="transparent" data-pen-canvas="1" style="cursor: crosshair;"/>`;
+          if (state.penPoints.length > 0) {
+            const ptsStr = state.penPoints.map(p => `${p.x * w},${p.y * h}`).join(' ');
+            out += `<polyline points="${ptsStr}" fill="rgba(59,130,246,0.12)" stroke="#3b82f6" stroke-width="1.5" pointer-events="none"/>`;
+            state.penPoints.forEach((p, idx) => {
+              const isFirst = idx === 0 && state.penPoints.length >= 3;
+              out += `<circle cx="${p.x * w}" cy="${p.y * h}" r="${isFirst ? 8 : 5}" fill="${isFirst ? '#3b82f6' : '#f4f4f5'}" stroke="#3b82f6" stroke-width="2" ${isFirst ? 'data-pen-close="1" style="cursor: pointer;"' : 'pointer-events="none"'}/>`;
+            });
+          }
+          overlaySvg.innerHTML = out;
+          return;
+        }
+
+        const isTouchDevice = window.innerWidth < 901;
         const handleRadius = isTouchDevice ? 8 : 5;
         const hitRadius = isTouchDevice ? 22 : 12;
 
@@ -2662,7 +2768,7 @@ void main() {
           const polyPts = layer.vertices.map(p => `${p.x * w},${p.y * h}`).join(' ');
           out += `<polygon points="${polyPts}" fill="transparent" stroke="${stroke}" stroke-width="${sel ? 1.5 : 1}" ${isMask ? 'stroke-dasharray="4,4"' : ''} data-id="${layer.id}" data-mode="move" style="cursor: ${layer.locked ? 'not-allowed' : 'move'};"/>`;
 
-          if (sel && !layer.locked && state.transformMode === 'box') {
+          if (sel && !layer.locked && state.toolMode === 'box') {
             const b = getBounds(layer);
             const bx = b.minX * w, by = b.minY * h, bw = b.w * w, bh = b.h * h;
             const cx = b.cx * w, topY = by;
@@ -2673,7 +2779,7 @@ void main() {
             out += `
               <g data-id="${layer.id}" data-mode="box-rotate" style="cursor: grab;">
                 <circle cx="${cx}" cy="${rotY}" r="${hitRadius}" fill="transparent"/>
-                <circle cx="${cx}" cy="${rotY}" r="${handleRadius + 0.5}" fill="#121215" stroke="#38bdf8" stroke-width="2"/>
+                <circle cx="${cx}" cy="${rotY}" r="${handleRadius + 0.5}" fill="#111114" stroke="#38bdf8" stroke-width="2"/>
               </g>`;
 
             const handles = [
@@ -2693,7 +2799,7 @@ void main() {
                 out += `
                   <g data-id="${layer.id}" data-mode="box-resize" data-handle="${hnd.id}" style="cursor: ${hnd.cur};">
                     <circle cx="${hnd.x}" cy="${hnd.y}" r="${hitRadius}" fill="transparent"/>
-                    <rect x="${hnd.x - sz * 0.5}" y="${hnd.y - sz * 0.5}" width="${sz}" height="${sz}" rx="1.5" fill="#ffffff" stroke="#3b82f6" stroke-width="1.8"/>
+                    <rect x="${hnd.x - sz * 0.5}" y="${hnd.y - sz * 0.5}" width="${sz}" height="${sz}" rx="1.5" fill="#f4f4f5" stroke="#3b82f6" stroke-width="1.8"/>
                   </g>`;
               } else {
                 const isHoriz = hnd.id === 'n' || hnd.id === 's';
@@ -2702,7 +2808,7 @@ void main() {
                 out += `
                   <g data-id="${layer.id}" data-mode="box-resize" data-handle="${hnd.id}" style="cursor: ${hnd.cur};">
                     <circle cx="${hnd.x}" cy="${hnd.y}" r="${hitRadius}" fill="transparent"/>
-                    <rect x="${hnd.x - rw * 0.5}" y="${hnd.y - rh * 0.5}" width="${rw}" height="${rh}" rx="2" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+                    <rect x="${hnd.x - rw * 0.5}" y="${hnd.y - rh * 0.5}" width="${rw}" height="${rh}" rx="2" fill="#f4f4f5" stroke="#3b82f6" stroke-width="1.5"/>
                   </g>`;
               }
             }
@@ -2719,7 +2825,7 @@ void main() {
               out += `
                 <g data-id="${layer.id}" data-mode="add-edge-pt" data-edge-idx="${i}" style="cursor: copy;">
                   <circle cx="${mx}" cy="${my}" r="11" fill="transparent"/>
-                  <circle cx="${mx}" cy="${my}" r="6" fill="#121215" stroke="#3b82f6" stroke-width="1.5"/>
+                  <circle cx="${mx}" cy="${my}" r="6" fill="#111114" stroke="#3b82f6" stroke-width="1.5"/>
                   <line x1="${mx - 2.5}" y1="${my}" x2="${mx + 2.5}" y2="${my}" stroke="#3b82f6" stroke-width="1.5"/>
                   <line x1="${mx}" y1="${my - 2.5}" x2="${mx}" y2="${my + 2.5}" stroke="#3b82f6" stroke-width="1.5"/>
                 </g>`;
@@ -2758,7 +2864,7 @@ void main() {
               out += `
                 <g data-id="${layer.id}" data-mode="vertex" data-idx="${idx}" style="cursor: crosshair;">
                   <circle cx="${cx}" cy="${cy}" r="${hitRadius}" fill="transparent"/>
-                  <circle cx="${cx}" cy="${cy}" r="${handleRadius}" fill="#ffffff" stroke="${isMask ? '#ef4444' : '#3b82f6'}" stroke-width="2"/>
+                  <circle cx="${cx}" cy="${cy}" r="${handleRadius}" fill="#f4f4f5" stroke="${isMask ? '#ef4444' : '#3b82f6'}" stroke-width="2"/>
                 </g>`;
             });
           }
@@ -2814,14 +2920,13 @@ void main() {
         }
         const poly = e.target.closest('[data-mode="move"]');
         if (poly) {
-          const nextMode = state.transformMode === 'box' ? 'warp' : 'box';
-          setTransformMode(nextMode);
-          showToast(nextMode === 'box' ? 'Bounding Box Mode (V)' : 'Vertex Warp Mode (A)');
+          const nextMode = state.toolMode === 'box' ? 'warp' : 'box';
+          setToolMode(nextMode);
+          showToast(nextMode === 'box' ? 'Transform Box Mode (V)' : 'Warp Vertex Mode (A)');
         }
       });
 
-      /* Right-Click Context Menu on Canvas & Layer Rows */
-      const contextMenu = document.getElementById('context-menu');
+      const contextMenu = $('context-menu');
       let contextTargetId = null;
 
       function openContextMenu(x, y, layerId) {
@@ -2830,7 +2935,8 @@ void main() {
         renderLayerList();
         renderInspector();
         renderOverlay();
-        document.getElementById('ctx-paste-style').disabled = !state.copiedStyle;
+        const pasteBtn = $('ctx-paste-style');
+        if (pasteBtn) pasteBtn.disabled = !state.copiedStyle;
         contextMenu.classList.remove('hidden');
         const menuW = 192, menuH = 290;
         contextMenu.style.left = `${Math.min(window.innerWidth - menuW - 8, x)}px`;
@@ -2907,6 +3013,22 @@ void main() {
       overlaySvg.addEventListener('pointerdown', (e) => {
         if (e.button === 2) return;
         if (activePointers.size >= 1) return;
+
+        if (state.toolMode === 'pen') {
+          if (e.target.closest('[data-pen-close]')) {
+            finishPenPolygon();
+            return;
+          }
+          const rect = overlaySvg.getBoundingClientRect();
+          const px = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+          const py = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+          state.penPoints.push({ x: px, y: py });
+          const penPts = $('lbl-pen-pts');
+          if (penPts) penPts.textContent = state.penPoints.length;
+          renderOverlay();
+          return;
+        }
+
         const el = e.target.closest('[data-id]');
         if (!el) return;
         const id = el.getAttribute('data-id');
@@ -3007,23 +3129,33 @@ void main() {
           const hnd = activeDrag.handle;
           let minX = b.minX, maxX = b.maxX, minY = b.minY, maxY = b.maxY;
 
-          if (hnd.includes('w')) minX = Math.min(maxX - 0.01, mx);
-          if (hnd.includes('e')) maxX = Math.max(minX + 0.01, mx);
-          if (hnd.includes('n')) minY = Math.min(maxY - 0.01, my);
-          if (hnd.includes('s')) maxY = Math.max(minY + 0.01, my);
+          if (e.altKey) {
+            if (hnd.includes('w')) { const d = b.cx - mx; minX = b.cx - d; maxX = b.cx + d; }
+            if (hnd.includes('e')) { const d = mx - b.cx; minX = b.cx - d; maxX = b.cx + d; }
+            if (hnd.includes('n')) { const d = b.cy - my; minY = b.cy - d; maxY = b.cy + d; }
+            if (hnd.includes('s')) { const d = my - b.cy; minY = b.cy - d; maxY = b.cy + d; }
+          } else {
+            if (hnd.includes('w')) minX = Math.min(maxX - 0.01, mx);
+            if (hnd.includes('e')) maxX = Math.max(minX + 0.01, mx);
+            if (hnd.includes('n')) minY = Math.min(maxY - 0.01, my);
+            if (hnd.includes('s')) maxY = Math.max(minY + 0.01, my);
+          }
 
           const isCorner = hnd.length === 2;
-          const keepRatio = isCorner && (state.lockAspect !== e.shiftKey);
+          const keepRatio = isCorner && e.shiftKey;
           if (keepRatio) {
             const origRatio = b.w / Math.max(0.0001, b.h);
-            let newW = maxX - minX, newH = maxY - minY;
-            if (newW / Math.max(0.0001, newH) > origRatio) {
-              newW = newH * origRatio;
+            let newW = Math.max(0.01, maxX - minX), newH = Math.max(0.01, maxY - minY);
+            if (newW / newH > origRatio) newW = newH * origRatio;
+            else newH = newW / origRatio;
+
+            if (e.altKey) {
+              minX = b.cx - newW * 0.5; maxX = b.cx + newW * 0.5;
+              minY = b.cy - newH * 0.5; maxY = b.cy + newH * 0.5;
             } else {
-              newH = newW / origRatio;
+              if (hnd.includes('w')) minX = maxX - newW; else maxX = minX + newW;
+              if (hnd.includes('n')) minY = maxY - newH; else maxY = minY + newH;
             }
-            if (hnd.includes('w')) minX = maxX - newW; else maxX = minX + newW;
-            if (hnd.includes('n')) minY = maxY - newH; else maxY = minY + newH;
           }
 
           const newW = Math.max(0.005, maxX - minX);
@@ -3134,9 +3266,8 @@ void main() {
         }
       });
 
-      /* Viewport Pinch-to-Zoom, Two-Finger Pan, Wheel & Space-Pan */
-      const viewportWrap = document.getElementById('viewport-wrap');
-      const stageBox = document.getElementById('stage-box');
+      const viewportWrap = $('viewport-wrap');
+      const stageBox = $('stage-box');
       const activePointers = new Map();
       let pinchStartDist = 0;
       let pinchStartZoom = 1;
@@ -3150,7 +3281,7 @@ void main() {
           return;
         }
         const rect = viewportWrap.getBoundingClientRect();
-        const pad = window.innerWidth < 1025 ? 28 : 64;
+        const pad = window.innerWidth < 901 ? 28 : 56;
         const availW = Math.max(160, rect.width - pad);
         const availH = Math.max(120, rect.height - pad);
         const aspect = state.outputWidth / state.outputHeight;
@@ -3165,7 +3296,8 @@ void main() {
         stageBox.style.width = `${Math.round(baseW)}px`;
         stageBox.style.height = `${Math.round(baseH)}px`;
         stageBox.style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${state.zoom})`;
-        document.getElementById('lbl-zoom').textContent = `${Math.round(state.zoom * 100)}%`;
+        const lblZoom = $('lbl-zoom');
+        if (lblZoom) lblZoom.textContent = `${Math.round(state.zoom * 100)}%`;
 
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         canvas.width = Math.max(1, Math.round(baseW * dpr));
@@ -3227,13 +3359,10 @@ void main() {
       viewportWrap.addEventListener('pointerup', releasePointer);
       viewportWrap.addEventListener('pointercancel', releasePointer);
 
-      document.getElementById('btn-zoom-in').addEventListener('click', () => { state.zoom = Math.min(4.0, state.zoom + 0.15); applyStageLayout(); });
-      document.getElementById('btn-zoom-out').addEventListener('click', () => { state.zoom = Math.max(0.3, state.zoom - 0.15); applyStageLayout(); });
-      document.getElementById('btn-zoom-fit').addEventListener('click', () => { state.zoom = 1.0; state.panX = 0; state.panY = 0; applyStageLayout(); });
+      on('btn-zoom-in', 'click', () => { state.zoom = Math.min(4.0, state.zoom + 0.15); applyStageLayout(); });
+      on('btn-zoom-out', 'click', () => { state.zoom = Math.max(0.3, state.zoom - 0.15); applyStageLayout(); });
+      on('btn-zoom-fit', 'click', () => { state.zoom = 1.0; state.panX = 0; state.panY = 0; applyStageLayout(); });
 
-      /* =========================================================================
-         3. SEAMLESS LAYER CONTROLS: DUPLICATE, STYLE COPY/PASTE, ONE-CLICK DELETE
-         ========================================================================= */
       function duplicateLayerById(id) {
         const lyr = state.layers.find(l => l.id === id);
         if (!lyr) return;
@@ -3295,6 +3424,7 @@ void main() {
             gl.deleteTexture(it.tex);
             textureStore.delete(id);
           }
+          mediaBufferCache.delete(id);
         }
         state.layers = state.layers.filter(l => !ids.includes(l.id));
         state.selectedIds = state.selectedIds.filter(id => !ids.includes(id));
@@ -3315,6 +3445,7 @@ void main() {
           }
         }
         textureStore.clear();
+        mediaBufferCache.clear();
         state.layers = [];
         state.selectedIds = [];
         pushHistory();
@@ -3322,18 +3453,19 @@ void main() {
         showUndoToast('Cleared all layers');
       }
 
-      document.getElementById('btn-clear-canvas').addEventListener('click', clearAllLayers);
+      on('btn-clear-canvas', 'click', clearAllLayers);
 
-      /* Left Layers Drawer with Always-Accessible Inline Action Strip */
       let draggedLayerId = null;
 
       function renderLayerList() {
-        const list = document.getElementById('layer-list');
-        document.getElementById('lbl-layer-count').textContent = state.layers.length;
+        const list = $('layer-list');
+        const cntEl = $('lbl-layer-count');
+        if (cntEl) cntEl.textContent = state.layers.length;
+        if (!list) return;
         list.innerHTML = '';
 
         if (!state.layers.length) {
-          list.innerHTML = `<div class="py-8 px-3 text-center text-[11px] text-zinc-500">No layers on stage. Use the shape bar below to add a surface or mask.</div>`;
+          list.innerHTML = `<div class="py-8 px-3 text-center text-[11px] text-zinc-500">No layers on stage. Use the shape bar below or Add menu to create a surface.</div>`;
           return;
         }
 
@@ -3353,7 +3485,7 @@ void main() {
 
           const row = document.createElement('div');
           row.draggable = true;
-          row.className = `px-2 py-2 lg:py-1.5 rounded-lg flex items-center justify-between gap-1 cursor-pointer transition ${
+          row.className = `px-2 py-2 min-[901px]:py-1.5 rounded-lg flex items-center justify-between gap-1 cursor-pointer transition ${
             sel ? 'bg-bgControl text-white hairline-all' : 'text-zinc-300 hover:bg-bgControl/60'
           }`;
 
@@ -3457,12 +3589,11 @@ void main() {
         });
       }
 
-      /* Right Inspector Panel */
       function syncInspectorNumbers() {
         const layer = primarySelectedLayer();
         if (!layer) return;
         const b = getBounds(layer);
-        const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = Math.round(v); };
+        const setVal = (id, v) => { const el = $(id); if (el) el.value = Math.round(v); };
         setVal('inp-x', b.cx * state.outputWidth);
         setVal('inp-y', b.cy * state.outputHeight);
         setVal('inp-w', b.w * state.outputWidth);
@@ -3474,14 +3605,16 @@ void main() {
       }
 
       function renderInspector() {
-        const host = document.getElementById('inspector-scroll');
+        const host = $('inspector-scroll');
+        if (!host) return;
         const layer = primarySelectedLayer();
         if (!layer) {
           host.innerHTML = `<div class="py-12 px-3 text-center text-xs text-zinc-500">No layer selected. Add a surface or mask to customize geometry, shaders, text, or media.</div>`;
           return;
         }
 
-        document.getElementById('lbl-inspector-title').textContent = layer.kind === 'mask' ? 'Mask' : 'Inspector';
+        const titleEl = $('lbl-inspector-title');
+        if (titleEl) titleEl.textContent = layer.kind === 'mask' ? 'Mask' : 'Inspector';
         const b = getBounds(layer);
 
         const vtxRows = layer.vertices.map((pt, idx) => `
@@ -3500,20 +3633,19 @@ void main() {
           <div class="space-y-2.5 pt-3 hairline-t">
             <div class="flex items-center justify-between">
               <span class="text-[11px] font-medium text-zinc-400">Transform & Geometry</span>
-              <div class="flex items-center gap-2">
-                <button id="btn-lock-aspect" class="text-[10px] px-1.5 py-0.5 rounded hairline-all transition ${state.lockAspect ? 'bg-accent/20 border-accent/40 text-blue-300' : 'bg-bgControl text-zinc-400'}" title="Lock Aspect Ratio">
-                  <i class="ph ${state.lockAspect ? 'ph-lock-simple' : 'ph-lock-simple-open'}"></i> Ratio
-                </button>
-                <button id="btn-fit-output" class="text-[10px] text-accent hover:underline">Fit Stage</button>
+              <div class="flex items-center gap-1.5">
+                <button id="btn-center-stage" class="text-[10px] text-zinc-300 hover:text-white">Center</button>
+                <span class="text-zinc-600">·</span>
+                <button id="btn-fit-output" class="text-[10px] text-accent hover:underline">Fit to Stage</button>
               </div>
             </div>
             <div class="grid grid-cols-2 gap-1.5">
               <div>
-                <span class="text-[10px] text-zinc-500">X (px)</span>
+                <span class="text-[10px] text-zinc-500">Center X (px)</span>
                 <input id="inp-x" type="number" value="${Math.round(b.cx * state.outputWidth)}" class="w-full h-7 bg-bgControl hairline-all rounded-lg px-2 text-xs font-mono text-zinc-200 outline-none focus:border-accent" />
               </div>
               <div>
-                <span class="text-[10px] text-zinc-500">Y (px)</span>
+                <span class="text-[10px] text-zinc-500">Center Y (px)</span>
                 <input id="inp-y" type="number" value="${Math.round(b.cy * state.outputHeight)}" class="w-full h-7 bg-bgControl hairline-all rounded-lg px-2 text-xs font-mono text-zinc-200 outline-none focus:border-accent" />
               </div>
               <div>
@@ -3531,11 +3663,14 @@ void main() {
               <button data-scale="1.1" class="btn-scale flex-1 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] font-mono text-zinc-300">+10%</button>
               <button data-rot="-15" class="btn-rot px-2 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] font-mono text-zinc-300">-15°</button>
               <button data-rot="15" class="btn-rot px-2 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] font-mono text-zinc-300">+15°</button>
+              <button id="btn-lock-aspect" class="px-2 h-7 rounded-lg hairline-all text-[10px] transition ${state.lockAspect ? 'bg-accent/20 border-accent/40 text-blue-300' : 'bg-bgControl text-zinc-400'}" title="Lock Aspect Ratio">
+                <i class="ph ${state.lockAspect ? 'ph-lock-simple' : 'ph-lock-simple-open'}"></i>
+              </button>
             </div>
 
             <div>
               <div class="flex justify-between text-[11px] text-zinc-400 mb-1">
-                <span>Feather / Soft Edge</span>
+                <span>Edge Feather / Softness</span>
                 <span id="lbl-feather" class="font-mono text-zinc-200">${Math.round(layer.feather * 250)} px</span>
               </div>
               <input id="inp-feather" type="range" min="0" max="0.4" step="0.005" value="${layer.feather}" class="w-full" />
@@ -3554,11 +3689,11 @@ void main() {
             ${layer.vertices.length === 4 ? `
               <div class="space-y-1.5">
                 <div class="flex justify-between text-[11px] text-zinc-400">
-                  <span>Mesh Warp Grid</span>
+                  <span>Curved Mesh Grid</span>
                   <span class="font-mono text-zinc-500">${layer.meshSubdiv === 1 ? '1×1' : `${layer.meshSubdiv}×${layer.meshSubdiv}`}</span>
                 </div>
-                <div class="grid grid-cols-6 gap-1 bg-bgControl p-1 rounded-lg hairline-all">
-                  ${[1, 2, 4, 6, 8, 10].map(d => `
+                <div class="grid grid-cols-5 gap-1 bg-bgControl p-1 rounded-lg hairline-all">
+                  ${[1, 2, 4, 6, 8].map(d => `
                     <button data-subdiv="${d}" class="btn-subdiv py-1 rounded text-[10px] font-mono transition ${layer.meshSubdiv === d ? 'bg-bgPanel text-white shadow-sm' : 'text-zinc-400 hover:text-white'}">
                       ${d}×${d}
                     </button>
@@ -3596,7 +3731,9 @@ void main() {
           return;
         }
 
-        const swatchesHtml = Object.entries(SHADER_PRESETS).map(([k, item]) => `
+        const swatchesHtml = Object.entries(SHADER_PRESETS)
+          .filter(([k]) => k !== 'custom')
+          .map(([k, item]) => `
           <button data-preset="${k}" class="preset-btn p-1.5 rounded-xl text-left transition flex flex-col gap-1 ${
             layer.shaderPreset === k && layer.sourceType === 'preset'
               ? 'bg-bgControl ring-1 ring-accent'
@@ -3637,10 +3774,9 @@ void main() {
                     <select id="sel-text-font" class="h-7 bg-bgControl hairline-all rounded-lg px-2 text-[11px] text-zinc-200 outline-none">
                       <option value="Geist" ${layer.textProps.fontFamily === 'Geist' ? 'selected' : ''}>Geist</option>
                       <option value="Plus Jakarta Sans" ${layer.textProps.fontFamily === 'Plus Jakarta Sans' ? 'selected' : ''}>Jakarta Sans</option>
-                      <option value="Syne" ${layer.textProps.fontFamily === 'Syne' ? 'selected' : ''}>Syne</option>
-                      <option value="Space Grotesk" ${layer.textProps.fontFamily === 'Space Grotesk' ? 'selected' : ''}>Space Grotesk</option>
-                      <option value="Instrument Serif" ${layer.textProps.fontFamily === 'Instrument Serif' ? 'selected' : ''}>Instrument Serif</option>
                       <option value="Geist Mono" ${layer.textProps.fontFamily === 'Geist Mono' ? 'selected' : ''}>Geist Mono</option>
+                      <option value="Georgia" ${layer.textProps.fontFamily === 'Georgia' ? 'selected' : ''}>Georgia</option>
+                      <option value="Impact" ${layer.textProps.fontFamily === 'Impact' ? 'selected' : ''}>Impact</option>
                     </select>
                     <select id="sel-text-weight" class="h-7 bg-bgControl hairline-all rounded-lg px-2 text-[11px] text-zinc-200 outline-none">
                       <option value="400" ${layer.textProps.fontWeight === '400' ? 'selected' : ''}>Regular</option>
@@ -3654,11 +3790,11 @@ void main() {
                       <input id="inp-text-color" type="color" value="${layer.textProps.color}" class="w-4 h-4 bg-transparent border-0" />
                     </label>
                     <label class="flex items-center justify-between bg-bgControl hairline-all rounded-lg px-2 h-7 cursor-pointer">
-                      <span class="text-[10px] text-zinc-400">Pill</span>
-                      <input id="inp-text-bg-col" type="color" value="${layer.textProps.bgColor || '#18181b'}" class="w-4 h-4 bg-transparent border-0" />
+                      <span class="text-[10px] text-zinc-400">BG</span>
+                      <input id="inp-text-bg-col" type="color" value="${layer.textProps.bgColor || '#18181d'}" class="w-4 h-4 bg-transparent border-0" />
                     </label>
                     <button id="btn-text-pill" class="h-7 rounded-lg hairline-all text-[10px] transition ${layer.textProps.bgPill ? 'bg-accent text-white' : 'bg-bgControl text-zinc-400'}">
-                      Pill: ${layer.textProps.bgPill ? 'On' : 'Off'}
+                      BG: ${layer.textProps.bgPill ? 'On' : 'Off'}
                     </button>
                   </div>
                   <div class="flex bg-bgControl hairline-all rounded-lg p-0.5 h-7">
@@ -3681,12 +3817,6 @@ void main() {
                       </div>
                       <input id="inp-text-track" type="range" min="-0.05" max="0.4" step="0.01" value="${layer.textProps.letterSpacing ?? 0.04}" class="w-full" />
                     </div>
-                    <div class="col-span-2">
-                      <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
-                        <span>Line Height</span><span id="lbl-txt-lh" class="font-mono">${(layer.textProps.lineHeight ?? 1.08).toFixed(2)}</span>
-                      </div>
-                      <input id="inp-text-lh" type="range" min="0.8" max="2.0" step="0.04" value="${layer.textProps.lineHeight ?? 1.08}" class="w-full" />
-                    </div>
                   </div>
                 </div>
               ` : ''}
@@ -3704,14 +3834,14 @@ void main() {
 
                   <div class="space-y-1">
                     <div class="flex items-center justify-between text-[10px] text-zinc-400">
-                      <span>Fit & Projection Mode</span>
-                      <button id="btn-match-media-aspect" class="text-accent hover:underline">Match Surface Aspect</button>
+                      <span>Media Fit Mode</span>
+                      <button id="btn-match-media-aspect" class="text-accent hover:underline">Match Media Aspect</button>
                     </div>
                     <div class="grid grid-cols-2 gap-1 bg-bgControl p-1 rounded-lg hairline-all">
                       ${[
-                        { id: 'cover', label: 'Cover (Zero Skew)' },
-                        { id: 'contain', label: 'Contain (Fit)' },
-                        { id: 'original', label: 'Original 1:1 px' },
+                        { id: 'cover', label: 'Cover' },
+                        { id: 'contain', label: 'Contain' },
+                        { id: 'original', label: 'Original 1:1' },
                         { id: 'stretch', label: 'Perspective Warp' }
                       ].map(m => `
                         <button data-fit="${m.id}" class="btn-media-fit py-1 px-1.5 rounded text-[10px] font-medium transition ${(layer.media.fit || 'cover') === m.id ? 'bg-bgPanel text-white shadow-sm' : 'text-zinc-400 hover:text-white'}">${m.label}</button>
@@ -3719,34 +3849,32 @@ void main() {
                     </div>
                   </div>
 
-                  ${(layer.media.fit || 'cover') !== 'stretch' ? `
-                    <div class="grid grid-cols-2 gap-2 pt-0.5">
-                      <div>
-                        <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
-                          <span>Pan X</span><span id="lbl-med-px" class="font-mono">${Math.round((layer.media.panX || 0) * 100)}%</span>
-                        </div>
-                        <input id="inp-med-px" type="range" min="-0.75" max="0.75" step="0.01" value="${layer.media.panX || 0}" class="w-full" />
+                  <div class="grid grid-cols-2 gap-2 pt-0.5">
+                    <div>
+                      <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                        <span>Media Pan X</span><span id="lbl-med-px" class="font-mono">${Math.round((layer.media.panX || 0) * 100)}%</span>
                       </div>
-                      <div>
-                        <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
-                          <span>Pan Y</span><span id="lbl-med-py" class="font-mono">${Math.round((layer.media.panY || 0) * 100)}%</span>
-                        </div>
-                        <input id="inp-med-py" type="range" min="-0.75" max="0.75" step="0.01" value="${layer.media.panY || 0}" class="w-full" />
-                      </div>
-                      <div>
-                        <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
-                          <span>Zoom</span><span id="lbl-med-zm" class="font-mono">${Math.round((layer.media.zoom || 1) * 100)}%</span>
-                        </div>
-                        <input id="inp-med-zm" type="range" min="0.5" max="3.0" step="0.05" value="${layer.media.zoom || 1}" class="w-full" />
-                      </div>
-                      <div>
-                        <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
-                          <span>Angle</span><span id="lbl-med-rot" class="font-mono">${Math.round(layer.media.rotation || 0)}°</span>
-                        </div>
-                        <input id="inp-med-rot" type="range" min="-180" max="180" step="1" value="${layer.media.rotation || 0}" class="w-full" />
-                      </div>
+                      <input id="inp-med-px" type="range" min="-0.75" max="0.75" step="0.01" value="${layer.media.panX || 0}" class="w-full" />
                     </div>
-                  ` : ''}
+                    <div>
+                      <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                        <span>Media Pan Y</span><span id="lbl-med-py" class="font-mono">${Math.round((layer.media.panY || 0) * 100)}%</span>
+                      </div>
+                      <input id="inp-med-py" type="range" min="-0.75" max="0.75" step="0.01" value="${layer.media.panY || 0}" class="w-full" />
+                    </div>
+                    <div>
+                      <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                        <span>Media Zoom</span><span id="lbl-med-zm" class="font-mono">${(layer.media.zoom || 1).toFixed(2)}×</span>
+                      </div>
+                      <input id="inp-med-zm" type="range" min="0.25" max="4.0" step="0.05" value="${layer.media.zoom || 1}" class="w-full" />
+                    </div>
+                    <div>
+                      <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                        <span>Media Rotation</span><span id="lbl-med-rot" class="font-mono">${Math.round(layer.media.rotation || 0)}°</span>
+                      </div>
+                      <input id="inp-med-rot" type="range" min="-180" max="180" step="1" value="${layer.media.rotation || 0}" class="w-full" />
+                    </div>
+                  </div>
 
                   ${layer.media.type === 'video' ? `
                     <div>
@@ -3780,15 +3908,15 @@ void main() {
                 <div class="text-[11px] font-medium text-zinc-400">Colors & Motion</div>
                 <div class="grid grid-cols-3 gap-1.5">
                   <label class="flex items-center justify-between bg-bgControl hairline-all rounded-lg px-2 h-7 cursor-pointer">
-                    <span class="text-[10px] text-zinc-400">C1</span>
+                    <span class="text-[10px] text-zinc-400">A</span>
                     <input id="inp-c1" type="color" value="${layer.uniforms.color1}" class="w-4 h-4 bg-transparent border-0" />
                   </label>
                   <label class="flex items-center justify-between bg-bgControl hairline-all rounded-lg px-2 h-7 cursor-pointer">
-                    <span class="text-[10px] text-zinc-400">C2</span>
+                    <span class="text-[10px] text-zinc-400">B</span>
                     <input id="inp-c2" type="color" value="${layer.uniforms.color2}" class="w-4 h-4 bg-transparent border-0" />
                   </label>
                   <label class="flex items-center justify-between bg-bgControl hairline-all rounded-lg px-2 h-7 cursor-pointer">
-                    <span class="text-[10px] text-zinc-400">C3</span>
+                    <span class="text-[10px] text-zinc-400">C</span>
                     <input id="inp-c3" type="color" value="${layer.uniforms.color3}" class="w-4 h-4 bg-transparent border-0" />
                   </label>
                 </div>
@@ -3802,14 +3930,14 @@ void main() {
 
                 <div>
                   <div class="flex justify-between text-[11px] text-zinc-400 mb-0.5">
-                    <span>Scale / Frequency</span><span id="lbl-scl" class="font-mono text-zinc-200">${layer.uniforms.scale.toFixed(1)}×</span>
+                    <span>Scale</span><span id="lbl-scl" class="font-mono text-zinc-200">${layer.uniforms.scale.toFixed(1)}×</span>
                   </div>
                   <input id="inp-scl" type="range" min="0.2" max="4.0" step="0.1" value="${layer.uniforms.scale}" class="w-full" />
                 </div>
 
                 <div>
                   <div class="flex justify-between text-[11px] text-zinc-400 mb-0.5">
-                    <span>Complexity / Detail</span><span id="lbl-cmp" class="font-mono text-zinc-200">${layer.uniforms.complexity.toFixed(1)}</span>
+                    <span>Complexity</span><span id="lbl-cmp" class="font-mono text-zinc-200">${layer.uniforms.complexity.toFixed(1)}</span>
                   </div>
                   <input id="inp-cmp" type="range" min="1" max="5" step="0.2" value="${layer.uniforms.complexity}" class="w-full" />
                 </div>
@@ -3859,18 +3987,12 @@ void main() {
                   </div>
                   <input id="inp-hue" type="range" min="0" max="1" step="0.02" value="${layer.uniforms.hueShift ?? 0}" class="w-full" />
                 </div>
-                <div class="col-span-2">
-                  <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
-                    <span>Blur / Glow</span><span id="lbl-glow" class="font-mono">${Math.round((layer.uniforms.glow ?? 0) * 100)}%</span>
-                  </div>
-                  <input id="inp-glow" type="range" min="0" max="1" step="0.02" value="${layer.uniforms.glow ?? 0}" class="w-full" />
-                </div>
               </div>
 
               <div class="flex items-center justify-between gap-1.5 pt-1">
                 <select id="sel-blend" class="flex-1 h-7 bg-bgControl hairline-all rounded-lg px-2 text-xs text-zinc-200 outline-none">
                   <option value="normal" ${layer.blendMode === 'normal' ? 'selected' : ''}>Normal</option>
-                  <option value="add" ${layer.blendMode === 'add' ? 'selected' : ''}>Additive</option>
+                  <option value="add" ${layer.blendMode === 'add' ? 'selected' : ''}>Add</option>
                   <option value="screen" ${layer.blendMode === 'screen' ? 'selected' : ''}>Screen</option>
                   <option value="multiply" ${layer.blendMode === 'multiply' ? 'selected' : ''}>Multiply</option>
                 </select>
@@ -3889,17 +4011,14 @@ void main() {
 
         bindTransformEvents(layer);
 
-        const btnSolo = document.getElementById('btn-solo-layer');
-        if (btnSolo) btnSolo.addEventListener('click', () => {
+        on('btn-solo-layer', 'click', () => {
           layer.solo = !layer.solo;
           renderInspector();
           persistAndSync(true);
         });
 
-        const btnCopySt = document.getElementById('btn-copy-style');
-        if (btnCopySt) btnCopySt.addEventListener('click', () => { copyLayerStyle(layer); renderInspector(); });
-        const btnPasteSt = document.getElementById('btn-paste-style');
-        if (btnPasteSt) btnPasteSt.addEventListener('click', () => pasteLayerStyle(layer));
+        on('btn-copy-style', 'click', () => { copyLayerStyle(layer); renderInspector(); });
+        on('btn-paste-style', 'click', () => pasteLayerStyle(layer));
 
         host.querySelectorAll('.src-btn').forEach(btn => {
           btn.addEventListener('click', () => {
@@ -3920,61 +4039,48 @@ void main() {
           });
         });
 
-        const txtContent = document.getElementById('txt-layer-content');
-        if (txtContent) txtContent.addEventListener('input', (e) => {
+        on('txt-layer-content', 'input', (e) => {
           layer.textProps.content = e.target.value;
           updateTextTexture(layer);
           persistAndSync(true);
         });
-        const selFont = document.getElementById('sel-text-font');
-        if (selFont) selFont.addEventListener('change', (e) => {
+        on('sel-text-font', 'change', (e) => {
           layer.textProps.fontFamily = e.target.value;
           updateTextTexture(layer);
           persistAndSync(true);
         });
-        const selWeight = document.getElementById('sel-text-weight');
-        if (selWeight) selWeight.addEventListener('change', (e) => {
+        on('sel-text-weight', 'change', (e) => {
           layer.textProps.fontWeight = e.target.value;
           updateTextTexture(layer);
           persistAndSync(true);
         });
-        const inpTxtCol = document.getElementById('inp-text-color');
-        if (inpTxtCol) inpTxtCol.addEventListener('input', (e) => {
+        on('inp-text-color', 'input', (e) => {
           layer.textProps.color = e.target.value;
           updateTextTexture(layer);
           persistAndSync(true);
         });
-        const inpTxtBgCol = document.getElementById('inp-text-bg-col');
-        if (inpTxtBgCol) inpTxtBgCol.addEventListener('input', (e) => {
+        on('inp-text-bg-col', 'input', (e) => {
           layer.textProps.bgColor = e.target.value;
           updateTextTexture(layer);
           persistAndSync(true);
         });
-        const btnTxtPill = document.getElementById('btn-text-pill');
-        if (btnTxtPill) btnTxtPill.addEventListener('click', () => {
+        on('btn-text-pill', 'click', () => {
           layer.textProps.bgPill = !layer.textProps.bgPill;
           updateTextTexture(layer);
           renderInspector();
           persistAndSync(true);
         });
-        const inpTxtSz = document.getElementById('inp-text-size');
-        if (inpTxtSz) inpTxtSz.addEventListener('input', (e) => {
+        on('inp-text-size', 'input', (e) => {
           layer.textProps.fontSize = parseInt(e.target.value, 10);
-          document.getElementById('lbl-txt-sz').textContent = `${layer.textProps.fontSize}px`;
+          const lbl = $('lbl-txt-sz');
+          if (lbl) lbl.textContent = `${layer.textProps.fontSize}px`;
           updateTextTexture(layer);
           persistAndSync(true);
         });
-        const inpTxtTrk = document.getElementById('inp-text-track');
-        if (inpTxtTrk) inpTxtTrk.addEventListener('input', (e) => {
+        on('inp-text-track', 'input', (e) => {
           layer.textProps.letterSpacing = parseFloat(e.target.value);
-          document.getElementById('lbl-txt-trk').textContent = `${layer.textProps.letterSpacing.toFixed(2)}em`;
-          updateTextTexture(layer);
-          persistAndSync(true);
-        });
-        const inpTxtLh = document.getElementById('inp-text-lh');
-        if (inpTxtLh) inpTxtLh.addEventListener('input', (e) => {
-          layer.textProps.lineHeight = parseFloat(e.target.value);
-          document.getElementById('lbl-txt-lh').textContent = layer.textProps.lineHeight.toFixed(2);
+          const lbl = $('lbl-txt-trk');
+          if (lbl) lbl.textContent = `${layer.textProps.letterSpacing.toFixed(2)}em`;
           updateTextTexture(layer);
           persistAndSync(true);
         });
@@ -3987,8 +4093,8 @@ void main() {
           });
         });
 
-        const pickMedia = document.getElementById('btn-pick-media');
-        const inpMedia = document.getElementById('inp-pick-media');
+        const pickMedia = $('btn-pick-media');
+        const inpMedia = $('inp-pick-media');
         if (pickMedia && inpMedia) {
           pickMedia.addEventListener('click', () => inpMedia.click());
           inpMedia.addEventListener('change', (e) => {
@@ -4003,8 +4109,7 @@ void main() {
           });
         });
 
-        const btnMatchAsp = document.getElementById('btn-match-media-aspect');
-        if (btnMatchAsp) btnMatchAsp.addEventListener('click', () => {
+        on('btn-match-media-aspect', 'click', () => {
           const it = textureStore.get(layer.id);
           if (!it?.aspect) return;
           const b = getBounds(layer);
@@ -4019,66 +4124,64 @@ void main() {
           syncInspectorNumbers();
           pushHistory();
           persistAndSync(true);
-          showToast('Matched surface to media aspect ratio');
+          showToast('Resized shape to media aspect ratio');
         });
 
         const bindMedSlider = (id, lblId, key, fmt) => {
-          const el = document.getElementById(id);
-          if (el) el.addEventListener('input', (e) => {
+          on(id, 'input', (e) => {
             layer.media[key] = parseFloat(e.target.value);
-            const lbl = document.getElementById(lblId);
+            const lbl = $(lblId);
             if (lbl) lbl.textContent = fmt(layer.media[key]);
             persistAndSync(true);
           });
         };
         bindMedSlider('inp-med-px', 'lbl-med-px', 'panX', v => `${Math.round(v * 100)}%`);
         bindMedSlider('inp-med-py', 'lbl-med-py', 'panY', v => `${Math.round(v * 100)}%`);
-        bindMedSlider('inp-med-zm', 'lbl-med-zm', 'zoom', v => `${Math.round(v * 100)}%`);
+        bindMedSlider('inp-med-zm', 'lbl-med-zm', 'zoom', v => `${v.toFixed(2)}×`);
         bindMedSlider('inp-med-rot', 'lbl-med-rot', 'rotation', v => `${Math.round(v)}°`);
-        const vidSpd = document.getElementById('inp-vid-spd');
-        if (vidSpd) vidSpd.addEventListener('input', (e) => {
+
+        on('inp-vid-spd', 'input', (e) => {
           layer.media.speed = parseFloat(e.target.value);
-          document.getElementById('lbl-vid-spd').textContent = `${layer.media.speed.toFixed(1)}×`;
+          const lbl = $('lbl-vid-spd');
+          if (lbl) lbl.textContent = `${layer.media.speed.toFixed(1)}×`;
           const it = textureStore.get(layer.id);
           if (it?.video) it.video.playbackRate = layer.media.speed;
           pushProjectorSync();
         });
-        const vidLoop = document.getElementById('btn-vid-loop');
-        if (vidLoop) vidLoop.addEventListener('click', () => {
+        on('btn-vid-loop', 'click', () => {
           layer.media.loop = !layer.media.loop;
           const it = textureStore.get(layer.id);
           if (it?.video) it.video.loop = layer.media.loop;
           renderInspector();
           pushProjectorSync();
         });
-        const vidMute = document.getElementById('btn-vid-mute');
-        if (vidMute) vidMute.addEventListener('click', () => {
+        on('btn-vid-mute', 'click', () => {
           layer.media.muted = !layer.media.muted;
           const it = textureStore.get(layer.id);
           if (it?.video) it.video.muted = layer.media.muted;
           renderInspector();
         });
 
-        const openGlsl = document.getElementById('btn-open-glsl');
-        if (openGlsl) openGlsl.addEventListener('click', () => {
-          document.getElementById('txt-glsl-code').value = layer.customGlsl || STARTER_GLSL;
-          document.getElementById('lbl-glsl-status').textContent = 'Ready';
-          document.getElementById('glsl-modal').classList.remove('hidden');
+        on('btn-open-glsl', 'click', () => {
+          const codeEl = $('txt-glsl-code');
+          const statusEl = $('lbl-glsl-status');
+          const modalEl = $('glsl-modal');
+          if (codeEl) codeEl.value = layer.customGlsl || STARTER_GLSL;
+          if (statusEl) statusEl.textContent = 'Ready';
+          if (modalEl) modalEl.classList.remove('hidden');
         });
 
         const bindColor = (id, key) => {
-          const el = document.getElementById(id);
-          if (el) el.addEventListener('input', (e) => { layer.uniforms[key] = e.target.value; persistAndSync(true); });
+          on(id, 'input', (e) => { layer.uniforms[key] = e.target.value; persistAndSync(true); });
         };
         bindColor('inp-c1', 'color1');
         bindColor('inp-c2', 'color2');
         bindColor('inp-c3', 'color3');
 
         const bindSlider = (id, lblId, obj, key, fmt) => {
-          const el = document.getElementById(id);
-          if (el) el.addEventListener('input', (e) => {
+          on(id, 'input', (e) => {
             obj[key] = parseFloat(e.target.value);
-            const lbl = document.getElementById(lblId);
+            const lbl = $(lblId);
             if (lbl) lbl.textContent = fmt(obj[key]);
             persistAndSync(true);
           });
@@ -4091,35 +4194,38 @@ void main() {
         bindSlider('inp-ct', 'lbl-ct', layer.uniforms, 'contrast', v => `${Math.round(v * 100)}%`);
         bindSlider('inp-sat', 'lbl-sat', layer.uniforms, 'saturation', v => `${Math.round(v * 100)}%`);
         bindSlider('inp-hue', 'lbl-hue', layer.uniforms, 'hueShift', v => `${Math.round(v * 360)}°`);
-        bindSlider('inp-glow', 'lbl-glow', layer.uniforms, 'glow', v => `${Math.round(v * 100)}%`);
 
-        const btnInv = document.getElementById('btn-invert');
-        if (btnInv) btnInv.addEventListener('click', () => {
+        on('btn-invert', 'click', () => {
           layer.uniforms.invert = (layer.uniforms.invert ?? 0) > 0.5 ? 0.0 : 1.0;
           renderInspector();
           persistAndSync(true);
         });
 
-        const selBlend = document.getElementById('sel-blend');
-        if (selBlend) selBlend.addEventListener('change', (e) => { layer.blendMode = e.target.value; persistAndSync(true); });
-        const flipH = document.getElementById('btn-flip-h');
-        if (flipH) flipH.addEventListener('click', () => { layer.flipH = !layer.flipH; renderInspector(); persistAndSync(true); });
-        const flipV = document.getElementById('btn-flip-v');
-        if (flipV) flipV.addEventListener('click', () => { layer.flipV = !layer.flipV; renderInspector(); persistAndSync(true); });
+        on('sel-blend', 'change', (e) => { layer.blendMode = e.target.value; persistAndSync(true); });
+        on('btn-flip-h', 'click', () => { layer.flipH = !layer.flipH; renderInspector(); persistAndSync(true); });
+        on('btn-flip-v', 'click', () => { layer.flipV = !layer.flipV; renderInspector(); persistAndSync(true); });
       }
 
       function bindTransformEvents(layer) {
-        const inpName = document.getElementById('inp-name');
-        if (inpName) inpName.addEventListener('input', (e) => { layer.name = e.target.value; renderLayerList(); });
+        on('inp-name', 'input', (e) => { layer.name = e.target.value; renderLayerList(); });
 
-        const btnLockAsp = document.getElementById('btn-lock-aspect');
-        if (btnLockAsp) btnLockAsp.addEventListener('click', () => {
+        on('btn-lock-aspect', 'click', () => {
           state.lockAspect = !state.lockAspect;
           renderInspector();
         });
 
-        const fitOut = document.getElementById('btn-fit-output');
-        if (fitOut) fitOut.addEventListener('click', () => {
+        on('btn-center-stage', 'click', () => {
+          const b = getBounds(layer);
+          const dx = 0.5 - b.cx;
+          const dy = 0.5 - b.cy;
+          transformVertices(layer, p => ({
+            x: Math.max(0, Math.min(1, p.x + dx)),
+            y: Math.max(0, Math.min(1, p.y + dy))
+          }));
+          renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync(true);
+        });
+
+        on('btn-fit-output', 'click', () => {
           if (layer.vertices.length === 4) {
             layer.vertices = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }];
             if (layer.meshSubdiv > 1) rebuildMeshGrid(layer);
@@ -4130,21 +4236,21 @@ void main() {
           renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync(true);
         });
 
-        const inpFeather = document.getElementById('inp-feather');
-        if (inpFeather) inpFeather.addEventListener('input', (e) => {
+        on('inp-feather', 'input', (e) => {
           layer.feather = parseFloat(e.target.value);
-          document.getElementById('lbl-feather').textContent = `${Math.round(layer.feather * 250)} px`;
+          const lbl = $('lbl-feather');
+          if (lbl) lbl.textContent = `${Math.round(layer.feather * 250)} px`;
           persistAndSync(true);
         });
 
-        const inpRad = document.getElementById('inp-radius');
-        if (inpRad) inpRad.addEventListener('input', (e) => {
+        on('inp-radius', 'input', (e) => {
           layer.cornerRadius = parseFloat(e.target.value);
-          document.getElementById('lbl-radius').textContent = `${Math.round(layer.cornerRadius * 100)}%`;
+          const lbl = $('lbl-radius');
+          if (lbl) lbl.textContent = `${Math.round(layer.cornerRadius * 100)}%`;
           persistAndSync(true);
         });
 
-        const ix = document.getElementById('inp-x'), iy = document.getElementById('inp-y');
+        const ix = $('inp-x'), iy = $('inp-y');
         if (ix && iy) {
           const onPos = () => {
             const b = getBounds(layer);
@@ -4157,7 +4263,7 @@ void main() {
           iy.addEventListener('change', onPos);
         }
 
-        const iw = document.getElementById('inp-w'), ih = document.getElementById('inp-h');
+        const iw = $('inp-w'), ih = $('inp-h');
         if (iw && ih) {
           const onDim = (changedAxis) => {
             const b = getBounds(layer);
@@ -4216,8 +4322,7 @@ void main() {
           });
         });
 
-        const resetMesh = document.getElementById('btn-reset-mesh');
-        if (resetMesh) resetMesh.addEventListener('click', () => {
+        on('btn-reset-mesh', 'click', () => {
           rebuildMeshGrid(layer);
           renderOverlay(); pushHistory(); persistAndSync(true);
         });
@@ -4244,8 +4349,7 @@ void main() {
           });
         });
 
-        const polyAdd = document.getElementById('btn-poly-add');
-        if (polyAdd) polyAdd.addEventListener('click', () => {
+        on('btn-poly-add', 'click', () => {
           const n = layer.vertices.length;
           const p0 = layer.vertices[n - 1], p1 = layer.vertices[0];
           layer.vertices.push({ x: (p0.x + p1.x) * 0.5, y: (p0.y + p1.y) * 0.5 });
@@ -4253,15 +4357,16 @@ void main() {
         });
       }
 
-      /* Custom GLSL Modal Events */
-      document.getElementById('btn-glsl-close').addEventListener('click', () => document.getElementById('glsl-modal').classList.add('hidden'));
-      document.getElementById('btn-glsl-reset').addEventListener('click', () => { document.getElementById('txt-glsl-code').value = STARTER_GLSL; });
-      document.getElementById('btn-glsl-apply').addEventListener('click', () => {
+      on('btn-glsl-close', 'click', () => { const m = $('glsl-modal'); if (m) m.classList.add('hidden'); });
+      on('btn-glsl-reset', 'click', () => { const t = $('txt-glsl-code'); if (t) t.value = STARTER_GLSL; });
+      on('btn-glsl-apply', 'click', () => {
         const layer = primarySelectedLayer();
         if (!layer) return;
-        const code = document.getElementById('txt-glsl-code').value;
+        const codeEl = $('txt-glsl-code');
+        const st = $('lbl-glsl-status');
+        if (!codeEl || !st) return;
+        const code = codeEl.value;
         const res = buildProgram(VS_SRC, buildFragmentShader(code));
-        const st = document.getElementById('lbl-glsl-status');
         if (res.error) {
           st.className = 'px-3 py-2 rounded-lg bg-red-950/60 border border-red-500/40 text-xs font-mono text-red-300 whitespace-pre-wrap';
           st.textContent = res.error;
@@ -4276,9 +4381,6 @@ void main() {
         persistAndSync(true);
       });
 
-      /* =========================================================================
-         4. TIME-BASED SHOW SEQUENCER
-         ========================================================================= */
       function captureCue(name, duration = 8.0, fade = 1.5, ease = 'cubic', holdMode = 'inherit') {
         const snapshot = {};
         for (const l of state.layers) {
@@ -4397,11 +4499,14 @@ void main() {
       let draggedCueIdx = null;
 
       function renderCueTrack() {
-        const track = document.getElementById('cue-track');
-        const ruler = document.getElementById('timeline-ruler');
+        const track = $('cue-track');
+        const ruler = $('timeline-ruler');
         const tot = totalShowSec();
-        document.getElementById('lbl-time-tot').textContent = fmtTime(tot);
-        document.getElementById('lbl-time-cur').textContent = fmtTime(state.showTime);
+        const totEl = $('lbl-time-tot');
+        const curEl = $('lbl-time-cur');
+        if (totEl) totEl.textContent = fmtTime(tot);
+        if (curEl) curEl.textContent = fmtTime(state.showTime);
+        if (!track || !ruler) return;
 
         let rHtml = '';
         const step = tot <= 16 ? 2 : 5;
@@ -4482,12 +4587,15 @@ void main() {
 
       function updatePlayhead() {
         const pct = Math.max(0, Math.min(100, (state.showTime / totalShowSec()) * 100));
-        document.getElementById('playhead').style.left = `${pct}%`;
-        document.getElementById('lbl-time-cur').textContent = fmtTime(state.showTime);
+        const ph = $('playhead');
+        const cur = $('lbl-time-cur');
+        if (ph) ph.style.left = `${pct}%`;
+        if (cur) cur.textContent = fmtTime(state.showTime);
       }
 
       function renderCueSidebar() {
-        const side = document.getElementById('cue-sidebar');
+        const side = $('cue-sidebar');
+        if (!side) return;
         const cue = state.cues.find(c => c.id === state.selectedCueId);
         if (!cue) {
           side.innerHTML = `<div class="text-xs text-zinc-500 py-4 text-center">No cue selected.</div>`;
@@ -4509,20 +4617,19 @@ void main() {
           <input id="inp-cue-name" type="text" value="${cue.name}" class="w-full h-7 bg-bgControl hairline-all rounded-lg px-2 text-xs text-white outline-none focus:border-accent" />
           <div class="grid grid-cols-3 gap-1">
             <div>
-              <label class="block text-[9px] text-zinc-500 mb-0.5">Time (s)</label>
+              <label class="block text-[9px] text-zinc-500 mb-0.5">Duration (s)</label>
               <input id="inp-cue-dur" type="number" min="0.5" max="600" step="0.5" value="${cue.duration}" class="w-full h-7 bg-bgControl hairline-all rounded px-1.5 text-[11px] font-mono text-zinc-200 outline-none focus:border-accent" />
             </div>
             <div>
               <label class="block text-[9px] text-zinc-500 mb-0.5">Fade (s)</label>
-              <input id="inp-cue-fade" type="number" min="0" max="30" step="0.1" value="${cue.fade}" class="w-full h-7 bg-bgControl hairline-all rounded px-1.5 text-[11px] font-mono text-zinc-200 outline-none focus:border-accent" />
+              <input id="inp-cue-fade" type="number" min="0" max="10" step="0.1" value="${cue.fade}" class="w-full h-7 bg-bgControl hairline-all rounded px-1.5 text-[11px] font-mono text-zinc-200 outline-none focus:border-accent" />
             </div>
             <div>
               <label class="block text-[9px] text-zinc-500 mb-0.5">Easing</label>
               <select id="sel-cue-ease" class="w-full h-7 bg-bgControl hairline-all rounded px-1 text-[10px] text-zinc-200 outline-none">
-                <option value="cubic" ${cue.ease === 'cubic' ? 'selected' : ''}>Ease In Out</option>
-                <option value="easeInOut" ${cue.ease === 'easeInOut' ? 'selected' : ''}>Ease Out</option>
+                <option value="cubic" ${cue.ease === 'cubic' ? 'selected' : ''}>Cubic</option>
+                <option value="easeInOut" ${cue.ease === 'easeInOut' ? 'selected' : ''}>Ease In-Out</option>
                 <option value="linear" ${cue.ease === 'linear' ? 'selected' : ''}>Linear</option>
-                <option value="snap" ${cue.ease === 'snap' ? 'selected' : ''}>Cut</option>
               </select>
             </div>
           </div>
@@ -4530,17 +4637,17 @@ void main() {
             <select id="sel-cue-hold" class="w-full h-7 bg-bgControl hairline-all rounded px-2 text-[10px] text-zinc-300 outline-none">
               <option value="inherit" ${(cue.holdMode || 'inherit') === 'inherit' ? 'selected' : ''}>Follow Global Playback Mode</option>
               <option value="auto" ${cue.holdMode === 'auto' ? 'selected' : ''}>Auto-Advance After Duration</option>
-              <option value="wait" ${cue.holdMode === 'wait' ? 'selected' : ''}>Presenter Manual Hold</option>
+              <option value="wait" ${cue.holdMode === 'wait' ? 'selected' : ''}>Presenter Manual Cue Hold</option>
             </select>
           </div>
         `;
 
-        document.getElementById('inp-cue-name').addEventListener('input', (e) => { cue.name = e.target.value; renderCueTrack(); });
-        document.getElementById('inp-cue-dur').addEventListener('change', (e) => { cue.duration = Math.max(0.5, parseFloat(e.target.value) || 4); renderCueTrack(); persistAndSync(true); });
-        document.getElementById('inp-cue-fade').addEventListener('change', (e) => { cue.fade = Math.max(0, Math.min(cue.duration, parseFloat(e.target.value) || 0)); renderCueTrack(); persistAndSync(true); });
-        document.getElementById('sel-cue-ease').addEventListener('change', (e) => { cue.ease = e.target.value; persistAndSync(true); });
-        document.getElementById('sel-cue-hold').addEventListener('change', (e) => { cue.holdMode = e.target.value; renderCueTrack(); persistAndSync(true); });
-        document.getElementById('btn-cue-dup').addEventListener('click', () => {
+        on('inp-cue-name', 'input', (e) => { cue.name = e.target.value; renderCueTrack(); });
+        on('inp-cue-dur', 'change', (e) => { cue.duration = Math.max(0.5, parseFloat(e.target.value) || 4); renderCueTrack(); persistAndSync(true); });
+        on('inp-cue-fade', 'change', (e) => { cue.fade = Math.max(0, Math.min(10, Math.min(cue.duration, parseFloat(e.target.value) || 0))); renderCueTrack(); persistAndSync(true); });
+        on('sel-cue-ease', 'change', (e) => { cue.ease = e.target.value; persistAndSync(true); });
+        on('sel-cue-hold', 'change', (e) => { cue.holdMode = e.target.value; renderCueTrack(); persistAndSync(true); });
+        on('btn-cue-dup', 'click', () => {
           const copy = clone(cue);
           copy.id = genId('cue');
           copy.name = `${cue.name} Copy`;
@@ -4548,14 +4655,14 @@ void main() {
           state.selectedCueId = copy.id;
           renderCueTrack(); renderCueSidebar(); persistAndSync(true);
         });
-        document.getElementById('btn-cue-del').addEventListener('click', () => {
+        on('btn-cue-del', 'click', () => {
           state.cues.splice(idx, 1);
           state.selectedCueId = state.cues[Math.max(0, idx - 1)]?.id || null;
           renderCueTrack(); renderCueSidebar(); persistAndSync(true);
         });
       }
 
-      document.getElementById('timeline-ruler').addEventListener('click', (e) => {
+      on('timeline-ruler', 'click', (e) => {
         const rect = e.currentTarget.getBoundingClientRect();
         state.showTime = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)) * totalShowSec();
         state.waitingNextCue = false;
@@ -4566,9 +4673,10 @@ void main() {
       });
 
       function updatePlayUI() {
-        const btn = document.getElementById('btn-play');
-        const ico = document.getElementById('ico-play');
-        const lbl = document.getElementById('lbl-play');
+        const btn = $('btn-play');
+        const ico = $('ico-play');
+        const lbl = $('lbl-play');
+        if (!btn || !ico || !lbl) return;
         if (state.waitingNextCue) {
           btn.className = 'h-7 px-2.5 rounded-lg bg-accent text-white hover:bg-blue-500 font-medium text-xs flex items-center gap-1.5 transition';
           ico.className = 'ph-fill ph-skip-forward text-xs';
@@ -4619,8 +4727,8 @@ void main() {
         persistAndSync(true);
       }
 
-      document.getElementById('btn-play').addEventListener('click', togglePlayback);
-      document.getElementById('btn-stop').addEventListener('click', () => {
+      on('btn-play', 'click', togglePlayback);
+      on('btn-stop', 'click', () => {
         state.isPlaying = false;
         state.waitingNextCue = false;
         state.showTime = 0;
@@ -4630,26 +4738,28 @@ void main() {
         updatePlayUI();
         persistAndSync(true);
       });
-      document.getElementById('btn-cue-next').addEventListener('click', goNextCue);
-      document.getElementById('btn-cue-prev').addEventListener('click', goPrevCue);
+      on('btn-cue-next', 'click', goNextCue);
+      on('btn-cue-prev', 'click', goPrevCue);
 
-      document.getElementById('btn-loop-show').addEventListener('click', (e) => {
+      on('btn-loop-show', 'click', (e) => {
         state.loopShow = !state.loopShow;
         e.currentTarget.className = state.loopShow
           ? 'w-7 h-7 rounded-lg bg-accent/15 border border-accent/40 flex items-center justify-center text-blue-300 transition'
           : 'w-7 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-400 transition';
       });
 
-      document.getElementById('btn-cue-mode').addEventListener('click', () => {
+      on('btn-cue-mode', 'click', () => {
         state.presenterMode = !state.presenterMode;
-        document.getElementById('ico-cue-mode').className = state.presenterMode ? 'ph ph-hand-pointing text-xs text-accent' : 'ph ph-play-circle text-xs text-accent';
-        document.getElementById('lbl-cue-mode').textContent = state.presenterMode ? 'Manual Hold' : 'Auto-Advance';
+        const ico = $('ico-cue-mode');
+        const lbl = $('lbl-cue-mode');
+        if (ico) ico.className = state.presenterMode ? 'ph ph-hand-pointing text-xs text-accent' : 'ph ph-play-circle text-xs text-accent';
+        if (lbl) lbl.textContent = state.presenterMode ? 'Presenter Manual Cue Hold' : 'Auto-Advance Timeline';
         if (!state.presenterMode) state.waitingNextCue = false;
         updatePlayUI();
-        showToast(state.presenterMode ? 'Presenter Manual Hold: Pauses at each cue' : 'Auto-Advance Mode');
+        showToast(state.presenterMode ? 'Presenter Manual Cue Hold enabled' : 'Auto-Advance Timeline enabled');
       });
 
-      document.getElementById('btn-cue-capture').addEventListener('click', () => {
+      on('btn-cue-capture', 'click', () => {
         const cue = captureCue();
         state.cues.push(cue);
         state.selectedCueId = cue.id;
@@ -4657,7 +4767,7 @@ void main() {
         showToast(`Captured ${cue.name}`);
       });
 
-      document.getElementById('btn-cue-update').addEventListener('click', () => {
+      on('btn-cue-update', 'click', () => {
         const cue = state.cues.find(c => c.id === state.selectedCueId);
         if (!cue) return;
         cue.snapshot = captureCue(cue.name, cue.duration, cue.fade, cue.ease, cue.holdMode).snapshot;
@@ -4665,9 +4775,6 @@ void main() {
         showToast(`Updated ${cue.name}`);
       });
 
-      /* =========================================================================
-         5. LOCAL PROJECT LIBRARY & PORTABLE .PMAP FILE EXPORT / IMPORT
-         ========================================================================= */
       function getProjectLibrary() {
         try {
           const raw = localStorage.getItem(LIBRARY_KEY);
@@ -4736,6 +4843,7 @@ void main() {
           }
         }
         textureStore.clear();
+        mediaBufferCache.clear();
 
         state.projectId = data.projectId || genId('proj');
         state.projectName = data.projectName || 'Untitled Mapping';
@@ -4748,7 +4856,8 @@ void main() {
         state.showTime = 0;
         state.isPlaying = false;
 
-        document.getElementById('inp-project-name').value = state.projectName;
+        const projInp = $('inp-project-name');
+        if (projInp) projInp.value = state.projectName;
         rebuildAllTextTextures();
         await restorePersistedMedia();
         await pushAllMediaToProjector();
@@ -4760,7 +4869,8 @@ void main() {
       }
 
       function renderProjectsModal() {
-        const grid = document.getElementById('projects-grid');
+        const grid = $('projects-grid');
+        if (!grid) return;
         const lib = getProjectLibrary();
         grid.innerHTML = '';
 
@@ -4808,7 +4918,8 @@ void main() {
 
           card.querySelector('.act-open-proj').addEventListener('click', async () => {
             await loadProjectRecord(proj.data);
-            document.getElementById('projects-modal').classList.add('hidden');
+            const modal = $('projects-modal');
+            if (modal) modal.classList.add('hidden');
             showToast(`Opened ${proj.name}`);
           });
 
@@ -4839,7 +4950,8 @@ void main() {
               proj.data.projectName = nextName;
               if (proj.id === state.projectId) {
                 state.projectName = nextName;
-                document.getElementById('inp-project-name').value = nextName;
+                const pInp = $('inp-project-name');
+                if (pInp) pInp.value = nextName;
               }
               setProjectLibrary(lib);
               renderProjectsModal();
@@ -4865,7 +4977,7 @@ void main() {
         for (const l of state.layers) {
           if (l.sourceType === 'media' && l.media?.blobKey) {
             const blob = await loadMediaBlob(l.media.blobKey);
-            if (blob && blob.size <= 18 * 1024 * 1024) {
+            if (blob && blob.size <= 24 * 1024 * 1024) {
               const dataUrl = await blobToDataURL(blob);
               if (dataUrl) embeddedMedia[l.media.blobKey] = { name: l.media.name, type: blob.type, dataUrl };
             }
@@ -4916,13 +5028,15 @@ void main() {
             selectedCueId: parsed.cues?.[0]?.id || null
           });
           saveCurrentToLibrary(false);
+          const modal = $('projects-modal');
+          if (modal) modal.classList.add('hidden');
           showToast(`Imported ${state.projectName}`);
         } catch (err) {
           showToast('Invalid .pmap or .json file');
         }
       }
 
-      function exportPngFrame() {
+      function exportPngSnapshot() {
         const exp = document.createElement('canvas');
         exp.width = state.outputWidth;
         exp.height = state.outputHeight;
@@ -4935,7 +5049,7 @@ void main() {
         canvas.width = prevW;
         canvas.height = prevH;
 
-        const slug = (state.projectName || 'frame').toLowerCase().replace(/[^a-z0-9]+/g, '_');
+        const slug = (state.projectName || 'snapshot').toLowerCase().replace(/[^a-z0-9]+/g, '_');
         exp.toBlob((blob) => {
           if (!blob) return;
           const url = URL.createObjectURL(blob);
@@ -4944,18 +5058,19 @@ void main() {
           a.download = `${slug}_${state.outputWidth}x${state.outputHeight}.png`;
           a.click();
           URL.revokeObjectURL(url);
-          showToast('Exported PNG frame');
+          showToast('Exported PNG snapshot');
         }, 'image/png');
       }
 
-      document.getElementById('btn-projects').addEventListener('click', () => {
+      on('btn-projects', 'click', () => {
         saveCurrentToLibrary(false);
         renderProjectsModal();
-        document.getElementById('projects-modal').classList.remove('hidden');
+        const modal = $('projects-modal');
+        if (modal) modal.classList.remove('hidden');
       });
-      document.getElementById('btn-projects-close').addEventListener('click', () => document.getElementById('projects-modal').classList.add('hidden'));
+      on('btn-projects-close', 'click', () => { const modal = $('projects-modal'); if (modal) modal.classList.add('hidden'); });
 
-      document.getElementById('btn-proj-new-blank').addEventListener('click', async () => {
+      on('btn-proj-new-blank', 'click', async () => {
         await loadProjectRecord({
           projectId: genId('proj'),
           projectName: 'Blank Canvas',
@@ -4967,63 +5082,68 @@ void main() {
           selectedCueId: null
         });
         saveCurrentToLibrary(false);
-        document.getElementById('projects-modal').classList.add('hidden');
+        const modal = $('projects-modal');
+        if (modal) modal.classList.add('hidden');
         showToast('Created blank project');
       });
 
-      document.getElementById('btn-proj-new-preset').addEventListener('click', async () => {
+      on('btn-proj-new-preset', 'click', () => {
         state.projectId = genId('proj');
-        state.projectName = 'Architectural Starter';
-        document.getElementById('inp-project-name').value = state.projectName;
+        state.projectName = 'Demo Scene';
+        const pInp = $('inp-project-name');
+        if (pInp) pInp.value = state.projectName;
         initDefaultScene();
         historyStack.length = 0;
         redoStack.length = 0;
         pushHistory();
         refreshAll();
         saveCurrentToLibrary(false);
-        document.getElementById('projects-modal').classList.add('hidden');
-        showToast('Loaded starter layout');
+        const modal = $('projects-modal');
+        if (modal) modal.classList.add('hidden');
+        showToast('Loaded Demo Scene');
       });
 
-      document.getElementById('btn-proj-save-snapshot').addEventListener('click', () => {
+      on('btn-proj-save-snapshot', 'click', () => {
         saveCurrentToLibrary(true);
         showToast('Saved snapshot to local library');
       });
 
-      document.getElementById('btn-export-pmap').addEventListener('click', exportPortablePmapFile);
-      document.getElementById('btn-modal-export-pmap').addEventListener('click', exportPortablePmapFile);
-      document.getElementById('btn-import-pmap').addEventListener('click', () => document.getElementById('inp-import-pmap').click());
-      document.getElementById('btn-modal-import-pmap').addEventListener('click', () => document.getElementById('inp-import-pmap').click());
-      document.getElementById('inp-import-pmap').addEventListener('change', (e) => {
+      on('btn-modal-export-pmap', 'click', exportPortablePmapFile);
+      on('btn-modal-import-pmap', 'click', () => { const f = $('inp-import-pmap'); if (f) f.click(); });
+      on('inp-import-pmap', 'change', (e) => {
         if (e.target.files?.[0]) importPortablePmapFile(e.target.files[0]);
       });
-      document.getElementById('btn-modal-export-png').addEventListener('click', exportPngFrame);
+      on('btn-modal-export-png', 'click', exportPngSnapshot);
 
-      document.getElementById('inp-project-name').addEventListener('input', (e) => {
+      on('inp-project-name', 'input', (e) => {
         state.projectName = e.target.value;
         persistAndSync(true);
       });
 
-      /* Responsive Desktop Drawers & Mobile Bottom Sheets */
-      document.getElementById('btn-toggle-left').addEventListener('click', () => {
-        document.getElementById('left-drawer').classList.toggle('collapsed');
+      on('btn-toggle-left', 'click', () => {
+        const l = $('left-drawer');
+        if (l) l.classList.toggle('collapsed');
         setTimeout(applyStageLayout, 50);
       });
-      document.getElementById('btn-toggle-right').addEventListener('click', () => {
-        document.getElementById('right-drawer').classList.toggle('collapsed');
+      on('btn-toggle-right', 'click', () => {
+        const r = $('right-drawer');
+        if (r) r.classList.toggle('collapsed');
         setTimeout(applyStageLayout, 50);
       });
-      document.getElementById('btn-toggle-bottom').addEventListener('click', () => {
-        const b = document.getElementById('bottom-drawer');
-        b.classList.toggle('collapsed');
-        document.getElementById('ico-bottom-chevron').className = b.classList.contains('collapsed') ? 'ph ph-caret-up text-xs' : 'ph ph-caret-down text-xs';
+      on('btn-toggle-bottom', 'click', () => {
+        const b = $('bottom-drawer');
+        const ico = $('ico-bottom-chevron');
+        if (b) {
+          b.classList.toggle('collapsed');
+          if (ico) ico.className = b.classList.contains('collapsed') ? 'ph ph-caret-up text-xs' : 'ph ph-caret-down text-xs';
+        }
         setTimeout(applyStageLayout, 50);
       });
 
-      const backdrop = document.getElementById('mobile-sheet-backdrop');
+      const backdrop = $('mobile-sheet-backdrop');
       function closeAllMobileSheets() {
         document.querySelectorAll('#left-drawer, #right-drawer, #bottom-drawer').forEach(el => el.classList.remove('sheet-open'));
-        backdrop.classList.add('hidden');
+        if (backdrop) backdrop.classList.add('hidden');
       }
 
       document.querySelectorAll('.mobile-tab').forEach(tab => {
@@ -5032,25 +5152,27 @@ void main() {
           const target = tab.getAttribute('data-sheet');
           if (target === 'add') {
             closeAllMobileSheets();
-            document.getElementById('menu-add').classList.toggle('hidden');
+            const m = $('menu-add');
+            if (m) m.classList.toggle('hidden');
             return;
           }
-          const drawer = document.getElementById(target);
+          const drawer = $(target);
+          if (!drawer) return;
           const alreadyOpen = drawer.classList.contains('sheet-open');
           closeAllMobileSheets();
           if (!alreadyOpen) {
             drawer.classList.add('sheet-open');
-            backdrop.classList.remove('hidden');
+            if (backdrop) backdrop.classList.remove('hidden');
           }
         });
       });
 
-      backdrop.addEventListener('click', closeAllMobileSheets);
+      if (backdrop) backdrop.addEventListener('click', closeAllMobileSheets);
       document.querySelectorAll('.close-sheet-btn').forEach(btn => btn.addEventListener('click', closeAllMobileSheets));
 
-      /* Dropdowns & Top Bar Actions */
       function wireDropdown(btnId, menuId) {
-        const btn = document.getElementById(btnId), menu = document.getElementById(menuId);
+        const btn = $(btnId), menu = $(menuId);
+        if (!btn || !menu) return;
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const hid = menu.classList.contains('hidden');
@@ -5063,31 +5185,40 @@ void main() {
       window.addEventListener('click', () => document.querySelectorAll('#menu-add, #menu-output').forEach(m => m.classList.add('hidden')));
 
       document.querySelectorAll('.add-item').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
           const shape = btn.getAttribute('data-add');
+          const m = $('menu-add');
+          if (m) m.classList.add('hidden');
+          if (state.toolMode === 'pen') setToolMode('box');
           const lyr = createLayer({ shape });
           state.layers.push(lyr);
           state.selectedIds = [lyr.id];
           pushHistory();
           refreshAll();
-          if (window.innerWidth < 1025) closeAllMobileSheets();
+          if (window.innerWidth < 901) closeAllMobileSheets();
           showToast(`Added ${lyr.name}`);
         });
       });
 
-      document.getElementById('btn-empty-load-starter').addEventListener('click', () => {
+      const handleLoadDemo = () => {
         initDefaultScene();
         pushHistory();
         refreshAll();
-        showToast('Starter scene loaded');
-      });
+        showToast('Loaded Demo Scene');
+      };
+      on('btn-load-demo', 'click', handleLoadDemo);
+      on('btn-empty-load-demo', 'click', handleLoadDemo);
 
       function setResolution(w, h) {
         state.outputWidth = Math.max(320, Math.min(7680, w));
         state.outputHeight = Math.max(240, Math.min(4320, h));
-        document.getElementById('lbl-output-res').textContent = `${state.outputWidth}×${state.outputHeight}`;
-        document.getElementById('inp-res-w').value = state.outputWidth;
-        document.getElementById('inp-res-h').value = state.outputHeight;
+        const resLbl = $('lbl-output-res');
+        const resW = $('inp-res-w');
+        const resH = $('inp-res-h');
+        if (resLbl) resLbl.textContent = `${state.outputWidth}×${state.outputHeight}`;
+        if (resW) resW.value = state.outputWidth;
+        if (resH) resH.value = state.outputHeight;
         applyStageLayout();
         syncInspectorNumbers();
         pushHistory();
@@ -5100,54 +5231,59 @@ void main() {
           setResolution(w, h);
         });
       });
-      document.getElementById('btn-set-res').addEventListener('click', () => {
-        setResolution(parseInt(document.getElementById('inp-res-w').value, 10) || 1920, parseInt(document.getElementById('inp-res-h').value, 10) || 1080);
+      on('btn-set-res', 'click', () => {
+        const w = parseInt($('inp-res-w')?.value, 10) || 1920;
+        const h = parseInt($('inp-res-h')?.value, 10) || 1080;
+        setResolution(w, h);
       });
 
-      const refImgEl = document.getElementById('ref-image-layer');
-      document.getElementById('btn-upload-ref').addEventListener('click', () => document.getElementById('inp-ref-file').click());
-      document.getElementById('inp-ref-file').addEventListener('change', (e) => {
+      const refImgEl = $('ref-image-layer');
+      on('btn-upload-ref', 'click', () => { const f = $('inp-ref-file'); if (f) f.click(); });
+      on('inp-ref-file', 'change', (e) => {
         const f = e.target.files?.[0];
-        if (!f) return;
-        const url = URL.createObjectURL(f);
-        refImgEl.src = url;
+        if (!f || !refImgEl) return;
+        refImgEl.src = URL.createObjectURL(f);
         refImgEl.classList.remove('hidden');
-        document.getElementById('ref-opacity-row').classList.remove('hidden');
-        document.getElementById('btn-clear-ref').classList.remove('hidden');
+        const row = $('ref-opacity-row');
+        const clr = $('btn-clear-ref');
+        if (row) row.classList.remove('hidden');
+        if (clr) clr.classList.remove('hidden');
         showToast('Reference guide loaded');
       });
-      document.getElementById('inp-ref-opacity').addEventListener('input', (e) => {
-        refImgEl.style.opacity = e.target.value;
-        document.getElementById('lbl-ref-opacity').textContent = `${Math.round(parseFloat(e.target.value) * 100)}%`;
+      on('inp-ref-opacity', 'input', (e) => {
+        if (refImgEl) refImgEl.style.opacity = e.target.value;
+        const lbl = $('lbl-ref-opacity');
+        if (lbl) lbl.textContent = `${Math.round(parseFloat(e.target.value) * 100)}%`;
       });
-      document.getElementById('btn-clear-ref').addEventListener('click', () => {
-        refImgEl.src = '';
-        refImgEl.classList.add('hidden');
-        document.getElementById('ref-opacity-row').classList.add('hidden');
-        document.getElementById('btn-clear-ref').classList.add('hidden');
+      on('btn-clear-ref', 'click', () => {
+        if (refImgEl) { refImgEl.src = ''; refImgEl.classList.add('hidden'); }
+        const row = $('ref-opacity-row');
+        const clr = $('btn-clear-ref');
+        if (row) row.classList.add('hidden');
+        if (clr) clr.classList.add('hidden');
       });
 
-      document.getElementById('btn-grid').addEventListener('click', (e) => {
+      on('btn-grid', 'click', (e) => {
         state.showGrid = !state.showGrid;
         e.currentTarget.className = state.showGrid
-          ? 'h-8 px-2.5 rounded-lg bg-accent/15 border border-accent/40 text-xs text-blue-300 flex items-center gap-1.5 transition'
-          : 'h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-300 flex items-center gap-1.5 transition';
+          ? 'h-8 px-2 rounded-lg bg-accent/15 border border-accent/40 text-xs text-blue-300 flex items-center gap-1 transition'
+          : 'h-8 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-300 flex items-center gap-1 transition';
         renderOverlay();
       });
 
-      document.getElementById('btn-snap').addEventListener('click', (e) => {
+      on('btn-snap', 'click', (e) => {
         state.snapEnabled = !state.snapEnabled;
         e.currentTarget.className = state.snapEnabled
-          ? 'h-8 px-2.5 rounded-lg bg-accent/15 border border-accent/40 text-xs text-blue-300 flex items-center gap-1.5 transition'
-          : 'h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-300 flex items-center gap-1.5 transition';
+          ? 'h-8 px-2 rounded-lg bg-accent/15 border border-accent/40 text-xs text-blue-300 flex items-center gap-1 transition'
+          : 'h-8 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-300 flex items-center gap-1 transition';
       });
 
-      document.getElementById('btn-dup-layer').addEventListener('click', () => {
+      on('btn-dup-layer', 'click', () => {
         const lyr = primarySelectedLayer();
         if (lyr) duplicateLayerById(lyr.id);
       });
 
-      document.getElementById('btn-reset-layer').addEventListener('click', () => {
+      on('btn-reset-layer', 'click', () => {
         const lyr = primarySelectedLayer();
         if (!lyr) return;
         lyr.vertices = defaultVertices(lyr.shape);
@@ -5156,14 +5292,13 @@ void main() {
         refreshAll();
       });
 
-      document.getElementById('btn-del-layer').addEventListener('click', () => {
+      on('btn-del-layer', 'click', () => {
         deleteLayersByIds(state.selectedIds);
       });
 
-      document.getElementById('btn-undo').addEventListener('click', undo);
-      document.getElementById('btn-redo').addEventListener('click', redo);
+      on('btn-undo', 'click', undo);
+      on('btn-redo', 'click', redo);
 
-      /* Full-Screen Stage Preview */
       function enterFullscreen() {
         document.body.classList.add('stage-fullscreen');
         canvas.width = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2);
@@ -5179,23 +5314,22 @@ void main() {
         setTimeout(applyStageLayout, 50);
       }
 
-      document.getElementById('btn-fullscreen').addEventListener('click', enterFullscreen);
+      on('btn-fullscreen', 'click', enterFullscreen);
 
-      /* Drag & Drop .pmap / Media Files */
-      const dropBanner = document.getElementById('drop-zone-banner');
+      const dropBanner = $('drop-zone-banner');
       window.addEventListener('dragover', (e) => {
         if (e.dataTransfer?.types?.includes('Files')) {
           e.preventDefault();
-          dropBanner.classList.remove('hidden');
+          if (dropBanner) dropBanner.classList.remove('hidden');
         }
       });
       window.addEventListener('dragleave', (e) => {
-        if (!e.relatedTarget) dropBanner.classList.add('hidden');
+        if (!e.relatedTarget && dropBanner) dropBanner.classList.add('hidden');
       });
       window.addEventListener('drop', (e) => {
         if (!e.dataTransfer?.files?.length) return;
         e.preventDefault();
-        dropBanner.classList.add('hidden');
+        if (dropBanner) dropBanner.classList.add('hidden');
         const f = e.dataTransfer.files[0];
         if (/\.(pmap|json)$/i.test(f.name)) {
           importPortablePmapFile(f);
@@ -5214,11 +5348,15 @@ void main() {
         loadMediaFile(target.id, f);
       });
 
-      /* Keyboard Shortcuts */
       window.addEventListener('keydown', (e) => {
         if (e.code === 'Space') spaceDown = true;
         const tag = document.activeElement?.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+        if (state.toolMode === 'pen') {
+          if (e.key === 'Enter') { e.preventDefault(); finishPenPolygon(); return; }
+          if (e.key === 'Escape') { e.preventDefault(); state.penPoints = []; setToolMode('box'); return; }
+        }
 
         if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
           e.preventDefault();
@@ -5252,9 +5390,10 @@ void main() {
           return;
         }
         if (e.key === ' ') { e.preventDefault(); togglePlayback(); return; }
-        if (e.key.toLowerCase() === 'v') { setTransformMode('box'); return; }
-        if (e.key.toLowerCase() === 'a') { setTransformMode('warp'); return; }
-        if (e.key.toLowerCase() === 'g') { document.getElementById('btn-grid').click(); return; }
+        if (e.key.toLowerCase() === 'v') { setToolMode('box'); return; }
+        if (e.key.toLowerCase() === 'a') { setToolMode('warp'); return; }
+        if (e.key.toLowerCase() === 'p') { setToolMode('pen'); return; }
+        if (e.key.toLowerCase() === 'g') { const b = $('btn-grid'); if (b) b.click(); return; }
         if (e.key.toLowerCase() === 'n') { goNextCue(); return; }
 
         if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
@@ -5271,7 +5410,6 @@ void main() {
 
       window.addEventListener('keyup', (e) => { if (e.code === 'Space') spaceDown = false; });
 
-      /* Autosave & Live Projector Push */
       let saveBadgeTimer = null;
       let persistDebounce = null;
       function persistAndSync(immediateStorage = false) {
@@ -5289,7 +5427,7 @@ void main() {
             selectedCueId: state.selectedCueId
           };
           try { localStorage.setItem(ACTIVE_KEY, JSON.stringify(payload)); } catch (e) {}
-          const badge = document.getElementById('lbl-save-status');
+          const badge = $('lbl-save-status');
           if (badge) {
             badge.textContent = 'Saving...';
             badge.className = 'text-[10px] font-mono text-accent shrink-0';
@@ -5311,7 +5449,8 @@ void main() {
       }
 
       function showToast(msg) {
-        const host = document.getElementById('toast-host');
+        const host = $('toast-host');
+        if (!host) return;
         const el = document.createElement('div');
         el.className = 'px-3 py-1.5 rounded-full bg-bgPanel/95 backdrop-blur-md hairline-all text-xs text-zinc-200 shadow-xl transition-opacity duration-300';
         el.textContent = msg;
@@ -5320,7 +5459,8 @@ void main() {
       }
 
       function showUndoToast(msg) {
-        const host = document.getElementById('toast-host');
+        const host = $('toast-host');
+        if (!host) return;
         const el = document.createElement('div');
         el.className = 'pointer-events-auto px-3 py-1.5 rounded-full bg-bgPanel/95 backdrop-blur-md hairline-all text-xs text-zinc-200 shadow-xl flex items-center gap-2.5 transition-opacity duration-300';
         el.innerHTML = `<span>${msg}</span><button class="text-accent font-medium hover:underline">Undo</button>`;
@@ -5351,7 +5491,7 @@ void main() {
           name: 'Right Facet',
           shape: 'quad',
           vertices: [{ x: 0.50, y: 0.46 }, { x: 0.68, y: 0.31 }, { x: 0.68, y: 0.67 }, { x: 0.50, y: 0.82 }],
-          shaderPreset: 'waves',
+          shaderPreset: 'chrome',
           uniforms: { color1: '#2563eb', color2: '#09090b', color3: '#e4e4e7', speed: 0.9, scale: 1.1, complexity: 2.0, brightness: 1.0, contrast: 1.05, saturation: 1.0, hueShift: 0.0, glow: 0.0, invert: 0.0 }
         });
         state.layers = [top, left, right];
@@ -5360,9 +5500,9 @@ void main() {
           captureCue('Cue 01', 8.0, 1.5, 'cubic'),
           (() => {
             const c = captureCue('Cue 02', 8.0, 2.0, 'cubic');
-            c.snapshot[top.id].shaderPreset = 'pulse';
-            c.snapshot[left.id].shaderPreset = 'grain';
-            c.snapshot[right.id].shaderPreset = 'kaleidoscope';
+            c.snapshot[top.id].shaderPreset = 'rings';
+            c.snapshot[left.id].shaderPreset = 'mist';
+            c.snapshot[right.id].shaderPreset = 'prism';
             return c;
           })(),
           (() => {
@@ -5377,8 +5517,10 @@ void main() {
       }
 
       function refreshAll() {
-        document.getElementById('lbl-output-res').textContent = `${state.outputWidth}×${state.outputHeight}`;
-        document.getElementById('inp-project-name').value = state.projectName;
+        const resLbl = $('lbl-output-res');
+        const projInp = $('inp-project-name');
+        if (resLbl) resLbl.textContent = `${state.outputWidth}×${state.outputHeight}`;
+        if (projInp) projInp.value = state.projectName;
         applyStageLayout();
         renderLayerList();
         renderInspector();
