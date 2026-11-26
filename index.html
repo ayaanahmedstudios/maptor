@@ -1,0 +1,3364 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Projection Mapping Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Geist', 'Plus Jakarta Sans', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['Geist Mono', 'monospace'],
+          },
+          colors: {
+            bgBase: '#09090b',
+            bgPanel: '#111114',
+            bgControl: '#18181c',
+            bgHover: '#222228',
+            accent: '#3b82f6',
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #09090b;
+      color: #f4f4f6;
+      overflow: hidden;
+      font-family: 'Geist', 'Plus Jakarta Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      touch-action: none;
+    }
+    .hairline-b { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+    .hairline-t { border-top: 1px solid rgba(255, 255, 255, 0.08); }
+    .hairline-l { border-left: 1px solid rgba(255, 255, 255, 0.08); }
+    .hairline-r { border-right: 1px solid rgba(255, 255, 255, 0.08); }
+    .hairline-all { border: 1px solid rgba(255, 255, 255, 0.08); }
+
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.14); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255, 255, 255, 0.12);
+      height: 3px;
+      border-radius: 999px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: pointer;
+      border: none;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button { opacity: 0.35; }
+    .no-select { user-select: none; -webkit-user-select: none; }
+
+    /* Desktop Drawers & Collapse States */
+    @media (min-width: 1025px) {
+      #left-drawer.collapsed { width: 0 !important; border-right: none !important; overflow: hidden; }
+      #right-drawer.collapsed { width: 0 !important; border-left: none !important; overflow: hidden; }
+      #bottom-drawer.collapsed { height: 36px !important; }
+      #bottom-drawer.collapsed #timeline-body { display: none !important; }
+    }
+
+    /* Mobile & Tablet Bottom Sheet Architecture (< 1025px) */
+    @media (max-width: 1024px) {
+      #left-drawer, #right-drawer, #bottom-drawer {
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 54vh !important;
+        max-height: 520px !important;
+        z-index: 45 !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-top-left-radius: 18px !important;
+        border-top-right-radius: 18px !important;
+        box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.85) !important;
+        transform: translateY(105%);
+        transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      #left-drawer.sheet-open,
+      #right-drawer.sheet-open,
+      #bottom-drawer.sheet-open {
+        transform: translateY(0%);
+      }
+      #bottom-drawer #timeline-body {
+        flex-direction: column !important;
+      }
+      #bottom-drawer #cue-sidebar {
+        width: 100% !important;
+        height: auto !important;
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+      }
+    }
+
+    /* Fullscreen & External Projector Output Mode */
+    .stage-fullscreen #top-bar,
+    .stage-fullscreen #left-drawer,
+    .stage-fullscreen #right-drawer,
+    .stage-fullscreen #bottom-drawer,
+    .stage-fullscreen #mobile-dock,
+    .stage-fullscreen #mobile-sheet-backdrop,
+    .stage-fullscreen #zoom-hud,
+    .stage-fullscreen #overlay-svg,
+    .stage-fullscreen #ref-image-layer {
+      display: none !important;
+    }
+    .stage-fullscreen #viewport-wrap {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      background: #000000 !important;
+      z-index: 60 !important;
+    }
+    .stage-fullscreen #stage-box {
+      transform: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+  </style>
+</head>
+<body class="bg-bgBase text-zinc-100 no-select">
+
+  <div id="toast-host" class="fixed top-14 left-1/2 -translate-x-1/2 z-[80] flex flex-col gap-1.5 pointer-events-none"></div>
+
+  <!-- Touch Vertex Loupe / Crosshair Readout -->
+  <div id="touch-loupe" class="hidden fixed pointer-events-none z-50 px-2.5 py-1 rounded-full bg-bgPanel/95 hairline-all text-[11px] font-mono text-white shadow-xl">
+    0, 0
+  </div>
+
+  <div id="app-shell" class="w-screen h-[100dvh] flex flex-col overflow-hidden bg-bgBase">
+    <!-- Slim 44px Top Toolbar (Zero Logos, Pure Functional Controls) -->
+    <header id="top-bar" class="h-11 shrink-0 bg-bgPanel hairline-b px-2.5 lg:px-3 flex items-center justify-between gap-2 z-30">
+      <div class="flex items-center gap-1.5 min-w-0">
+        <button id="btn-toggle-left" class="hidden lg:flex w-8 h-8 rounded-lg hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white transition" title="Toggle Layers Panel">
+          <i class="ph ph-sidebar-simple text-base"></i>
+        </button>
+
+        <!-- Add Surface Menu -->
+        <div class="relative" id="wrap-add-menu">
+          <button id="btn-add-menu" class="h-8 px-2.5 rounded-lg bg-accent hover:bg-blue-500 text-white text-xs font-medium flex items-center gap-1.5 transition">
+            <i class="ph ph-plus text-sm"></i>
+            <span>Add</span>
+            <i class="ph ph-caret-down text-[10px] opacity-80"></i>
+          </button>
+          <div id="menu-add" class="hidden absolute left-0 mt-1.5 w-56 bg-bgPanel hairline-all rounded-xl shadow-2xl p-1 z-50">
+            <button data-add="quad" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
+              <i class="ph ph-polygon text-base text-accent"></i>
+              <div>
+                <div class="text-xs font-medium text-zinc-100">Quad Surface</div>
+                <div class="text-[10px] text-zinc-500">4-point perspective homography</div>
+              </div>
+            </button>
+            <button data-add="triangle" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
+              <i class="ph ph-triangle text-base text-accent"></i>
+              <div>
+                <div class="text-xs font-medium text-zinc-100">Triangle</div>
+                <div class="text-[10px] text-zinc-500">3-corner planar facet</div>
+              </div>
+            </button>
+            <button data-add="ellipse" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
+              <i class="ph ph-circle text-base text-accent"></i>
+              <div>
+                <div class="text-xs font-medium text-zinc-100">Ellipse / Circle</div>
+                <div class="text-[10px] text-zinc-500">Perspective-warped oval</div>
+              </div>
+            </button>
+            <button data-add="polygon" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
+              <i class="ph ph-pentagon text-base text-accent"></i>
+              <div>
+                <div class="text-xs font-medium text-zinc-100">Custom Polygon</div>
+                <div class="text-[10px] text-zinc-500">Click edges to insert vertices</div>
+              </div>
+            </button>
+            <button data-add="text" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
+              <i class="ph ph-text-t text-base text-accent"></i>
+              <div>
+                <div class="text-xs font-medium text-zinc-100">Typography Layer</div>
+                <div class="text-[10px] text-zinc-500">Perspective-mapped live text</div>
+              </div>
+            </button>
+            <div class="my-1 hairline-t"></div>
+            <button data-add="mask" class="add-item w-full px-2.5 py-2 rounded-lg hover:bg-bgControl text-left flex items-center gap-2.5 transition">
+              <i class="ph ph-selection-slash text-base text-red-400"></i>
+              <div>
+                <div class="text-xs font-medium text-zinc-100">Blackout Mask</div>
+                <div class="text-[10px] text-zinc-500">Blocks light spill in pure #000</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <button id="btn-undo" class="w-8 h-8 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white disabled:opacity-30 transition" title="Undo (Cmd/Ctrl+Z)">
+          <i class="ph ph-arrow-u-up-left text-base"></i>
+        </button>
+        <button id="btn-redo" class="w-8 h-8 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white disabled:opacity-30 transition" title="Redo (Cmd/Ctrl+Shift+Z)">
+          <i class="ph ph-arrow-u-up-right text-base"></i>
+        </button>
+
+        <div class="hidden sm:block h-4 w-px bg-white/[0.08] mx-0.5"></div>
+
+        <!-- Output Canvas Dimensions & Reference Image -->
+        <div class="relative" id="wrap-output-menu">
+          <button id="btn-output-menu" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center gap-1.5 transition" title="Output Canvas Resolution & Reference Photo">
+            <i class="ph ph-monitor text-zinc-400 text-sm"></i>
+            <span id="lbl-output-res" class="font-mono text-[11px]">1920×1080</span>
+            <i class="ph ph-caret-down text-[10px] text-zinc-500"></i>
+          </button>
+          <div id="menu-output" class="hidden absolute left-0 sm:left-auto sm:right-0 mt-1.5 w-72 bg-bgPanel hairline-all rounded-xl shadow-2xl p-2.5 z-50 space-y-2.5">
+            <div class="text-[11px] font-medium text-zinc-400">Output Dimensions (px)</div>
+            <div class="grid grid-cols-2 gap-1">
+              <button data-res="1920x1080" class="res-btn px-2 py-1.5 rounded-lg bg-bgControl hover:bg-bgHover text-left text-[11px] flex justify-between text-zinc-200">
+                <span>1080p</span><span class="font-mono text-zinc-500">1920×1080</span>
+              </button>
+              <button data-res="3840x2160" class="res-btn px-2 py-1.5 rounded-lg bg-bgControl hover:bg-bgHover text-left text-[11px] flex justify-between text-zinc-200">
+                <span>4K UHD</span><span class="font-mono text-zinc-500">3840×2160</span>
+              </button>
+              <button data-res="1280x800" class="res-btn px-2 py-1.5 rounded-lg bg-bgControl hover:bg-bgHover text-left text-[11px] flex justify-between text-zinc-200">
+                <span>WXGA</span><span class="font-mono text-zinc-500">1280×800</span>
+              </button>
+              <button data-res="1080x1920" class="res-btn px-2 py-1.5 rounded-lg bg-bgControl hover:bg-bgHover text-left text-[11px] flex justify-between text-zinc-200">
+                <span>Portrait</span><span class="font-mono text-zinc-500">1080×1920</span>
+              </button>
+              <button data-res="1080x1080" class="res-btn px-2 py-1.5 rounded-lg bg-bgControl hover:bg-bgHover text-left text-[11px] flex justify-between text-zinc-200 col-span-2">
+                <span>Square Canvas</span><span class="font-mono text-zinc-500">1080×1080</span>
+              </button>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <input id="inp-res-w" type="number" min="320" max="7680" value="1920" class="w-full h-8 bg-bgControl hairline-all rounded-lg px-2 text-xs font-mono text-white outline-none focus:border-accent" />
+              <span class="text-zinc-500 text-xs">×</span>
+              <input id="inp-res-h" type="number" min="240" max="4320" value="1080" class="w-full h-8 bg-bgControl hairline-all rounded-lg px-2 text-xs font-mono text-white outline-none focus:border-accent" />
+              <button id="btn-set-res" class="h-8 px-2.5 rounded-lg bg-accent hover:bg-blue-500 text-white text-xs font-medium shrink-0">Set</button>
+            </div>
+
+            <div class="pt-2 hairline-t space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-zinc-400">Reference Photo Guide</span>
+                <button id="btn-clear-ref" class="hidden text-[10px] text-red-400 hover:underline">Remove</button>
+              </div>
+              <button id="btn-upload-ref" class="w-full h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-300 flex items-center justify-center gap-1.5 transition">
+                <i class="ph ph-image text-sm text-accent"></i>
+                <span>Load Physical Model Photo</span>
+              </button>
+              <input id="inp-ref-file" type="file" accept="image/*" class="hidden" />
+              <div id="ref-opacity-row" class="hidden space-y-1">
+                <div class="flex justify-between text-[10px] text-zinc-400">
+                  <span>Guide Opacity (Editor Only)</span>
+                  <span id="lbl-ref-opacity" class="font-mono">35%</span>
+                </div>
+                <input id="inp-ref-opacity" type="range" min="0.05" max="0.9" step="0.05" value="0.35" class="w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <button id="btn-grid" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-300 flex items-center gap-1.5 transition" title="Calibration Grid (G)">
+          <i class="ph ph-grid-four text-sm"></i>
+          <span class="hidden md:inline">Grid</span>
+        </button>
+
+        <button id="btn-snap" class="h-8 px-2.5 rounded-lg bg-accent/15 border border-accent/40 text-xs text-blue-300 flex items-center gap-1.5 transition" title="Snap Vertices">
+          <i class="ph ph-magnet text-sm"></i>
+          <span class="hidden md:inline">Snap</span>
+        </button>
+
+        <div class="hidden sm:block h-4 w-px bg-white/[0.08] mx-0.5"></div>
+
+        <button id="btn-save-json" class="w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Export Project JSON">
+          <i class="ph ph-download-simple text-sm"></i>
+        </button>
+        <button id="btn-load-json" class="w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Import Project JSON">
+          <i class="ph ph-folder-open text-sm"></i>
+        </button>
+        <input id="inp-load-json" type="file" accept=".json" class="hidden" />
+
+        <button id="btn-projector-win" class="h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs font-medium text-zinc-100 flex items-center gap-1.5 transition" title="Open Synchronized Projector Output Window">
+          <i class="ph ph-projector-screen text-sm text-accent"></i>
+          <span class="hidden sm:inline">Projector</span>
+        </button>
+
+        <button id="btn-fullscreen" class="w-8 h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Fullscreen Stage (F)">
+          <i class="ph ph-corners-out text-sm"></i>
+        </button>
+
+        <button id="btn-toggle-right" class="hidden lg:flex w-8 h-8 rounded-lg hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white transition" title="Toggle Inspector Panel">
+          <i class="ph ph-sliders-horizontal text-base"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Area -->
+    <div class="flex-1 min-h-0 flex relative overflow-hidden">
+      <!-- Left Layers Drawer (240px Desktop / Bottom Sheet Mobile) -->
+      <aside id="left-drawer" class="w-60 shrink-0 bg-bgPanel hairline-r flex flex-col overflow-hidden">
+        <div class="lg:hidden flex justify-center pt-2 pb-1">
+          <div class="w-9 h-1 rounded-full bg-white/20"></div>
+        </div>
+        <div class="px-3 py-2 hairline-b flex items-center justify-between">
+          <span class="text-xs font-medium text-zinc-300">Layers</span>
+          <div class="flex items-center gap-2">
+            <span id="lbl-layer-count" class="text-[11px] font-mono text-zinc-500">0</span>
+            <button class="lg:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400">
+              <i class="ph ph-x text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="layer-list" class="flex-1 overflow-y-auto p-1.5 space-y-1"></div>
+
+        <!-- Quick Shape Strip -->
+        <div class="p-2 hairline-t bg-bgBase/40 grid grid-cols-6 gap-1">
+          <button data-add="quad" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Quad">
+            <i class="ph ph-polygon text-sm"></i>
+          </button>
+          <button data-add="triangle" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Triangle">
+            <i class="ph ph-triangle text-sm"></i>
+          </button>
+          <button data-add="ellipse" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Ellipse">
+            <i class="ph ph-circle text-sm"></i>
+          </button>
+          <button data-add="polygon" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Polygon">
+            <i class="ph ph-pentagon text-sm"></i>
+          </button>
+          <button data-add="text" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Typography">
+            <i class="ph ph-text-t text-sm"></i>
+          </button>
+          <button data-add="mask" class="add-item h-9 lg:h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Blackout Mask">
+            <i class="ph ph-selection-slash text-sm"></i>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Fluid Central WebGL2 Viewport -->
+      <main id="viewport-wrap" class="flex-1 min-w-0 relative bg-bgBase flex items-center justify-center overflow-hidden">
+        <div id="stage-box" class="relative bg-black rounded-md overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.8)] hairline-all" style="width: 960px; height: 540px;">
+          <img id="ref-image-layer" alt="" class="hidden absolute inset-0 w-full h-full object-cover pointer-events-none opacity-35" />
+          <canvas id="gl-canvas" class="w-full h-full block"></canvas>
+          <svg id="overlay-svg" class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+
+        <!-- Minimal Zoom Controls -->
+        <div id="zoom-hud" class="absolute top-3 right-3 bg-bgPanel/90 backdrop-blur-md hairline-all rounded-full px-2 py-1 flex items-center gap-1 text-[11px] font-mono text-zinc-300 shadow-lg">
+          <button id="btn-zoom-out" class="w-6 h-6 rounded-full hover:bg-bgControl flex items-center justify-center transition" title="Zoom Out">
+            <i class="ph ph-minus text-xs"></i>
+          </button>
+          <span id="lbl-zoom" class="w-10 text-center">100%</span>
+          <button id="btn-zoom-in" class="w-6 h-6 rounded-full hover:bg-bgControl flex items-center justify-center transition" title="Zoom In">
+            <i class="ph ph-plus text-xs"></i>
+          </button>
+          <div class="w-px h-3 bg-white/10"></div>
+          <button id="btn-zoom-fit" class="px-2 h-6 rounded-full hover:bg-bgControl text-[10px] font-sans text-zinc-300 hover:text-white transition">
+            Fit
+          </button>
+        </div>
+
+        <!-- Drag & Drop Media Overlay -->
+        <div id="drop-zone-banner" class="hidden absolute inset-4 rounded-2xl border border-dashed border-accent bg-bgPanel/85 backdrop-blur-md flex flex-col items-center justify-center pointer-events-none z-40">
+          <i class="ph ph-file-video text-3xl text-accent mb-2"></i>
+          <div class="text-xs font-medium text-white">Drop Video or Image onto Surface</div>
+        </div>
+      </main>
+
+      <!-- Right Inspector Drawer (280px Desktop / Bottom Sheet Mobile) -->
+      <aside id="right-drawer" class="w-[280px] shrink-0 bg-bgPanel hairline-l flex flex-col overflow-hidden">
+        <div class="lg:hidden flex justify-center pt-2 pb-1">
+          <div class="w-9 h-1 rounded-full bg-white/20"></div>
+        </div>
+        <div class="px-3 py-2 hairline-b flex items-center justify-between">
+          <span id="lbl-inspector-title" class="text-xs font-medium text-zinc-200">Inspector</span>
+          <div class="flex items-center gap-1">
+            <button id="btn-dup-layer" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white transition" title="Duplicate Layer">
+              <i class="ph ph-copy text-sm"></i>
+            </button>
+            <button id="btn-reset-layer" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white transition" title="Reset Geometry">
+              <i class="ph ph-arrow-counter-clockwise text-sm"></i>
+            </button>
+            <button id="btn-del-layer" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-red-400 transition" title="Delete Layer">
+              <i class="ph ph-trash text-sm"></i>
+            </button>
+            <button class="lg:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400 ml-1">
+              <i class="ph ph-x text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="inspector-scroll" class="flex-1 overflow-y-auto p-3 space-y-4"></div>
+      </aside>
+    </div>
+
+    <!-- Bottom Show Sequencer Drawer (180px Desktop / Bottom Sheet Mobile) -->
+    <section id="bottom-drawer" class="h-[184px] shrink-0 bg-bgPanel hairline-t flex flex-col overflow-hidden z-20">
+      <div class="lg:hidden flex justify-center pt-2 pb-1">
+        <div class="w-9 h-1 rounded-full bg-white/20"></div>
+      </div>
+      <!-- Transport Bar -->
+      <div class="h-9 shrink-0 px-3 hairline-b flex items-center justify-between gap-2">
+        <div class="flex items-center gap-1.5">
+          <button id="btn-toggle-bottom" class="hidden lg:flex w-6 h-6 rounded hover:bg-bgControl items-center justify-center text-zinc-400 hover:text-white transition" title="Collapse/Expand Timeline">
+            <i id="ico-bottom-chevron" class="ph ph-caret-down text-xs"></i>
+          </button>
+
+          <button id="btn-cue-prev" class="w-7 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Previous Cue">
+            <i class="ph-fill ph-skip-back text-xs"></i>
+          </button>
+          <button id="btn-play" class="h-7 px-2.5 rounded-lg bg-white text-bgBase hover:bg-zinc-200 font-medium text-xs flex items-center gap-1.5 transition">
+            <i id="ico-play" class="ph-fill ph-play text-xs"></i>
+            <span id="lbl-play">Play</span>
+          </button>
+          <button id="btn-stop" class="w-7 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Stop & Rewind">
+            <i class="ph-fill ph-stop text-xs"></i>
+          </button>
+          <button id="btn-cue-next" class="w-7 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-300 hover:text-white transition" title="Next Cue">
+            <i class="ph-fill ph-skip-forward text-xs"></i>
+          </button>
+
+          <div class="h-7 px-2 rounded-lg bg-bgControl hairline-all font-mono text-[11px] text-zinc-200 flex items-center gap-1">
+            <span id="lbl-time-cur" class="text-white">00:00.0</span>
+            <span class="text-zinc-600">/</span>
+            <span id="lbl-time-tot" class="text-zinc-400">00:24.0</span>
+          </div>
+
+          <button id="btn-loop-show" class="w-7 h-7 rounded-lg bg-accent/15 border border-accent/40 flex items-center justify-center text-blue-300 transition" title="Loop Show">
+            <i class="ph ph-repeat text-xs"></i>
+          </button>
+
+          <button id="btn-cue-mode" class="h-7 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] text-zinc-300 flex items-center gap-1.5 transition" title="Switch Auto-Play vs Presenter Cue-by-Cue Hold">
+            <i id="ico-cue-mode" class="ph ph-play-circle text-xs text-accent"></i>
+            <span id="lbl-cue-mode" class="hidden sm:inline">Auto-Play</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <button id="btn-cue-update" class="h-7 px-2 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] text-zinc-300 hover:text-white flex items-center gap-1 transition" title="Overwrite Selected Cue with Current Stage">
+            <i class="ph ph-check text-xs text-accent"></i>
+            <span class="hidden sm:inline">Update Cue</span>
+          </button>
+          <button id="btn-cue-capture" class="h-7 px-2.5 rounded-lg bg-accent hover:bg-blue-500 text-white font-medium text-[11px] flex items-center gap-1 transition">
+            <i class="ph ph-plus text-xs"></i>
+            <span>Capture Cue</span>
+          </button>
+          <button class="lg:hidden close-sheet-btn w-7 h-7 rounded-lg bg-bgControl flex items-center justify-center text-zinc-400">
+            <i class="ph ph-x text-xs"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Timeline Split Body -->
+      <div id="timeline-body" class="flex-1 min-h-0 flex overflow-hidden">
+        <div id="cue-sidebar" class="w-56 shrink-0 hairline-r p-2.5 overflow-y-auto space-y-2 bg-bgPanel"></div>
+        <div id="timeline-scroll" class="flex-1 min-w-0 relative overflow-x-auto overflow-y-hidden bg-bgBase p-2.5 flex flex-col">
+          <div class="relative flex-1 min-w-full flex flex-col">
+            <div id="timeline-ruler" class="h-4 relative hairline-b text-[10px] font-mono text-zinc-500 cursor-pointer shrink-0"></div>
+            <div id="cue-track" class="flex-1 mt-1.5 flex items-stretch gap-1 relative"></div>
+            <div id="playhead" class="absolute top-0 bottom-0 w-px bg-accent pointer-events-none z-20" style="left: 0%;">
+              <div class="w-2 h-2 rounded-full bg-accent -ml-[3.5px] -mt-0.5"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mobile & Tablet Backdrop & Floating Segmented Dock (< 1025px) -->
+    <div id="mobile-sheet-backdrop" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
+    <nav id="mobile-dock" class="lg:hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-30 bg-bgPanel/95 backdrop-blur-md hairline-all rounded-full p-1 flex items-center gap-1 shadow-2xl" style="margin-bottom: env(safe-area-inset-bottom);">
+      <button data-sheet="add" class="mobile-tab h-10 px-3.5 rounded-full text-xs font-medium text-zinc-300 hover:text-white flex items-center gap-1.5 transition">
+        <i class="ph ph-plus text-base text-accent"></i>
+        <span>Add</span>
+      </button>
+      <button data-sheet="left-drawer" class="mobile-tab h-10 px-3.5 rounded-full text-xs font-medium text-zinc-300 hover:text-white flex items-center gap-1.5 transition">
+        <i class="ph ph-stack text-base"></i>
+        <span>Layers</span>
+      </button>
+      <button data-sheet="right-drawer" class="mobile-tab h-10 px-3.5 rounded-full text-xs font-medium text-zinc-300 hover:text-white flex items-center gap-1.5 transition">
+        <i class="ph ph-sliders-horizontal text-base"></i>
+        <span>Inspect</span>
+      </button>
+      <button data-sheet="bottom-drawer" class="mobile-tab h-10 px-3.5 rounded-full text-xs font-medium text-zinc-300 hover:text-white flex items-center gap-1.5 transition">
+        <i class="ph ph-film-strip text-base"></i>
+        <span>Show</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Custom GLSL Shader Modal -->
+  <div id="glsl-modal" class="hidden fixed inset-0 z-[70] bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-bgPanel hairline-all rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col overflow-hidden">
+      <div class="px-4 py-3 hairline-b flex items-center justify-between">
+        <div>
+          <div class="text-xs font-medium text-white">Custom GLSL Fragment Shader</div>
+          <div class="text-[10px] text-zinc-400 font-mono mt-0.5">Uniforms: u_time, u_speed, u_scale, u_complexity, u_color1, u_color2, u_color3</div>
+        </div>
+        <button id="btn-glsl-close" class="w-7 h-7 rounded-lg hover:bg-bgControl flex items-center justify-center text-zinc-400 hover:text-white">
+          <i class="ph ph-x text-sm"></i>
+        </button>
+      </div>
+      <div class="p-4 space-y-2.5">
+        <textarea id="txt-glsl-code" spellcheck="false" class="w-full h-64 bg-bgBase hairline-all rounded-xl p-3 font-mono text-xs text-zinc-200 focus:outline-none focus:border-accent resize-none leading-relaxed"></textarea>
+        <div id="lbl-glsl-status" class="px-3 py-2 rounded-lg bg-bgControl text-xs font-mono text-zinc-400">Ready</div>
+      </div>
+      <div class="px-4 py-3 hairline-t flex items-center justify-between">
+        <button id="btn-glsl-reset" class="h-8 px-3 rounded-lg bg-bgControl hover:bg-bgHover text-xs text-zinc-300">Reset Starter</button>
+        <button id="btn-glsl-apply" class="h-8 px-4 rounded-lg bg-accent hover:bg-blue-500 text-white text-xs font-medium">Apply Shader</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = 'pm_studio_state_v3';
+      const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('pm_studio_sync_v3') : null;
+      const isProjectorWindow = new URLSearchParams(window.location.search).get('projector') === '1';
+
+      const SHADER_PRESETS = {
+        aurora: {
+          name: 'Liquid Aurora',
+          swatch: 'linear-gradient(135deg, #3b82f6 0%, #0ea5e9 55%, #09090b 100%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  vec2 p = (v_uv - 0.5) * max(0.4, u_scale * 2.4);
+  float t = u_time * u_speed * 0.6;
+  int iters = int(clamp(u_complexity, 1.0, 5.0));
+  for (int i = 1; i <= 5; i++) {
+    if (i > iters) break;
+    float fi = float(i);
+    p.x += (0.34 / fi) * sin(fi * 2.1 * p.y + t);
+    p.y += (0.34 / fi) * cos(fi * 2.1 * p.x + t * 0.85);
+  }
+  float w1 = smoothstep(0.15, 0.85, 0.5 + 0.5 * sin(p.x + p.y + t));
+  float w2 = smoothstep(0.25, 0.9, 0.5 + 0.5 * cos(p.x - p.y - t * 0.7));
+  vec3 col = mix(u_color2, u_color1, w1);
+  col = mix(col, u_color3, w2 * 0.45);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        waves: {
+          name: 'Kinetic Waves',
+          swatch: 'linear-gradient(120deg, #09090b 0%, #3b82f6 50%, #f4f4f6 100%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  float t = u_time * u_speed * 1.4;
+  float freq = max(1.0, u_scale * 6.0);
+  float wave = sin(v_uv.x * freq + t + sin(v_uv.y * freq * 0.5 - t) * u_complexity * 0.6);
+  float band = smoothstep(-0.35, 0.65, wave);
+  float crest = smoothstep(0.75, 0.98, wave);
+  vec3 col = mix(u_color2, u_color1, band);
+  col = mix(col, u_color3, crest * 0.75);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        grid: {
+          name: 'Architectural Grid',
+          swatch: 'radial-gradient(circle, #1e293b 0%, #09090b 100%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  float t = u_time * u_speed;
+  float cells = max(2.0, floor(u_scale * 6.0));
+  vec2 guv = v_uv * cells;
+  vec2 fw = max(fwidth(guv), vec2(0.001));
+  vec2 g = abs(fract(guv - 0.5) - 0.5) / fw;
+  float line = 1.0 - min(min(g.x, g.y), 1.0);
+  float scan = 0.5 + 0.5 * sin(v_uv.y * 6.2831 * u_complexity - t * 2.2);
+  float edge = clamp(smoothstep(0.025, 0.0, v_uv.x) + smoothstep(0.975, 1.0, v_uv.x) +
+                     smoothstep(0.025, 0.0, v_uv.y) + smoothstep(0.975, 1.0, v_uv.y), 0.0, 1.0);
+  vec3 col = mix(u_color2 * 0.2, u_color1, line * (0.35 + 0.65 * scan));
+  col = mix(col, u_color3, edge * 0.85);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        pulse: {
+          name: 'Radial Pulse',
+          swatch: 'radial-gradient(circle, #3b82f6 15%, #111114 60%, #3b82f6 95%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  vec2 p = v_uv - 0.5;
+  float d = length(p);
+  float t = u_time * u_speed * 2.4;
+  float w = sin(d * (18.0 * u_scale) - t) * 0.5 + 0.5;
+  float ring = smoothstep(0.45, 0.92, w) * smoothstep(0.8, 0.01, d);
+  float core = smoothstep(0.22 / max(0.5, u_complexity * 0.5), 0.0, d);
+  vec3 col = mix(u_color2 * 0.2, u_color1, ring);
+  col = mix(col, u_color3, core);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        plasma: {
+          name: 'Chromatic Plasma',
+          swatch: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #06b6d4 100%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  float t = u_time * u_speed * 0.9;
+  vec2 uv = (v_uv - 0.5) * max(0.8, u_scale * 4.0);
+  float v = sin(uv.x + t) + sin(uv.y + t * 0.8) + sin((uv.x + uv.y) * 0.7 + t);
+  v += sin(length(uv * u_complexity) - t * 1.2);
+  float m1 = 0.5 + 0.5 * sin(v * 1.5);
+  float m2 = 0.5 + 0.5 * cos(v * 1.5 + 1.2);
+  vec3 col = mix(u_color2, u_color1, m1);
+  col = mix(col, u_color3, m2 * 0.55);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        grain: {
+          name: 'Noise Grain',
+          swatch: 'linear-gradient(180deg, #27272a 0%, #09090b 100%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+float noise(vec2 p) {
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+void main() {
+  float t = u_time * u_speed * 0.4;
+  vec2 uv = v_uv * max(1.0, u_scale * 3.5);
+  float n = noise(uv + vec2(t, -t * 0.5));
+  n += 0.5 * noise(uv * 2.2 - t);
+  float fine = (hash(v_uv * 400.0 + fract(u_time * 12.0)) - 0.5) * 0.14 * u_complexity;
+  float mask = smoothstep(0.3, 0.95, n * 0.7 + fine);
+  vec3 col = mix(u_color2, u_color1, mask);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        kaleidoscope: {
+          name: 'Kaleidoscope',
+          swatch: 'conic-gradient(from 45deg, #3b82f6, #09090b, #60a5fa, #09090b, #3b82f6)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  vec2 p = (v_uv - 0.5) * 2.0;
+  float r = length(p);
+  float a = atan(p.y, p.x);
+  float segs = max(3.0, floor(u_complexity * 3.0));
+  float slice = 6.2831853 / segs;
+  a = mod(a, slice);
+  a = abs(a - slice * 0.5);
+  vec2 kp = vec2(cos(a), sin(a)) * r * max(0.5, u_scale * 2.5);
+  float t = u_time * u_speed;
+  float pat = sin(kp.x * 5.0 + t) * cos(kp.y * 5.0 - t);
+  float m = smoothstep(-0.2, 0.6, pat);
+  vec3 col = mix(u_color2, u_color1, m);
+  col = mix(col, u_color3, smoothstep(0.65, 0.95, pat) * 0.6);
+  fragColor = vec4(col, 1.0);
+}`
+        },
+        solid: {
+          name: 'Gradient / Solid',
+          swatch: 'linear-gradient(180deg, #3b82f6 0%, #111114 100%)',
+          code: `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+void main() {
+  float ang = (u_scale - 1.0) * 3.14159 + u_time * u_speed * 0.2;
+  vec2 dir = vec2(cos(ang), sin(ang));
+  float t = clamp(dot(v_uv - 0.5, dir) + 0.5, 0.0, 1.0);
+  t = smoothstep(0.0, 1.0, t);
+  vec3 col = mix(u_color2, u_color1, t);
+  fragColor = vec4(col, 1.0);
+}`
+        }
+      };
+
+      const STARTER_GLSL = `#version 300 es
+precision highp float;
+in vec2 v_uv;
+out vec4 fragColor;
+uniform float u_time, u_speed, u_scale, u_complexity;
+uniform vec3 u_color1, u_color2, u_color3;
+
+void main() {
+  float wave = 0.5 + 0.5 * sin(v_uv.x * 8.0 * u_scale + u_time * u_speed * 2.0);
+  vec3 col = mix(u_color2, u_color1, wave);
+  fragColor = vec4(col, 1.0);
+}`;
+
+      const state = {
+        outputWidth: 1920,
+        outputHeight: 1080,
+        zoom: 1.0,
+        panX: 0,
+        panY: 0,
+        showGrid: false,
+        snapEnabled: true,
+        refImageUrl: '',
+        refOpacity: 0.35,
+        selectedIds: [],
+        layers: [],
+        cues: [],
+        selectedCueId: null,
+        activeCueIndex: 0,
+        isPlaying: false,
+        loopShow: true,
+        presenterMode: false,
+        waitingNextCue: false,
+        showTime: 0
+      };
+
+      const historyStack = [];
+      const redoStack = [];
+
+      function pushHistory() {
+        const snap = JSON.stringify({
+          layers: state.layers,
+          selectedIds: state.selectedIds,
+          outputWidth: state.outputWidth,
+          outputHeight: state.outputHeight
+        });
+        if (historyStack.length && historyStack[historyStack.length - 1] === snap) return;
+        historyStack.push(snap);
+        if (historyStack.length > 40) historyStack.shift();
+        redoStack.length = 0;
+        updateUndoRedoUI();
+      }
+
+      function undo() {
+        if (historyStack.length <= 1) return;
+        redoStack.push(historyStack.pop());
+        const prev = JSON.parse(historyStack[historyStack.length - 1]);
+        state.layers = prev.layers;
+        state.selectedIds = prev.selectedIds;
+        state.outputWidth = prev.outputWidth;
+        state.outputHeight = prev.outputHeight;
+        rebuildAllTextTextures();
+        updateUndoRedoUI();
+        refreshAll();
+        showToast('Undone');
+      }
+
+      function redo() {
+        if (!redoStack.length) return;
+        const nextStr = redoStack.pop();
+        historyStack.push(nextStr);
+        const next = JSON.parse(nextStr);
+        state.layers = next.layers;
+        state.selectedIds = next.selectedIds;
+        state.outputWidth = next.outputWidth;
+        state.outputHeight = next.outputHeight;
+        rebuildAllTextTextures();
+        updateUndoRedoUI();
+        refreshAll();
+        showToast('Redone');
+      }
+
+      function updateUndoRedoUI() {
+        document.getElementById('btn-undo').disabled = historyStack.length <= 1;
+        document.getElementById('btn-redo').disabled = redoStack.length === 0;
+      }
+
+      let idCounter = 1;
+      function genId(prefix = 'lyr') {
+        return `${prefix}_${Date.now().toString(36)}_${idCounter++}`;
+      }
+
+      function clone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+      }
+
+      function hexToRgb(hex) {
+        const clean = (hex || '#3b82f6').replace('#', '');
+        const full = clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean;
+        const num = parseInt(full, 16);
+        return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
+      }
+
+      function lerpHex(a, b, t) {
+        const c1 = hexToRgb(a);
+        const c2 = hexToRgb(b);
+        const r = Math.round((c1[0] + (c2[0] - c1[0]) * t) * 255);
+        const g = Math.round((c1[1] + (c2[1] - c1[1]) * t) * 255);
+        const bl = Math.round((c1[2] + (c2[2] - c1[2]) * t) * 255);
+        return `#${[r, g, bl].map(v => Math.max(0, Math.min(255, v)).toString(16).padStart(2, '0')).join('')}`;
+      }
+
+      function defaultVertices(shape) {
+        if (shape === 'triangle') {
+          return [{ x: 0.50, y: 0.24 }, { x: 0.67, y: 0.72 }, { x: 0.33, y: 0.72 }];
+        }
+        if (shape === 'polygon') {
+          const pts = [];
+          for (let i = 0; i < 6; i++) {
+            const ang = (i / 6) * Math.PI * 2 - Math.PI / 2;
+            pts.push({ x: 0.5 + Math.cos(ang) * 0.17, y: 0.5 + Math.sin(ang) * 0.27 });
+          }
+          return pts;
+        }
+        if (shape === 'text') {
+          return [
+            { x: 0.28, y: 0.38 },
+            { x: 0.72, y: 0.38 },
+            { x: 0.72, y: 0.62 },
+            { x: 0.28, y: 0.62 }
+          ];
+        }
+        return [
+          { x: 0.34, y: 0.24 },
+          { x: 0.66, y: 0.24 },
+          { x: 0.66, y: 0.76 },
+          { x: 0.34, y: 0.76 }
+        ];
+      }
+
+      function createLayer(opts = {}) {
+        const shape = opts.shape || 'quad';
+        const isMask = shape === 'mask';
+        const isText = shape === 'text';
+        const names = {
+          quad: 'Quad Surface',
+          triangle: 'Triangle',
+          ellipse: 'Ellipse',
+          polygon: 'Polygon',
+          text: 'Typography',
+          mask: 'Blackout Mask'
+        };
+        const layer = {
+          id: opts.id || genId(isMask ? 'msk' : 'lyr'),
+          name: opts.name || names[shape] || 'Surface',
+          kind: isMask ? 'mask' : 'surface',
+          shape: isMask ? 'quad' : shape,
+          visible: opts.visible !== undefined ? opts.visible : true,
+          locked: opts.locked || false,
+          solo: opts.solo || false,
+          vertices: opts.vertices || defaultVertices(shape),
+          meshSubdiv: opts.meshSubdiv || 1,
+          meshGrid: opts.meshGrid || null,
+          opacity: opts.opacity !== undefined ? opts.opacity : 1.0,
+          feather: opts.feather !== undefined ? opts.feather : 0.0,
+          cornerRadius: opts.cornerRadius !== undefined ? opts.cornerRadius : 0.0,
+          flipH: opts.flipH || false,
+          flipV: opts.flipV || false,
+          blendMode: opts.blendMode || 'normal',
+          sourceType: isText ? 'text' : (opts.sourceType || 'preset'),
+          shaderPreset: opts.shaderPreset || 'aurora',
+          customGlsl: opts.customGlsl || STARTER_GLSL,
+          uniforms: {
+            color1: opts.uniforms?.color1 || '#3b82f6',
+            color2: opts.uniforms?.color2 || '#09090b',
+            color3: opts.uniforms?.color3 || '#e4e4e7',
+            speed: opts.uniforms?.speed ?? 1.0,
+            scale: opts.uniforms?.scale ?? 1.0,
+            complexity: opts.uniforms?.complexity ?? 2.0,
+            brightness: opts.uniforms?.brightness ?? 1.0,
+            contrast: opts.uniforms?.contrast ?? 1.0,
+            saturation: opts.uniforms?.saturation ?? 1.0,
+            hueShift: opts.uniforms?.hueShift ?? 0.0
+          },
+          textProps: {
+            content: opts.textProps?.content || 'THESIS\nSTUDY 01',
+            fontFamily: opts.textProps?.fontFamily || 'Geist',
+            fontWeight: opts.textProps?.fontWeight || '600',
+            fontSize: opts.textProps?.fontSize || 110,
+            letterSpacing: opts.textProps?.letterSpacing ?? 0.04,
+            lineHeight: opts.textProps?.lineHeight ?? 1.08,
+            align: opts.textProps?.align || 'center',
+            color: opts.textProps?.color || '#ffffff',
+            bgColor: opts.textProps?.bgColor || 'transparent'
+          },
+          media: {
+            name: '',
+            type: '',
+            loop: true,
+            speed: 1.0,
+            fit: 'cover'
+          }
+        };
+        if (layer.meshSubdiv > 1 && !layer.meshGrid) rebuildMeshGrid(layer);
+        if (layer.sourceType === 'text') updateTextTexture(layer);
+        return layer;
+      }
+
+      function bilinear(v, u, t) {
+        const tx = v[0].x + (v[1].x - v[0].x) * u;
+        const ty = v[0].y + (v[1].y - v[0].y) * u;
+        const bx = v[3].x + (v[2].x - v[3].x) * u;
+        const by = v[3].y + (v[2].y - v[3].y) * u;
+        return { x: tx + (bx - tx) * t, y: ty + (by - ty) * t };
+      }
+
+      function rebuildMeshGrid(layer) {
+        if (layer.vertices.length !== 4 || layer.meshSubdiv <= 1) {
+          layer.meshGrid = null;
+          return;
+        }
+        const n = layer.meshSubdiv;
+        const pts = [];
+        for (let r = 0; r <= n; r++) {
+          for (let c = 0; c <= n; c++) {
+            pts.push(bilinear(layer.vertices, c / n, r / n));
+          }
+        }
+        layer.meshGrid = pts;
+      }
+
+      function getBounds(layer) {
+        const pts = (layer.meshSubdiv > 1 && layer.meshGrid) ? layer.meshGrid : layer.vertices;
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (const p of pts) {
+          if (p.x < minX) minX = p.x;
+          if (p.y < minY) minY = p.y;
+          if (p.x > maxX) maxX = p.x;
+          if (p.y > maxY) maxY = p.y;
+        }
+        const w = Math.max(0.002, maxX - minX);
+        const h = Math.max(0.002, maxY - minY);
+        return { minX, minY, maxX, maxY, cx: (minX + maxX) * 0.5, cy: (minY + maxY) * 0.5, w, h };
+      }
+
+      function transformVertices(layer, fn) {
+        layer.vertices = layer.vertices.map(fn);
+        if (layer.meshGrid) layer.meshGrid = layer.meshGrid.map(fn);
+      }
+
+      function computeHomography(src, dst) {
+        const A = [], b = [];
+        for (let i = 0; i < 4; i++) {
+          const x = src[i].x, y = src[i].y, u = dst[i].x, v = dst[i].y;
+          A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]); b.push(u);
+          A.push([0, 0, 0, x, y, 1, -v * x, -v * y]); b.push(v);
+        }
+        for (let i = 0; i < 8; i++) {
+          let maxRow = i;
+          for (let k = i + 1; k < 8; k++) if (Math.abs(A[k][i]) > Math.abs(A[maxRow][i])) maxRow = k;
+          [A[i], A[maxRow]] = [A[maxRow], A[i]];
+          [b[i], b[maxRow]] = [b[maxRow], b[i]];
+          const p = A[i][i];
+          if (Math.abs(p) < 1e-12) return [1, 0, 0, 0, 1, 0, 0, 0, 1];
+          for (let j = i; j < 8; j++) A[i][j] /= p;
+          b[i] /= p;
+          for (let k = 0; k < 8; k++) {
+            if (k !== i) {
+              const f = A[k][i];
+              for (let j = i; j < 8; j++) A[k][j] -= f * A[i][j];
+              b[k] -= f * b[i];
+            }
+          }
+        }
+        return [b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], 1];
+      }
+
+      function transpose3(m) {
+        return [m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]];
+      }
+
+      /* WebGL2 Engine */
+      const canvas = document.getElementById('gl-canvas');
+      const gl = canvas.getContext('webgl2', { alpha: false, antialias: true, preserveDrawingBuffer: true });
+
+      const VS_SRC = `#version 300 es
+precision highp float;
+layout(location = 0) in vec2 a_pos;
+layout(location = 1) in vec2 a_uv;
+out vec2 v_screen;
+out vec2 v_uvRaw;
+void main() {
+  v_screen = a_pos;
+  v_uvRaw = a_uv;
+  gl_Position = vec4(a_pos.x * 2.0 - 1.0, 1.0 - a_pos.y * 2.0, 0.0, 1.0);
+}`;
+
+      const FS_HEADER = `#version 300 es
+precision highp float;
+in vec2 v_screen;
+in vec2 v_uvRaw;
+out vec4 outColor;
+
+uniform mat3 u_invH;
+uniform int u_useH;
+uniform int u_isEllipse;
+uniform int u_sourceMode;
+uniform sampler2D u_tex;
+uniform float u_opacity;
+uniform float u_feather;
+uniform float u_cornerRadius;
+uniform vec2 u_flip;
+
+uniform float u_time;
+uniform float u_speed;
+uniform float u_scale;
+uniform float u_complexity;
+uniform float u_brightness;
+uniform float u_contrast;
+uniform float u_saturation;
+uniform float u_hueShift;
+uniform vec3 u_color1;
+uniform vec3 u_color2;
+uniform vec3 u_color3;
+
+vec2 resolveUV() {
+  vec2 uv = v_uvRaw;
+  if (u_useH == 1) {
+    vec3 p = u_invH * vec3(v_screen, 1.0);
+    uv = p.xy / max(p.z, 1e-5);
+  }
+  return uv;
+}
+
+float sdRoundBox(vec2 p, vec2 b, float r) {
+  vec2 q = abs(p) - b + r;
+  return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r;
+}
+
+float computeMask(vec2 uv) {
+  float f = max(0.002, u_feather);
+  if (u_isEllipse == 1) {
+    float r = length(uv - 0.5) * 2.0;
+    return 1.0 - smoothstep(1.0 - f, 1.0, r);
+  }
+  if (u_cornerRadius > 0.001) {
+    float r = min(0.49, u_cornerRadius);
+    float d = sdRoundBox(uv - 0.5, vec2(0.5), r);
+    return 1.0 - smoothstep(-f, 0.002, d);
+  }
+  if (u_feather <= 0.001) return 1.0;
+  float ex = smoothstep(0.0, f, uv.x) * smoothstep(0.0, f, 1.0 - uv.x);
+  float ey = smoothstep(0.0, f, uv.y) * smoothstep(0.0, f, 1.0 - uv.y);
+  return ex * ey;
+}
+
+vec3 applyColorGrade(vec3 c) {
+  // Hue rotation
+  float angle = u_hueShift * 6.2831853;
+  const vec3 k = vec3(0.57735);
+  float cosA = cos(angle);
+  c = c * cosA + cross(k, c) * sin(angle) + k * dot(k, c) * (1.0 - cosA);
+  // Saturation
+  float luma = dot(c, vec3(0.2126, 0.7152, 0.0722));
+  c = mix(vec3(luma), c, u_saturation);
+  // Contrast & Brightness
+  c = ((c - 0.5) * u_contrast + 0.5) * u_brightness;
+  return clamp(c, 0.0, 1.5);
+}
+`;
+
+      function buildFragmentShader(userCode) {
+        let body = userCode
+          .replace(/#version\s+300\s+es/g, '')
+          .replace(/precision\s+(lowp|mediump|highp)\s+float\s*;/g, '')
+          .replace(/in\s+vec2\s+v_uv\s*;/g, 'vec2 v_uv;')
+          .replace(/out\s+vec4\s+fragColor\s*;/g, 'vec4 fragColor;')
+          .replace(/uniform\s+float\s+[^;]+;/g, '')
+          .replace(/uniform\s+vec3\s+[^;]+;/g, '')
+          .replace(/void\s+main\s*\(\s*\)/g, 'vec4 evalUser(vec2 uv_in)');
+
+        body = body.replace(/vec4\s+evalUser\s*\(\s*vec2\s+uv_in\s*\)\s*\{/,
+          'vec4 evalUser(vec2 uv_in) {\n  v_uv = uv_in;\n  fragColor = vec4(0.0, 0.0, 0.0, 1.0);');
+        const lastBrace = body.lastIndexOf('}');
+        if (lastBrace !== -1) body = body.slice(0, lastBrace) + '\n  return fragColor;\n}';
+
+        return `${FS_HEADER}
+${body}
+
+void main() {
+  vec2 rawUv = resolveUV();
+  if (rawUv.x < -0.002 || rawUv.x > 1.002 || rawUv.y < -0.002 || rawUv.y > 1.002) discard;
+  float alphaShape = computeMask(rawUv);
+  if (alphaShape <= 0.001) discard;
+
+  vec2 uv = rawUv;
+  if (u_flip.x > 0.5) uv.x = 1.0 - uv.x;
+  if (u_flip.y > 0.5) uv.y = 1.0 - uv.y;
+
+  vec4 col;
+  if (u_sourceMode == 1) {
+    col = texture(u_tex, clamp(uv, 0.0, 1.0));
+  } else {
+    col = evalUser(uv);
+  }
+  col.rgb = applyColorGrade(col.rgb);
+  outColor = vec4(col.rgb, col.a * u_opacity * alphaShape);
+}`;
+      }
+
+      const MASK_FS_SRC = `#version 300 es
+precision highp float;
+in vec2 v_screen;
+in vec2 v_uvRaw;
+out vec4 outColor;
+uniform mat3 u_invH;
+uniform int u_useH;
+uniform float u_feather;
+uniform float u_cornerRadius;
+float sdRoundBox(vec2 p, vec2 b, float r) {
+  vec2 q = abs(p) - b + r;
+  return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r;
+}
+void main() {
+  vec2 uv = v_uvRaw;
+  if (u_useH == 1) {
+    vec3 p = u_invH * vec3(v_screen, 1.0);
+    uv = p.xy / max(p.z, 1e-5);
+  }
+  float f = max(0.002, u_feather);
+  float a = 1.0;
+  if (u_cornerRadius > 0.001) {
+    float d = sdRoundBox(uv - 0.5, vec2(0.5), min(0.49, u_cornerRadius));
+    a = 1.0 - smoothstep(-f, 0.002, d);
+  } else {
+    a = smoothstep(0.0, f, uv.x) * smoothstep(0.0, f, 1.0 - uv.x) *
+        smoothstep(0.0, f, uv.y) * smoothstep(0.0, f, 1.0 - uv.y);
+  }
+  outColor = vec4(0.0, 0.0, 0.0, a);
+}`;
+
+      const shaderCache = new Map();
+      const vao = gl.createVertexArray();
+      const vbo = gl.createBuffer();
+
+      function compileShader(type, src) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+          const log = gl.getShaderInfoLog(s);
+          gl.deleteShader(s);
+          return { error: log };
+        }
+        return { shader: s };
+      }
+
+      function buildProgram(vsSrc, fsSrc) {
+        const vs = compileShader(gl.VERTEX_SHADER, vsSrc);
+        if (vs.error) return { error: vs.error };
+        const fs = compileShader(gl.FRAGMENT_SHADER, fsSrc);
+        if (fs.error) { gl.deleteShader(vs.shader); return { error: fs.error }; }
+        const prog = gl.createProgram();
+        gl.attachShader(prog, vs.shader);
+        gl.attachShader(prog, fs.shader);
+        gl.linkProgram(prog);
+        gl.deleteShader(vs.shader);
+        gl.deleteShader(fs.shader);
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+          const log = gl.getProgramInfoLog(prog);
+          gl.deleteProgram(prog);
+          return { error: log };
+        }
+        return { program: prog };
+      }
+
+      const maskProg = buildProgram(VS_SRC, MASK_FS_SRC).program;
+
+      function getProgramForLayer(layer) {
+        const key = layer.sourceType === 'custom'
+          ? `custom:${layer.id}:${layer.customGlsl}`
+          : `preset:${layer.shaderPreset}`;
+        if (shaderCache.has(key)) return shaderCache.get(key);
+        const src = layer.sourceType === 'custom'
+          ? layer.customGlsl
+          : (SHADER_PRESETS[layer.shaderPreset]?.code || SHADER_PRESETS.aurora.code);
+        const res = buildProgram(VS_SRC, buildFragmentShader(src));
+        if (res.program) {
+          shaderCache.set(key, res.program);
+          return res.program;
+        }
+        if (!shaderCache.has('preset:aurora')) {
+          shaderCache.set('preset:aurora', buildProgram(VS_SRC, buildFragmentShader(SHADER_PRESETS.aurora.code)).program);
+        }
+        return shaderCache.get('preset:aurora');
+      }
+
+      /* Media & High-DPI Typography Texture Store */
+      const textureStore = new Map();
+
+      function updateTextTexture(layer) {
+        if (!layer || layer.sourceType !== 'text') return;
+        const tp = layer.textProps;
+        const off = document.createElement('canvas');
+        off.width = 1600;
+        off.height = 900;
+        const ctx = off.getContext('2d');
+        ctx.clearRect(0, 0, off.width, off.height);
+
+        if (tp.bgColor && tp.bgColor !== 'transparent') {
+          ctx.fillStyle = tp.bgColor;
+          ctx.fillRect(0, 0, off.width, off.height);
+        }
+
+        ctx.fillStyle = tp.color || '#ffffff';
+        ctx.font = `${tp.fontWeight || '600'} ${tp.fontSize || 110}px "${tp.fontFamily || 'Geist'}", sans-serif`;
+        ctx.textAlign = tp.align || 'center';
+        ctx.textBaseline = 'middle';
+        if ('letterSpacing' in ctx) {
+          ctx.letterSpacing = `${tp.letterSpacing || 0}em`;
+        }
+
+        const lines = (tp.content || '').split('\n');
+        const lineH = (tp.fontSize || 110) * (tp.lineHeight || 1.1);
+        const totalH = lines.length * lineH;
+        const startY = (off.height - totalH) * 0.5 + lineH * 0.5;
+        const anchorX = tp.align === 'left' ? 120 : (tp.align === 'right' ? off.width - 120 : off.width * 0.5);
+
+        lines.forEach((line, idx) => {
+          ctx.fillText(line, anchorX, startY + idx * lineH);
+        });
+
+        let item = textureStore.get(layer.id);
+        if (!item || item.isVideo) {
+          if (item?.tex) gl.deleteTexture(item.tex);
+          const tex = gl.createTexture();
+          gl.bindTexture(gl.TEXTURE_2D, tex);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+          item = { tex, isVideo: false, ready: true };
+          textureStore.set(layer.id, item);
+        }
+        gl.bindTexture(gl.TEXTURE_2D, item.tex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, off);
+        item.ready = true;
+      }
+
+      function rebuildAllTextTextures() {
+        for (const l of state.layers) {
+          if (l.sourceType === 'text') updateTextTexture(l);
+        }
+      }
+
+      function loadMediaFile(layerId, file) {
+        const layer = state.layers.find(l => l.id === layerId);
+        if (!layer || layer.kind !== 'surface') return;
+
+        const url = URL.createObjectURL(file);
+        const isVideo = file.type.startsWith('video/');
+
+        if (textureStore.has(layerId)) {
+          const prev = textureStore.get(layerId);
+          if (prev.video) { prev.video.pause(); prev.video.src = ''; }
+          gl.deleteTexture(prev.tex);
+        }
+
+        const tex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]));
+
+        if (isVideo) {
+          const video = document.createElement('video');
+          video.src = url;
+          video.loop = layer.media.loop;
+          video.muted = true;
+          video.playbackRate = layer.media.speed;
+          video.playsInline = true;
+          video.play().catch(() => {});
+          textureStore.set(layerId, { tex, isVideo: true, video, ready: false });
+          video.addEventListener('loadeddata', () => {
+            const it = textureStore.get(layerId);
+            if (it) it.ready = true;
+          });
+        } else {
+          const img = new Image();
+          img.onload = () => {
+            gl.bindTexture(gl.TEXTURE_2D, tex);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+            const it = textureStore.get(layerId);
+            if (it) it.ready = true;
+          };
+          img.src = url;
+          textureStore.set(layerId, { tex, isVideo: false, img, ready: false });
+        }
+
+        layer.sourceType = 'media';
+        layer.media.name = file.name;
+        layer.media.type = isVideo ? 'video' : 'image';
+        renderInspector();
+        renderLayerList();
+        showToast(`Loaded ${file.name}`);
+      }
+
+      function triangulateLayer(layer) {
+        const v = layer.vertices;
+        const n = v.length;
+
+        if (n === 4 && layer.meshSubdiv > 1 && layer.meshGrid) {
+          const div = layer.meshSubdiv;
+          const stride = div + 1;
+          const arr = [];
+          for (let r = 0; r < div; r++) {
+            for (let c = 0; c < div; c++) {
+              const i0 = r * stride + c;
+              const i1 = i0 + 1;
+              const i2 = (r + 1) * stride + c + 1;
+              const i3 = (r + 1) * stride + c;
+              const u0 = c / div, v0 = r / div, u1 = (c + 1) / div, v1 = (r + 1) / div;
+              const p0 = layer.meshGrid[i0], p1 = layer.meshGrid[i1], p2 = layer.meshGrid[i2], p3 = layer.meshGrid[i3];
+              arr.push(
+                p0.x, p0.y, u0, v0, p1.x, p1.y, u1, v0, p2.x, p2.y, u1, v1,
+                p0.x, p0.y, u0, v0, p2.x, p2.y, u1, v1, p3.x, p3.y, u0, v1
+              );
+            }
+          }
+          return new Float32Array(arr);
+        }
+
+        if (n === 4) {
+          return new Float32Array([
+            v[0].x, v[0].y, 0, 0, v[1].x, v[1].y, 1, 0, v[2].x, v[2].y, 1, 1,
+            v[0].x, v[0].y, 0, 0, v[2].x, v[2].y, 1, 1, v[3].x, v[3].y, 0, 1
+          ]);
+        }
+
+        if (n === 3) {
+          return new Float32Array([
+            v[0].x, v[0].y, 0.5, 0.0,
+            v[1].x, v[1].y, 1.0, 1.0,
+            v[2].x, v[2].y, 0.0, 1.0
+          ]);
+        }
+
+        const b = getBounds(layer);
+        let cx = 0, cy = 0;
+        for (const pt of v) { cx += pt.x; cy += pt.y; }
+        cx /= n; cy /= n;
+        const cU = (cx - b.minX) / b.w, cV = (cy - b.minY) / b.h;
+        const out = [];
+        for (let i = 0; i < n; i++) {
+          const pA = v[i], pB = v[(i + 1) % n];
+          out.push(
+            cx, cy, cU, cV,
+            pA.x, pA.y, (pA.x - b.minX) / b.w, (pA.y - b.minY) / b.h,
+            pB.x, pB.y, (pB.x - b.minX) / b.w, (pB.y - b.minY) / b.h
+          );
+        }
+        return new Float32Array(out);
+      }
+
+      const UNIT_QUAD = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }];
+
+      function renderGL(timeSec) {
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        gl.bindVertexArray(vao);
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+        gl.enableVertexAttribArray(0);
+        gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 16, 0);
+        gl.enableVertexAttribArray(1);
+        gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 16, 8);
+
+        const anySolo = state.layers.some(l => l.solo && l.visible);
+
+        for (const layer of state.layers) {
+          if (!layer.visible || layer.vertices.length < 3) continue;
+          if (anySolo && !layer.solo && layer.kind !== 'mask') continue;
+
+          const verts = triangulateLayer(layer);
+          gl.bufferData(gl.ARRAY_BUFFER, verts, gl.DYNAMIC_DRAW);
+          const count = verts.length / 4;
+
+          const useH = (layer.vertices.length === 4 && layer.meshSubdiv <= 1) ? 1 : 0;
+          const invH = useH === 1 ? transpose3(computeHomography(layer.vertices, UNIT_QUAD)) : [1, 0, 0, 0, 1, 0, 0, 0, 1];
+
+          if (layer.kind === 'mask') {
+            gl.useProgram(maskProg);
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+            gl.uniformMatrix3fv(gl.getUniformLocation(maskProg, 'u_invH'), false, invH);
+            gl.uniform1i(gl.getUniformLocation(maskProg, 'u_useH'), useH);
+            gl.uniform1f(gl.getUniformLocation(maskProg, 'u_feather'), layer.feather);
+            gl.uniform1f(gl.getUniformLocation(maskProg, 'u_cornerRadius'), layer.cornerRadius || 0);
+            gl.drawArrays(gl.TRIANGLES, 0, count);
+            continue;
+          }
+
+          const prog = getProgramForLayer(layer);
+          gl.useProgram(prog);
+          gl.enable(gl.BLEND);
+          if (layer.blendMode === 'add') {
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+          } else if (layer.blendMode === 'screen') {
+            gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_COLOR);
+          } else if (layer.blendMode === 'multiply') {
+            gl.blendFunc(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA);
+          } else {
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+          }
+
+          gl.uniformMatrix3fv(gl.getUniformLocation(prog, 'u_invH'), false, invH);
+          gl.uniform1i(gl.getUniformLocation(prog, 'u_useH'), useH);
+          gl.uniform1i(gl.getUniformLocation(prog, 'u_isEllipse'), layer.shape === 'ellipse' ? 1 : 0);
+
+          let srcMode = 0;
+          if ((layer.sourceType === 'media' || layer.sourceType === 'text') && textureStore.has(layer.id)) {
+            const item = textureStore.get(layer.id);
+            if (item.ready) {
+              srcMode = 1;
+              gl.activeTexture(gl.TEXTURE0);
+              gl.bindTexture(gl.TEXTURE_2D, item.tex);
+              if (item.isVideo && item.video && item.video.readyState >= 2) {
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, item.video);
+              }
+              gl.uniform1i(gl.getUniformLocation(prog, 'u_tex'), 0);
+            }
+          }
+
+          gl.uniform1i(gl.getUniformLocation(prog, 'u_sourceMode'), srcMode);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_opacity'), layer.opacity);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_feather'), layer.feather);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_cornerRadius'), layer.cornerRadius || 0);
+          gl.uniform2f(gl.getUniformLocation(prog, 'u_flip'), layer.flipH ? 1 : 0, layer.flipV ? 1 : 0);
+
+          const c1 = hexToRgb(layer.uniforms.color1);
+          const c2 = hexToRgb(layer.uniforms.color2);
+          const c3 = hexToRgb(layer.uniforms.color3);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_time'), timeSec);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_speed'), layer.uniforms.speed);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_scale'), layer.uniforms.scale);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_complexity'), layer.uniforms.complexity ?? 2.0);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_brightness'), layer.uniforms.brightness);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_contrast'), layer.uniforms.contrast);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_saturation'), layer.uniforms.saturation ?? 1.0);
+          gl.uniform1f(gl.getUniformLocation(prog, 'u_hueShift'), layer.uniforms.hueShift ?? 0.0);
+          gl.uniform3f(gl.getUniformLocation(prog, 'u_color1'), c1[0], c1[1], c1[2]);
+          gl.uniform3f(gl.getUniformLocation(prog, 'u_color2'), c2[0], c2[1], c2[2]);
+          gl.uniform3f(gl.getUniformLocation(prog, 'u_color3'), c3[0], c3[1], c3[2]);
+
+          gl.drawArrays(gl.TRIANGLES, 0, count);
+        }
+      }
+
+      /* Interactive Vector Overlay & Multi-Touch Handling */
+      const overlaySvg = document.getElementById('overlay-svg');
+      const touchLoupe = document.getElementById('touch-loupe');
+      let activeDrag = null;
+      let snapGuides = [];
+
+      function isSelected(id) {
+        return state.selectedIds.includes(id);
+      }
+
+      function primarySelectedLayer() {
+        const lastId = state.selectedIds[state.selectedIds.length - 1];
+        return state.layers.find(l => l.id === lastId) || null;
+      }
+
+      function renderOverlay() {
+        if (document.body.classList.contains('stage-fullscreen') || isProjectorWindow) {
+          overlaySvg.innerHTML = '';
+          return;
+        }
+        const rect = overlaySvg.getBoundingClientRect();
+        const w = rect.width, h = rect.height;
+        if (!w || !h) return;
+
+        let out = '';
+
+        if (state.showGrid) {
+          out += `<g opacity="0.18">`;
+          for (let i = 1; i < 16; i++) out += `<line x1="${(i / 16) * w}" y1="0" x2="${(i / 16) * w}" y2="${h}" stroke="#fff" stroke-width="1"/>`;
+          for (let j = 1; j < 9; j++) out += `<line x1="0" y1="${(j / 9) * h}" x2="${w}" y2="${(j / 9) * h}" stroke="#fff" stroke-width="1"/>`;
+          out += `<line x1="${w * 0.5}" y1="0" x2="${w * 0.5}" y2="${h}" stroke="#3b82f6" stroke-width="1.5"/>`;
+          out += `<line x1="0" y1="${h * 0.5}" x2="${w}" y2="${h * 0.5}" stroke="#3b82f6" stroke-width="1.5"/>`;
+          out += `</g>`;
+        }
+
+        for (const g of snapGuides) {
+          if (g.x !== undefined) out += `<line x1="${g.x * w}" y1="0" x2="${g.x * w}" y2="${h}" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3,3" opacity="0.85"/>`;
+          if (g.y !== undefined) out += `<line x1="0" y1="${g.y * h}" x2="${w}" y2="${g.y * h}" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3,3" opacity="0.85"/>`;
+        }
+
+        const isTouchDevice = window.innerWidth < 1025;
+        const handleRadius = isTouchDevice ? 8 : 5;
+        const hitRadius = isTouchDevice ? 22 : 12;
+
+        for (const layer of state.layers) {
+          if (!layer.visible) continue;
+          const sel = isSelected(layer.id);
+          const isMask = layer.kind === 'mask';
+          const stroke = isMask
+            ? (sel ? '#f87171' : 'rgba(248,113,113,0.35)')
+            : (sel ? '#3b82f6' : 'rgba(255,255,255,0.2)');
+
+          const polyPts = layer.vertices.map(p => `${p.x * w},${p.y * h}`).join(' ');
+          out += `<polygon points="${polyPts}" fill="transparent" stroke="${stroke}" stroke-width="${sel ? 1.5 : 1}" ${isMask ? 'stroke-dasharray="4,4"' : ''} data-id="${layer.id}" data-mode="move" style="cursor: ${layer.locked ? 'not-allowed' : 'move'};"/>`;
+
+          if (sel && !layer.locked && layer.shape === 'polygon') {
+            for (let i = 0; i < layer.vertices.length; i++) {
+              const p1 = layer.vertices[i];
+              const p2 = layer.vertices[(i + 1) % layer.vertices.length];
+              out += `<line x1="${p1.x * w}" y1="${p1.y * h}" x2="${p2.x * w}" y2="${p2.y * h}" stroke="transparent" stroke-width="16" data-id="${layer.id}" data-mode="edge" data-edge-idx="${i}" style="cursor: copy;"/>`;
+            }
+          }
+
+          if (sel && !layer.locked && layer.meshSubdiv > 1 && layer.meshGrid) {
+            const n = layer.meshSubdiv;
+            const stride = n + 1;
+            for (let r = 0; r <= n; r++) {
+              let d = '';
+              for (let c = 0; c <= n; c++) {
+                const pt = layer.meshGrid[r * stride + c];
+                d += `${c === 0 ? 'M' : 'L'} ${pt.x * w} ${pt.y * h} `;
+              }
+              out += `<path d="${d}" fill="none" stroke="rgba(59,130,246,0.45)" stroke-width="1" pointer-events="none"/>`;
+            }
+            for (let c = 0; c <= n; c++) {
+              let d = '';
+              for (let r = 0; r <= n; r++) {
+                const pt = layer.meshGrid[r * stride + c];
+                d += `${r === 0 ? 'M' : 'L'} ${pt.x * w} ${pt.y * h} `;
+              }
+              out += `<path d="${d}" fill="none" stroke="rgba(59,130,246,0.45)" stroke-width="1" pointer-events="none"/>`;
+            }
+            layer.meshGrid.forEach((pt, idx) => {
+              out += `
+                <g data-id="${layer.id}" data-mode="mesh" data-idx="${idx}" style="cursor: crosshair;">
+                  <circle cx="${pt.x * w}" cy="${pt.y * h}" r="${hitRadius}" fill="transparent"/>
+                  <circle cx="${pt.x * w}" cy="${pt.y * h}" r="${handleRadius}" fill="#111114" stroke="#3b82f6" stroke-width="2"/>
+                </g>`;
+            });
+          } else if (sel && !layer.locked) {
+            layer.vertices.forEach((pt, idx) => {
+              const cx = pt.x * w, cy = pt.y * h;
+              out += `
+                <g data-id="${layer.id}" data-mode="vertex" data-idx="${idx}" style="cursor: crosshair;">
+                  <circle cx="${cx}" cy="${cy}" r="${hitRadius}" fill="transparent"/>
+                  <circle cx="${cx}" cy="${cy}" r="${handleRadius}" fill="#ffffff" stroke="${isMask ? '#ef4444' : '#3b82f6'}" stroke-width="2"/>
+                </g>`;
+            });
+          }
+        }
+        overlaySvg.innerHTML = out;
+      }
+
+      function snapPoint(layerId, x, y) {
+        snapGuides = [];
+        if (!state.snapEnabled) return { x, y };
+        const tol = 0.012;
+        let sx = x, sy = y;
+        if (Math.abs(x - 0.5) < tol) { sx = 0.5; snapGuides.push({ x: 0.5 }); }
+        if (Math.abs(y - 0.5) < tol) { sy = 0.5; snapGuides.push({ y: 0.5 }); }
+        if (state.showGrid) {
+          const gx = Math.round(x * 16) / 16, gy = Math.round(y * 9) / 9;
+          if (Math.abs(x - gx) < tol * 0.7) { sx = gx; snapGuides.push({ x: gx }); }
+          if (Math.abs(y - gy) < tol * 0.7) { sy = gy; snapGuides.push({ y: gy }); }
+        }
+        for (const other of state.layers) {
+          if (other.id === layerId || !other.visible) continue;
+          for (const pt of other.vertices) {
+            if (Math.abs(x - pt.x) < tol) { sx = pt.x; snapGuides.push({ x: pt.x }); }
+            if (Math.abs(y - pt.y) < tol) { sy = pt.y; snapGuides.push({ y: pt.y }); }
+          }
+        }
+        return { x: sx, y: sy };
+      }
+
+      overlaySvg.addEventListener('click', (e) => {
+        const edge = e.target.closest('[data-mode="edge"]');
+        if (!edge) return;
+        const id = edge.getAttribute('data-id');
+        const edgeIdx = parseInt(edge.getAttribute('data-edge-idx'), 10);
+        const layer = state.layers.find(l => l.id === id);
+        if (!layer || layer.shape !== 'polygon' || layer.locked) return;
+
+        const rect = overlaySvg.getBoundingClientRect();
+        layer.vertices.splice(edgeIdx + 1, 0, {
+          x: (e.clientX - rect.left) / rect.width,
+          y: (e.clientY - rect.top) / rect.height
+        });
+        pushHistory();
+        renderOverlay();
+        renderInspector();
+        showToast('Vertex added');
+      });
+
+      overlaySvg.addEventListener('pointerdown', (e) => {
+        if (activePointers.size >= 1) return; // Yield to multi-touch pinch/pan
+        const el = e.target.closest('[data-id]');
+        if (!el) return;
+        const id = el.getAttribute('data-id');
+        const mode = el.getAttribute('data-mode');
+        if (mode === 'edge') return;
+        const idx = parseInt(el.getAttribute('data-idx') || '0', 10);
+
+        if (e.shiftKey) {
+          if (isSelected(id)) {
+            if (state.selectedIds.length > 1) state.selectedIds = state.selectedIds.filter(x => x !== id);
+          } else {
+            state.selectedIds.push(id);
+          }
+        } else if (!isSelected(id)) {
+          state.selectedIds = [id];
+        }
+
+        renderLayerList();
+        renderInspector();
+
+        const layer = state.layers.find(l => l.id === id);
+        if (!layer || layer.locked) {
+          renderOverlay();
+          return;
+        }
+
+        const rect = overlaySvg.getBoundingClientRect();
+        const selectedSnapshots = {};
+        for (const sid of state.selectedIds) {
+          const sl = state.layers.find(l => l.id === sid);
+          if (sl && !sl.locked) {
+            selectedSnapshots[sid] = {
+              vertices: clone(sl.vertices),
+              meshGrid: clone(sl.meshGrid)
+            };
+          }
+        }
+
+        activeDrag = {
+          id,
+          mode,
+          idx,
+          pointerId: e.pointerId,
+          isTouch: e.pointerType === 'touch',
+          startX: (e.clientX - rect.left) / rect.width,
+          startY: (e.clientY - rect.top) / rect.height,
+          snapshots: selectedSnapshots
+        };
+        overlaySvg.setPointerCapture(e.pointerId);
+        renderOverlay();
+      });
+
+      overlaySvg.addEventListener('pointermove', (e) => {
+        if (!activeDrag || activeDrag.pointerId !== e.pointerId) return;
+        const layer = state.layers.find(l => l.id === activeDrag.id);
+        if (!layer) return;
+
+        const rect = overlaySvg.getBoundingClientRect();
+        const mx = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        const my = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+
+        if (activeDrag.mode === 'vertex') {
+          const snapped = snapPoint(layer.id, mx, my);
+          layer.vertices[activeDrag.idx] = { x: snapped.x, y: snapped.y };
+          if (layer.meshSubdiv > 1) rebuildMeshGrid(layer);
+          if (activeDrag.isTouch) {
+            touchLoupe.classList.remove('hidden');
+            touchLoupe.style.left = `${e.clientX}px`;
+            touchLoupe.style.top = `${Math.max(52, e.clientY - 46)}px`;
+            touchLoupe.textContent = `${Math.round(snapped.x * state.outputWidth)}, ${Math.round(snapped.y * state.outputHeight)}`;
+          }
+        } else if (activeDrag.mode === 'mesh' && layer.meshGrid) {
+          const snapped = snapPoint(layer.id, mx, my);
+          layer.meshGrid[activeDrag.idx] = { x: snapped.x, y: snapped.y };
+          const n = layer.meshSubdiv, stride = n + 1;
+          if (activeDrag.idx === 0) layer.vertices[0] = { ...snapped };
+          if (activeDrag.idx === n) layer.vertices[1] = { ...snapped };
+          if (activeDrag.idx === n * stride + n) layer.vertices[2] = { ...snapped };
+          if (activeDrag.idx === n * stride) layer.vertices[3] = { ...snapped };
+        } else if (activeDrag.mode === 'move') {
+          snapGuides = [];
+          const dx = mx - activeDrag.startX;
+          const dy = my - activeDrag.startY;
+          for (const [sid, snap] of Object.entries(activeDrag.snapshots)) {
+            const sl = state.layers.find(l => l.id === sid);
+            if (!sl) continue;
+            sl.vertices = snap.vertices.map(p => ({
+              x: Math.max(0, Math.min(1, p.x + dx)),
+              y: Math.max(0, Math.min(1, p.y + dy))
+            }));
+            if (snap.meshGrid && sl.meshGrid) {
+              sl.meshGrid = snap.meshGrid.map(p => ({
+                x: Math.max(0, Math.min(1, p.x + dx)),
+                y: Math.max(0, Math.min(1, p.y + dy))
+              }));
+            }
+          }
+        }
+        renderOverlay();
+        syncInspectorNumbers();
+      });
+
+      overlaySvg.addEventListener('pointerup', (e) => {
+        if (activeDrag && activeDrag.pointerId === e.pointerId) {
+          activeDrag = null;
+          snapGuides = [];
+          touchLoupe.classList.add('hidden');
+          renderOverlay();
+          pushHistory();
+          persistAndSync();
+        }
+      });
+
+      /* Viewport Pinch-to-Zoom, Two-Finger Pan, Wheel & Space-Pan */
+      const viewportWrap = document.getElementById('viewport-wrap');
+      const stageBox = document.getElementById('stage-box');
+      const activePointers = new Map();
+      let pinchStartDist = 0;
+      let pinchStartZoom = 1;
+      let panStartMid = null;
+      let panStartOffset = { x: 0, y: 0 };
+      let spaceDown = false;
+
+      function applyStageLayout() {
+        if (document.body.classList.contains('stage-fullscreen') || isProjectorWindow) {
+          stageBox.style.transform = 'none';
+          return;
+        }
+        const rect = viewportWrap.getBoundingClientRect();
+        const pad = window.innerWidth < 1025 ? 28 : 64;
+        const availW = Math.max(160, rect.width - pad);
+        const availH = Math.max(120, rect.height - pad);
+        const aspect = state.outputWidth / state.outputHeight;
+
+        let baseW = availW;
+        let baseH = baseW / aspect;
+        if (baseH > availH) {
+          baseH = availH;
+          baseW = baseH * aspect;
+        }
+
+        stageBox.style.width = `${Math.round(baseW)}px`;
+        stageBox.style.height = `${Math.round(baseH)}px`;
+        stageBox.style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${state.zoom})`;
+        document.getElementById('lbl-zoom').textContent = `${Math.round(state.zoom * 100)}%`;
+
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.max(1, Math.round(baseW * dpr));
+        canvas.height = Math.max(1, Math.round(baseH * dpr));
+        renderOverlay();
+      }
+
+      viewportWrap.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const factor = e.deltaY < 0 ? 1.08 : 0.92;
+        state.zoom = Math.max(0.3, Math.min(4.0, state.zoom * factor));
+        applyStageLayout();
+      }, { passive: false });
+
+      viewportWrap.addEventListener('pointerdown', (e) => {
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (activePointers.size === 2) {
+          activeDrag = null;
+          touchLoupe.classList.add('hidden');
+          const pts = Array.from(activePointers.values());
+          pinchStartDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+          pinchStartZoom = state.zoom;
+          panStartMid = { x: (pts[0].x + pts[1].x) * 0.5, y: (pts[0].y + pts[1].y) * 0.5 };
+          panStartOffset = { x: state.panX, y: state.panY };
+        } else if (spaceDown || e.button === 1) {
+          panStartMid = { x: e.clientX, y: e.clientY };
+          panStartOffset = { x: state.panX, y: state.panY };
+        }
+      });
+
+      viewportWrap.addEventListener('pointermove', (e) => {
+        if (!activePointers.has(e.pointerId)) return;
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        if (activePointers.size === 2 && panStartMid) {
+          const pts = Array.from(activePointers.values());
+          const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+          const mid = { x: (pts[0].x + pts[1].x) * 0.5, y: (pts[0].y + pts[1].y) * 0.5 };
+          if (pinchStartDist > 10) {
+            state.zoom = Math.max(0.3, Math.min(4.0, pinchStartZoom * (dist / pinchStartDist)));
+          }
+          state.panX = panStartOffset.x + (mid.x - panStartMid.x);
+          state.panY = panStartOffset.y + (mid.y - panStartMid.y);
+          applyStageLayout();
+        } else if (activePointers.size === 1 && (spaceDown || e.buttons === 4) && panStartMid) {
+          state.panX = panStartOffset.x + (e.clientX - panStartMid.x);
+          state.panY = panStartOffset.y + (e.clientY - panStartMid.y);
+          applyStageLayout();
+        }
+      });
+
+      function releasePointer(e) {
+        activePointers.delete(e.pointerId);
+        if (activePointers.size < 2) {
+          pinchStartDist = 0;
+          if (activePointers.size === 0) panStartMid = null;
+        }
+      }
+      viewportWrap.addEventListener('pointerup', releasePointer);
+      viewportWrap.addEventListener('pointercancel', releasePointer);
+
+      document.getElementById('btn-zoom-in').addEventListener('click', () => {
+        state.zoom = Math.min(4.0, state.zoom + 0.15);
+        applyStageLayout();
+      });
+      document.getElementById('btn-zoom-out').addEventListener('click', () => {
+        state.zoom = Math.max(0.3, state.zoom - 0.15);
+        applyStageLayout();
+      });
+      document.getElementById('btn-zoom-fit').addEventListener('click', () => {
+        state.zoom = 1.0;
+        state.panX = 0;
+        state.panY = 0;
+        applyStageLayout();
+      });
+
+      /* Left Layers Drawer (Drag Reorder, Solo, Lock, Visibility) */
+      let draggedLayerId = null;
+
+      function renderLayerList() {
+        const list = document.getElementById('layer-list');
+        document.getElementById('lbl-layer-count').textContent = state.layers.length;
+        list.innerHTML = '';
+
+        const shapeIcons = {
+          quad: 'ph-polygon',
+          triangle: 'ph-triangle',
+          ellipse: 'ph-circle',
+          polygon: 'ph-pentagon',
+          text: 'ph-text-t',
+          mask: 'ph-selection-slash'
+        };
+
+        [...state.layers].reverse().forEach((layer) => {
+          const sel = isSelected(layer.id);
+          const isMask = layer.kind === 'mask';
+          const icon = isMask ? 'ph-selection-slash' : (shapeIcons[layer.shape] || 'ph-polygon');
+
+          const row = document.createElement('div');
+          row.draggable = true;
+          row.className = `group px-2 py-2 lg:py-1.5 rounded-lg flex items-center justify-between gap-1.5 cursor-pointer transition ${
+            sel ? 'bg-bgControl text-white hairline-all' : 'text-zinc-400 hover:bg-bgControl/60 hover:text-zinc-200'
+          }`;
+
+          row.innerHTML = `
+            <div class="flex items-center gap-2 min-w-0">
+              <i class="ph ph-dots-six-vertical text-xs text-zinc-600 cursor-grab shrink-0"></i>
+              <i class="ph ${icon} text-sm ${isMask ? 'text-red-400' : (sel ? 'text-accent' : 'text-zinc-500')} shrink-0"></i>
+              <span class="text-xs font-medium truncate">${layer.name}</span>
+            </div>
+            <div class="flex items-center gap-0.5 shrink-0">
+              ${!isMask ? `
+                <button class="act-solo w-6 h-6 rounded hover:bg-white/10 text-[10px] font-mono font-semibold transition ${layer.solo ? 'text-amber-400' : 'text-zinc-600 opacity-0 group-hover:opacity-100'}" title="Solo Layer">S</button>
+              ` : ''}
+              <button class="act-lock w-6 h-6 rounded hover:bg-white/10 flex items-center justify-center transition ${layer.locked ? 'text-zinc-200' : 'text-zinc-600 opacity-0 group-hover:opacity-100'}" title="Lock Geometry">
+                <i class="ph ${layer.locked ? 'ph-lock-simple' : 'ph-lock-simple-open'} text-xs"></i>
+              </button>
+              <button class="act-vis w-6 h-6 rounded hover:bg-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition" title="Toggle Visibility">
+                <i class="ph ${layer.visible ? 'ph-eye' : 'ph-eye-slash text-zinc-600'} text-xs"></i>
+              </button>
+            </div>
+          `;
+
+          row.addEventListener('dragstart', () => { draggedLayerId = layer.id; });
+          row.addEventListener('dragover', (e) => { e.preventDefault(); row.classList.add('ring-1', 'ring-accent'); });
+          row.addEventListener('dragleave', () => { row.classList.remove('ring-1', 'ring-accent'); });
+          row.addEventListener('drop', (e) => {
+            e.preventDefault();
+            row.classList.remove('ring-1', 'ring-accent');
+            if (!draggedLayerId || draggedLayerId === layer.id) return;
+            const fromIdx = state.layers.findIndex(l => l.id === draggedLayerId);
+            const toIdx = state.layers.findIndex(l => l.id === layer.id);
+            if (fromIdx !== -1 && toIdx !== -1) {
+              const [moved] = state.layers.splice(fromIdx, 1);
+              state.layers.splice(toIdx, 0, moved);
+              pushHistory();
+              renderLayerList();
+              persistAndSync();
+            }
+            draggedLayerId = null;
+          });
+
+          row.addEventListener('click', (e) => {
+            if (e.target.closest('.act-vis')) {
+              layer.visible = !layer.visible;
+              renderLayerList();
+              renderOverlay();
+              persistAndSync();
+              return;
+            }
+            if (e.target.closest('.act-lock')) {
+              layer.locked = !layer.locked;
+              renderLayerList();
+              renderOverlay();
+              return;
+            }
+            if (e.target.closest('.act-solo')) {
+              layer.solo = !layer.solo;
+              renderLayerList();
+              persistAndSync();
+              return;
+            }
+            if (e.shiftKey) {
+              if (isSelected(layer.id) && state.selectedIds.length > 1) {
+                state.selectedIds = state.selectedIds.filter(x => x !== layer.id);
+              } else if (!isSelected(layer.id)) {
+                state.selectedIds.push(layer.id);
+              }
+            } else {
+              state.selectedIds = [layer.id];
+            }
+            renderLayerList();
+            renderInspector();
+            renderOverlay();
+          });
+
+          list.appendChild(row);
+        });
+      }
+
+      /* Right Inspector Panel */
+      function syncInspectorNumbers() {
+        const layer = primarySelectedLayer();
+        if (!layer) return;
+        const b = getBounds(layer);
+        const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = Math.round(v); };
+        setVal('inp-x', b.cx * state.outputWidth);
+        setVal('inp-y', b.cy * state.outputHeight);
+        setVal('inp-w', b.w * state.outputWidth);
+        setVal('inp-h', b.h * state.outputHeight);
+        layer.vertices.forEach((pt, i) => {
+          setVal(`vtx-x-${i}`, pt.x * state.outputWidth);
+          setVal(`vtx-y-${i}`, pt.y * state.outputHeight);
+        });
+      }
+
+      function renderInspector() {
+        const host = document.getElementById('inspector-scroll');
+        const layer = primarySelectedLayer();
+        if (!layer) {
+          host.innerHTML = `<div class="py-10 text-center text-xs text-zinc-500">Select or add a surface to edit properties.</div>`;
+          return;
+        }
+
+        document.getElementById('lbl-inspector-title').textContent = layer.kind === 'mask' ? 'Mask' : 'Inspector';
+        const b = getBounds(layer);
+
+        const vtxRows = layer.vertices.map((pt, idx) => `
+          <div class="flex items-center gap-1.5 text-[11px] font-mono">
+            <span class="w-5 text-zinc-500">P${idx + 1}</span>
+            <input id="vtx-x-${idx}" data-vtx="${idx}" data-axis="x" type="number" value="${Math.round(pt.x * state.outputWidth)}" class="vtx-inp w-full h-7 bg-bgControl hairline-all rounded px-2 text-zinc-200 outline-none focus:border-accent" />
+            <input id="vtx-y-${idx}" data-vtx="${idx}" data-axis="y" type="number" value="${Math.round(pt.y * state.outputHeight)}" class="vtx-inp w-full h-7 bg-bgControl hairline-all rounded px-2 text-zinc-200 outline-none focus:border-accent" />
+            ${layer.shape === 'polygon' && layer.vertices.length > 3 ? `
+              <button data-del-vtx="${idx}" class="del-vtx-btn w-6 h-7 rounded hover:bg-bgControl text-zinc-500 hover:text-red-400 flex items-center justify-center shrink-0" title="Remove Vertex">
+                <i class="ph ph-minus text-xs"></i>
+              </button>` : ''}
+          </div>
+        `).join('');
+
+        const transformSection = `
+          <div class="space-y-2.5 pt-3 hairline-t">
+            <div class="text-[11px] font-medium text-zinc-400">Transform & Geometry</div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <div>
+                <span class="text-[10px] text-zinc-500">X (px)</span>
+                <input id="inp-x" type="number" value="${Math.round(b.cx * state.outputWidth)}" class="w-full h-7 bg-bgControl hairline-all rounded-lg px-2 text-xs font-mono text-zinc-200 outline-none focus:border-accent" />
+              </div>
+              <div>
+                <span class="text-[10px] text-zinc-500">Y (px)</span>
+                <input id="inp-y" type="number" value="${Math.round(b.cy * state.outputHeight)}" class="w-full h-7 bg-bgControl hairline-all rounded-lg px-2 text-xs font-mono text-zinc-200 outline-none focus:border-accent" />
+              </div>
+              <div>
+                <span class="text-[10px] text-zinc-500">Width (px)</span>
+                <input id="inp-w" type="number" value="${Math.round(b.w * state.outputWidth)}" class="w-full h-7 bg-bgControl hairline-all rounded-lg px-2 text-xs font-mono text-zinc-200 outline-none focus:border-accent" />
+              </div>
+              <div>
+                <span class="text-[10px] text-zinc-500">Height (px)</span>
+                <input id="inp-h" type="number" value="${Math.round(b.h * state.outputHeight)}" class="w-full h-7 bg-bgControl hairline-all rounded-lg px-2 text-xs font-mono text-zinc-200 outline-none focus:border-accent" />
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1">
+              <button data-scale="0.9" class="btn-scale flex-1 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] font-mono text-zinc-300">-10%</button>
+              <button data-scale="1.1" class="btn-scale flex-1 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] font-mono text-zinc-300">+10%</button>
+              <button data-rot="-15" class="btn-rot px-2 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] font-mono text-zinc-300">-15°</button>
+              <button data-rot="15" class="btn-rot px-2 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-[11px] font-mono text-zinc-300">+15°</button>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] text-zinc-400 mb-1">
+                <span>Edge Feather</span>
+                <span id="lbl-feather" class="font-mono text-zinc-200">${Math.round(layer.feather * 100)} px</span>
+              </div>
+              <input id="inp-feather" type="range" min="0" max="0.4" step="0.005" value="${layer.feather}" class="w-full" />
+            </div>
+
+            ${layer.shape !== 'ellipse' ? `
+              <div>
+                <div class="flex justify-between text-[11px] text-zinc-400 mb-1">
+                  <span>Corner Radius</span>
+                  <span id="lbl-radius" class="font-mono text-zinc-200">${Math.round((layer.cornerRadius || 0) * 100)}%</span>
+                </div>
+                <input id="inp-radius" type="range" min="0" max="0.49" step="0.01" value="${layer.cornerRadius || 0}" class="w-full" />
+              </div>
+            ` : ''}
+
+            ${layer.vertices.length === 4 ? `
+              <div>
+                <div class="flex justify-between text-[11px] text-zinc-400 mb-1">
+                  <span>Mesh Warp Grid</span>
+                  <span class="font-mono text-zinc-500">${layer.meshSubdiv === 1 ? 'Off' : `${layer.meshSubdiv}×${layer.meshSubdiv}`}</span>
+                </div>
+                <div class="grid grid-cols-5 gap-1 bg-bgControl p-1 rounded-lg hairline-all">
+                  ${[1, 2, 4, 6, 8].map(d => `
+                    <button data-subdiv="${d}" class="btn-subdiv py-1 rounded text-[11px] font-mono transition ${layer.meshSubdiv === d ? 'bg-bgPanel text-white shadow-sm' : 'text-zinc-400 hover:text-white'}">
+                      ${d === 1 ? '1×1' : `${d}×${d}`}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            <div class="space-y-1 pt-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] text-zinc-400">Vertices (px)</span>
+                ${layer.shape === 'polygon' ? `<button id="btn-poly-add" class="text-[11px] text-accent hover:underline">+ Point</button>` : ''}
+              </div>
+              <div class="space-y-1 max-h-36 overflow-y-auto">${vtxRows}</div>
+            </div>
+          </div>
+        `;
+
+        if (layer.kind === 'mask') {
+          host.innerHTML = `
+            <div class="space-y-3">
+              <div>
+                <label class="block text-[11px] text-zinc-400 mb-1">Name</label>
+                <input id="inp-name" type="text" value="${layer.name}" class="w-full h-8 bg-bgControl hairline-all rounded-lg px-2.5 text-xs text-white outline-none focus:border-accent" />
+              </div>
+              ${transformSection}
+            </div>
+          `;
+          bindTransformEvents(layer);
+          return;
+        }
+
+        const swatchesHtml = Object.entries(SHADER_PRESETS).map(([k, item]) => `
+          <button data-preset="${k}" class="preset-btn p-1.5 rounded-xl text-left transition flex flex-col gap-1 ${
+            layer.shaderPreset === k && layer.sourceType === 'preset'
+              ? 'bg-bgControl ring-1 ring-accent'
+              : 'bg-bgControl/40 hover:bg-bgControl hairline-all'
+          }">
+            <div class="w-full h-6 rounded-md" style="background: ${item.swatch};"></div>
+            <div class="text-[10px] font-medium text-zinc-200 truncate w-full">${item.name}</div>
+          </button>
+        `).join('');
+
+        host.innerHTML = `
+          <div class="space-y-3.5">
+            <div>
+              <label class="block text-[11px] text-zinc-400 mb-1">Name</label>
+              <input id="inp-name" type="text" value="${layer.name}" class="w-full h-8 bg-bgControl hairline-all rounded-lg px-2.5 text-xs text-white outline-none focus:border-accent" />
+            </div>
+
+            <!-- Source Mode Switcher -->
+            <div class="space-y-2">
+              <div class="text-[11px] font-medium text-zinc-400">Source</div>
+              <div class="grid grid-cols-4 gap-1 bg-bgControl p-1 rounded-lg hairline-all">
+                <button data-src="preset" class="src-btn py-1 rounded text-[11px] font-medium transition ${layer.sourceType === 'preset' ? 'bg-bgPanel text-white' : 'text-zinc-400 hover:text-white'}">Shader</button>
+                <button data-src="text" class="src-btn py-1 rounded text-[11px] font-medium transition ${layer.sourceType === 'text' ? 'bg-bgPanel text-white' : 'text-zinc-400 hover:text-white'}">Text</button>
+                <button data-src="media" class="src-btn py-1 rounded text-[11px] font-medium transition ${layer.sourceType === 'media' ? 'bg-bgPanel text-white' : 'text-zinc-400 hover:text-white'}">Media</button>
+                <button data-src="custom" class="src-btn py-1 rounded text-[11px] font-medium transition ${layer.sourceType === 'custom' ? 'bg-bgPanel text-white' : 'text-zinc-400 hover:text-white'}">GLSL</button>
+              </div>
+
+              ${layer.sourceType === 'preset' ? `<div class="grid grid-cols-2 gap-1.5">${swatchesHtml}</div>` : ''}
+
+              ${layer.sourceType === 'text' ? `
+                <div class="space-y-2 p-2.5 rounded-xl bg-bgControl/60 hairline-all">
+                  <textarea id="txt-layer-content" rows="2" class="w-full bg-bgBase hairline-all rounded-lg p-2 text-xs text-white outline-none focus:border-accent resize-none">${layer.textProps.content}</textarea>
+                  <div class="grid grid-cols-2 gap-1.5">
+                    <select id="sel-text-font" class="h-7 bg-bgControl hairline-all rounded-lg px-2 text-[11px] text-zinc-200 outline-none">
+                      <option value="Geist" ${layer.textProps.fontFamily === 'Geist' ? 'selected' : ''}>Geist Sans</option>
+                      <option value="Plus Jakarta Sans" ${layer.textProps.fontFamily === 'Plus Jakarta Sans' ? 'selected' : ''}>Jakarta Sans</option>
+                      <option value="Space Grotesk" ${layer.textProps.fontFamily === 'Space Grotesk' ? 'selected' : ''}>Space Grotesk</option>
+                      <option value="Cormorant Garamond" ${layer.textProps.fontFamily === 'Cormorant Garamond' ? 'selected' : ''}>Cormorant Serif</option>
+                      <option value="Geist Mono" ${layer.textProps.fontFamily === 'Geist Mono' ? 'selected' : ''}>Geist Mono</option>
+                    </select>
+                    <select id="sel-text-weight" class="h-7 bg-bgControl hairline-all rounded-lg px-2 text-[11px] text-zinc-200 outline-none">
+                      <option value="400" ${layer.textProps.fontWeight === '400' ? 'selected' : ''}>Regular</option>
+                      <option value="600" ${layer.textProps.fontWeight === '600' ? 'selected' : ''}>SemiBold</option>
+                    </select>
+                  </div>
+                  <div class="grid grid-cols-2 gap-1.5 items-center">
+                    <label class="flex items-center justify-between bg-bgControl hairline-all rounded-lg px-2 h-7 cursor-pointer">
+                      <span class="text-[10px] text-zinc-400">Text</span>
+                      <input id="inp-text-color" type="color" value="${layer.textProps.color}" class="w-4 h-4 bg-transparent border-0" />
+                    </label>
+                    <div class="flex bg-bgControl hairline-all rounded-lg p-0.5 h-7">
+                      ${['left', 'center', 'right'].map(al => `
+                        <button data-align="${al}" class="btn-text-align flex-1 rounded text-[11px] ${layer.textProps.align === al ? 'bg-bgPanel text-white' : 'text-zinc-400'}">
+                          <i class="ph ph-text-align-${al}"></i>
+                        </button>
+                      `).join('')}
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                      <span>Size</span><span class="font-mono">${layer.textProps.fontSize}px</span>
+                    </div>
+                    <input id="inp-text-size" type="range" min="36" max="240" step="2" value="${layer.textProps.fontSize}" class="w-full" />
+                  </div>
+                </div>
+              ` : ''}
+
+              ${layer.sourceType === 'media' ? `
+                <div class="p-2.5 rounded-xl bg-bgControl/60 hairline-all space-y-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="text-[11px] text-zinc-300 truncate">${layer.media.name || 'No file selected'}</span>
+                    <button id="btn-pick-media" class="h-7 px-2.5 rounded-lg bg-accent hover:bg-blue-500 text-white text-[11px] font-medium shrink-0">Browse</button>
+                    <input id="inp-pick-media" type="file" accept="video/*,image/*" class="hidden" />
+                  </div>
+                  ${layer.media.type === 'video' ? `
+                    <div>
+                      <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                        <span>Playback Speed</span><span id="lbl-vid-spd" class="font-mono">${layer.media.speed.toFixed(1)}×</span>
+                      </div>
+                      <input id="inp-vid-spd" type="range" min="0.2" max="2.5" step="0.1" value="${layer.media.speed}" class="w-full" />
+                    </div>
+                  ` : ''}
+                </div>
+              ` : ''}
+
+              ${layer.sourceType === 'custom' ? `
+                <button id="btn-open-glsl" class="w-full h-8 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-200 flex items-center justify-center gap-1.5 transition">
+                  <i class="ph ph-code text-accent"></i>
+                  <span>Edit Fragment Shader</span>
+                </button>
+              ` : ''}
+            </div>
+
+            <!-- Procedural Parameters -->
+            ${(layer.sourceType === 'preset' || layer.sourceType === 'custom') ? `
+              <div class="space-y-2 pt-3 hairline-t">
+                <div class="text-[11px] font-medium text-zinc-400">Colors & Motion</div>
+                <div class="grid grid-cols-3 gap-1.5">
+                  <label class="flex items-center justify-between bg-bgControl hairline-all rounded-lg px-2 h-7 cursor-pointer">
+                    <span class="text-[10px] text-zinc-400">C1</span>
+                    <input id="inp-c1" type="color" value="${layer.uniforms.color1}" class="w-4 h-4 bg-transparent border-0" />
+                  </label>
+                  <label class="flex items-center justify-between bg-bgControl hairline-all rounded-lg px-2 h-7 cursor-pointer">
+                    <span class="text-[10px] text-zinc-400">C2</span>
+                    <input id="inp-c2" type="color" value="${layer.uniforms.color2}" class="w-4 h-4 bg-transparent border-0" />
+                  </label>
+                  <label class="flex items-center justify-between bg-bgControl hairline-all rounded-lg px-2 h-7 cursor-pointer">
+                    <span class="text-[10px] text-zinc-400">C3</span>
+                    <input id="inp-c3" type="color" value="${layer.uniforms.color3}" class="w-4 h-4 bg-transparent border-0" />
+                  </label>
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-[11px] text-zinc-400 mb-0.5">
+                    <span>Speed</span><span id="lbl-spd" class="font-mono text-zinc-200">${layer.uniforms.speed.toFixed(1)}×</span>
+                  </div>
+                  <input id="inp-spd" type="range" min="0" max="3" step="0.1" value="${layer.uniforms.speed}" class="w-full" />
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-[11px] text-zinc-400 mb-0.5">
+                    <span>Scale</span><span id="lbl-scl" class="font-mono text-zinc-200">${layer.uniforms.scale.toFixed(1)}×</span>
+                  </div>
+                  <input id="inp-scl" type="range" min="0.2" max="4.0" step="0.1" value="${layer.uniforms.scale}" class="w-full" />
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-[11px] text-zinc-400 mb-0.5">
+                    <span>Complexity</span><span id="lbl-cmp" class="font-mono text-zinc-200">${layer.uniforms.complexity.toFixed(1)}</span>
+                  </div>
+                  <input id="inp-cmp" type="range" min="1" max="5" step="0.2" value="${layer.uniforms.complexity}" class="w-full" />
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Color Grading & Compositing -->
+            <div class="space-y-2 pt-3 hairline-t">
+              <div class="text-[11px] font-medium text-zinc-400">Compositing & Grade</div>
+              <div>
+                <div class="flex justify-between text-[11px] text-zinc-400 mb-0.5">
+                  <span>Opacity</span><span id="lbl-op" class="font-mono text-zinc-200">${Math.round(layer.opacity * 100)}%</span>
+                </div>
+                <input id="inp-op" type="range" min="0" max="1" step="0.01" value="${layer.opacity}" class="w-full" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                    <span>Brightness</span><span id="lbl-br" class="font-mono">${Math.round(layer.uniforms.brightness * 100)}%</span>
+                  </div>
+                  <input id="inp-br" type="range" min="0.2" max="2" step="0.05" value="${layer.uniforms.brightness}" class="w-full" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                    <span>Contrast</span><span id="lbl-ct" class="font-mono">${Math.round(layer.uniforms.contrast * 100)}%</span>
+                  </div>
+                  <input id="inp-ct" type="range" min="0.5" max="2" step="0.05" value="${layer.uniforms.contrast}" class="w-full" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                    <span>Saturation</span><span id="lbl-sat" class="font-mono">${Math.round((layer.uniforms.saturation ?? 1) * 100)}%</span>
+                  </div>
+                  <input id="inp-sat" type="range" min="0" max="2" step="0.05" value="${layer.uniforms.saturation ?? 1}" class="w-full" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-[10px] text-zinc-400 mb-0.5">
+                    <span>Hue Shift</span><span id="lbl-hue" class="font-mono">${Math.round((layer.uniforms.hueShift ?? 0) * 360)}°</span>
+                  </div>
+                  <input id="inp-hue" type="range" min="0" max="1" step="0.02" value="${layer.uniforms.hueShift ?? 0}" class="w-full" />
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between gap-1.5 pt-1">
+                <select id="sel-blend" class="flex-1 h-7 bg-bgControl hairline-all rounded-lg px-2 text-xs text-zinc-200 outline-none">
+                  <option value="normal" ${layer.blendMode === 'normal' ? 'selected' : ''}>Normal</option>
+                  <option value="add" ${layer.blendMode === 'add' ? 'selected' : ''}>Additive</option>
+                  <option value="screen" ${layer.blendMode === 'screen' ? 'selected' : ''}>Screen</option>
+                  <option value="multiply" ${layer.blendMode === 'multiply' ? 'selected' : ''}>Multiply</option>
+                </select>
+                <button id="btn-flip-h" class="w-7 h-7 rounded-lg hairline-all flex items-center justify-center transition ${layer.flipH ? 'bg-accent text-white' : 'bg-bgControl text-zinc-300'}" title="Flip Horizontal">
+                  <i class="ph ph-flip-horizontal text-sm"></i>
+                </button>
+                <button id="btn-flip-v" class="w-7 h-7 rounded-lg hairline-all flex items-center justify-center transition ${layer.flipV ? 'bg-accent text-white' : 'bg-bgControl text-zinc-300'}" title="Flip Vertical">
+                  <i class="ph ph-flip-vertical text-sm"></i>
+                </button>
+              </div>
+            </div>
+
+            ${transformSection}
+          </div>
+        `;
+
+        bindTransformEvents(layer);
+
+        host.querySelectorAll('.src-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            layer.sourceType = btn.getAttribute('data-src');
+            if (layer.sourceType === 'text') updateTextTexture(layer);
+            renderInspector();
+            persistAndSync();
+          });
+        });
+
+        host.querySelectorAll('.preset-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            layer.shaderPreset = btn.getAttribute('data-preset');
+            layer.sourceType = 'preset';
+            renderInspector();
+            pushHistory();
+            persistAndSync();
+          });
+        });
+
+        // Text Controls
+        const txtContent = document.getElementById('txt-layer-content');
+        if (txtContent) txtContent.addEventListener('input', (e) => {
+          layer.textProps.content = e.target.value;
+          updateTextTexture(layer);
+          persistAndSync();
+        });
+        const selFont = document.getElementById('sel-text-font');
+        if (selFont) selFont.addEventListener('change', (e) => {
+          layer.textProps.fontFamily = e.target.value;
+          updateTextTexture(layer);
+          persistAndSync();
+        });
+        const selWeight = document.getElementById('sel-text-weight');
+        if (selWeight) selWeight.addEventListener('change', (e) => {
+          layer.textProps.fontWeight = e.target.value;
+          updateTextTexture(layer);
+          persistAndSync();
+        });
+        const inpTxtCol = document.getElementById('inp-text-color');
+        if (inpTxtCol) inpTxtCol.addEventListener('input', (e) => {
+          layer.textProps.color = e.target.value;
+          updateTextTexture(layer);
+          persistAndSync();
+        });
+        const inpTxtSz = document.getElementById('inp-text-size');
+        if (inpTxtSz) inpTxtSz.addEventListener('input', (e) => {
+          layer.textProps.fontSize = parseInt(e.target.value, 10);
+          updateTextTexture(layer);
+          renderInspector();
+          persistAndSync();
+        });
+        host.querySelectorAll('.btn-text-align').forEach(btn => {
+          btn.addEventListener('click', () => {
+            layer.textProps.align = btn.getAttribute('data-align');
+            updateTextTexture(layer);
+            renderInspector();
+            persistAndSync();
+          });
+        });
+
+        // Media Controls
+        const pickMedia = document.getElementById('btn-pick-media');
+        const inpMedia = document.getElementById('inp-pick-media');
+        if (pickMedia && inpMedia) {
+          pickMedia.addEventListener('click', () => inpMedia.click());
+          inpMedia.addEventListener('change', (e) => {
+            if (e.target.files?.[0]) loadMediaFile(layer.id, e.target.files[0]);
+          });
+        }
+        const vidSpd = document.getElementById('inp-vid-spd');
+        if (vidSpd) vidSpd.addEventListener('input', (e) => {
+          layer.media.speed = parseFloat(e.target.value);
+          document.getElementById('lbl-vid-spd').textContent = `${layer.media.speed.toFixed(1)}×`;
+          const it = textureStore.get(layer.id);
+          if (it?.video) it.video.playbackRate = layer.media.speed;
+        });
+
+        // GLSL Modal Trigger
+        const openGlsl = document.getElementById('btn-open-glsl');
+        if (openGlsl) openGlsl.addEventListener('click', () => {
+          document.getElementById('txt-glsl-code').value = layer.customGlsl || STARTER_GLSL;
+          document.getElementById('lbl-glsl-status').textContent = 'Ready';
+          document.getElementById('glsl-modal').classList.remove('hidden');
+        });
+
+        // Uniforms & Grade
+        const bindColor = (id, key) => {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener('input', (e) => { layer.uniforms[key] = e.target.value; persistAndSync(); });
+        };
+        bindColor('inp-c1', 'color1');
+        bindColor('inp-c2', 'color2');
+        bindColor('inp-c3', 'color3');
+
+        const bindSlider = (id, lblId, obj, key, fmt) => {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener('input', (e) => {
+            obj[key] = parseFloat(e.target.value);
+            const lbl = document.getElementById(lblId);
+            if (lbl) lbl.textContent = fmt(obj[key]);
+            persistAndSync();
+          });
+        };
+        bindSlider('inp-spd', 'lbl-spd', layer.uniforms, 'speed', v => `${v.toFixed(1)}×`);
+        bindSlider('inp-scl', 'lbl-scl', layer.uniforms, 'scale', v => `${v.toFixed(1)}×`);
+        bindSlider('inp-cmp', 'lbl-cmp', layer.uniforms, 'complexity', v => v.toFixed(1));
+        bindSlider('inp-op', 'lbl-op', layer, 'opacity', v => `${Math.round(v * 100)}%`);
+        bindSlider('inp-br', 'lbl-br', layer.uniforms, 'brightness', v => `${Math.round(v * 100)}%`);
+        bindSlider('inp-ct', 'lbl-ct', layer.uniforms, 'contrast', v => `${Math.round(v * 100)}%`);
+        bindSlider('inp-sat', 'lbl-sat', layer.uniforms, 'saturation', v => `${Math.round(v * 100)}%`);
+        bindSlider('inp-hue', 'lbl-hue', layer.uniforms, 'hueShift', v => `${Math.round(v * 360)}°`);
+
+        const selBlend = document.getElementById('sel-blend');
+        if (selBlend) selBlend.addEventListener('change', (e) => { layer.blendMode = e.target.value; persistAndSync(); });
+        const flipH = document.getElementById('btn-flip-h');
+        if (flipH) flipH.addEventListener('click', () => { layer.flipH = !layer.flipH; renderInspector(); persistAndSync(); });
+        const flipV = document.getElementById('btn-flip-v');
+        if (flipV) flipV.addEventListener('click', () => { layer.flipV = !layer.flipV; renderInspector(); persistAndSync(); });
+      }
+
+      function bindTransformEvents(layer) {
+        const inpName = document.getElementById('inp-name');
+        if (inpName) inpName.addEventListener('input', (e) => { layer.name = e.target.value; renderLayerList(); });
+
+        const inpFeather = document.getElementById('inp-feather');
+        if (inpFeather) inpFeather.addEventListener('input', (e) => {
+          layer.feather = parseFloat(e.target.value);
+          document.getElementById('lbl-feather').textContent = `${Math.round(layer.feather * 100)} px`;
+          persistAndSync();
+        });
+
+        const inpRad = document.getElementById('inp-radius');
+        if (inpRad) inpRad.addEventListener('input', (e) => {
+          layer.cornerRadius = parseFloat(e.target.value);
+          document.getElementById('lbl-radius').textContent = `${Math.round(layer.cornerRadius * 100)}%`;
+          persistAndSync();
+        });
+
+        const ix = document.getElementById('inp-x'), iy = document.getElementById('inp-y');
+        if (ix && iy) {
+          const onPos = () => {
+            const b = getBounds(layer);
+            const dx = Math.max(0, Math.min(1, (parseFloat(ix.value) || 0) / state.outputWidth)) - b.cx;
+            const dy = Math.max(0, Math.min(1, (parseFloat(iy.value) || 0) / state.outputHeight)) - b.cy;
+            transformVertices(layer, p => ({ x: Math.max(0, Math.min(1, p.x + dx)), y: Math.max(0, Math.min(1, p.y + dy)) }));
+            renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync();
+          };
+          ix.addEventListener('change', onPos);
+          iy.addEventListener('change', onPos);
+        }
+
+        const iw = document.getElementById('inp-w'), ih = document.getElementById('inp-h');
+        if (iw && ih) {
+          const onDim = () => {
+            const b = getBounds(layer);
+            const sx = (Math.max(10, parseFloat(iw.value) || 100) / state.outputWidth) / b.w;
+            const sy = (Math.max(10, parseFloat(ih.value) || 100) / state.outputHeight) / b.h;
+            transformVertices(layer, p => ({
+              x: Math.max(0, Math.min(1, b.cx + (p.x - b.cx) * sx)),
+              y: Math.max(0, Math.min(1, b.cy + (p.y - b.cy) * sy))
+            }));
+            renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync();
+          };
+          iw.addEventListener('change', onDim);
+          ih.addEventListener('change', onDim);
+        }
+
+        document.querySelectorAll('.btn-scale').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const f = parseFloat(btn.getAttribute('data-scale'));
+            const b = getBounds(layer);
+            transformVertices(layer, p => ({
+              x: Math.max(0, Math.min(1, b.cx + (p.x - b.cx) * f)),
+              y: Math.max(0, Math.min(1, b.cy + (p.y - b.cy) * f))
+            }));
+            renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync();
+          });
+        });
+
+        document.querySelectorAll('.btn-rot').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const rad = (parseFloat(btn.getAttribute('data-rot')) * Math.PI) / 180;
+            const b = getBounds(layer);
+            const asp = state.outputWidth / state.outputHeight;
+            const ca = Math.cos(rad), sa = Math.sin(rad);
+            transformVertices(layer, p => {
+              const dx = (p.x - b.cx) * asp, dy = p.y - b.cy;
+              return {
+                x: Math.max(0, Math.min(1, b.cx + (dx * ca - dy * sa) / asp)),
+                y: Math.max(0, Math.min(1, b.cy + (dx * sa + dy * ca)))
+              };
+            });
+            renderOverlay(); syncInspectorNumbers(); pushHistory(); persistAndSync();
+          });
+        });
+
+        document.querySelectorAll('.btn-subdiv').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const d = parseInt(btn.getAttribute('data-subdiv'), 10);
+            layer.meshSubdiv = d;
+            if (d > 1) rebuildMeshGrid(layer);
+            else layer.meshGrid = null;
+            renderInspector(); renderOverlay(); pushHistory(); persistAndSync();
+          });
+        });
+
+        document.querySelectorAll('.vtx-inp').forEach(inp => {
+          inp.addEventListener('change', () => {
+            const idx = parseInt(inp.getAttribute('data-vtx'), 10);
+            const axis = inp.getAttribute('data-axis');
+            const val = parseFloat(inp.value) || 0;
+            if (axis === 'x') layer.vertices[idx].x = Math.max(0, Math.min(1, val / state.outputWidth));
+            else layer.vertices[idx].y = Math.max(0, Math.min(1, val / state.outputHeight));
+            if (layer.meshSubdiv > 1) rebuildMeshGrid(layer);
+            renderOverlay(); pushHistory(); persistAndSync();
+          });
+        });
+
+        document.querySelectorAll('.del-vtx-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = parseInt(btn.getAttribute('data-del-vtx'), 10);
+            if (layer.vertices.length > 3) {
+              layer.vertices.splice(idx, 1);
+              renderInspector(); renderOverlay(); pushHistory(); persistAndSync();
+            }
+          });
+        });
+
+        const polyAdd = document.getElementById('btn-poly-add');
+        if (polyAdd) polyAdd.addEventListener('click', () => {
+          const n = layer.vertices.length;
+          const p0 = layer.vertices[n - 1], p1 = layer.vertices[0];
+          layer.vertices.push({ x: (p0.x + p1.x) * 0.5, y: (p0.y + p1.y) * 0.5 });
+          renderInspector(); renderOverlay(); pushHistory();
+        });
+      }
+
+      /* Custom GLSL Modal Events */
+      document.getElementById('btn-glsl-close').addEventListener('click', () => document.getElementById('glsl-modal').classList.add('hidden'));
+      document.getElementById('btn-glsl-reset').addEventListener('click', () => { document.getElementById('txt-glsl-code').value = STARTER_GLSL; });
+      document.getElementById('btn-glsl-apply').addEventListener('click', () => {
+        const layer = primarySelectedLayer();
+        if (!layer) return;
+        const code = document.getElementById('txt-glsl-code').value;
+        const res = buildProgram(VS_SRC, buildFragmentShader(code));
+        const st = document.getElementById('lbl-glsl-status');
+        if (res.error) {
+          st.className = 'px-3 py-2 rounded-lg bg-red-950/60 border border-red-500/40 text-xs font-mono text-red-300 whitespace-pre-wrap';
+          st.textContent = res.error;
+          return;
+        }
+        layer.customGlsl = code;
+        layer.sourceType = 'custom';
+        shaderCache.set(`custom:${layer.id}:${code}`, res.program);
+        st.className = 'px-3 py-2 rounded-lg bg-emerald-950/60 border border-emerald-500/40 text-xs font-mono text-emerald-300';
+        st.textContent = 'Compiled & applied';
+        renderInspector();
+        persistAndSync();
+      });
+
+      /* Time-Based Show Sequencer */
+      function captureCue(name, duration = 8.0, fade = 1.5, ease = 'cubic') {
+        const snapshot = {};
+        for (const l of state.layers) {
+          snapshot[l.id] = {
+            visible: l.visible,
+            opacity: l.opacity,
+            feather: l.feather,
+            cornerRadius: l.cornerRadius,
+            vertices: clone(l.vertices),
+            meshGrid: clone(l.meshGrid),
+            shaderPreset: l.shaderPreset,
+            sourceType: l.sourceType,
+            uniforms: clone(l.uniforms)
+          };
+        }
+        return {
+          id: genId('cue'),
+          name: name || `Cue ${String(state.cues.length + 1).padStart(2, '0')}`,
+          duration,
+          fade,
+          ease,
+          snapshot
+        };
+      }
+
+      function totalShowSec() {
+        return Math.max(1, state.cues.reduce((s, c) => s + c.duration, 0));
+      }
+
+      function fmtTime(sec) {
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        return `${String(m).padStart(2, '0')}:${s.toFixed(1).padStart(4, '0')}`;
+      }
+
+      function applyEase(t, type) {
+        const x = Math.max(0, Math.min(1, t));
+        if (type === 'linear') return x;
+        if (type === 'cubic') return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+        return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+      }
+
+      function interpolateSnapshots(dstSnap, srcSnap, t) {
+        for (const l of state.layers) {
+          const dst = dstSnap?.[l.id];
+          if (!dst) continue;
+          const src = srcSnap?.[l.id] || dst;
+
+          l.visible = dst.visible;
+          l.opacity = src.opacity + (dst.opacity - src.opacity) * t;
+          l.feather = src.feather + (dst.feather - src.feather) * t;
+          l.cornerRadius = (src.cornerRadius || 0) + ((dst.cornerRadius || 0) - (src.cornerRadius || 0)) * t;
+
+          if (t >= 0.5) {
+            l.shaderPreset = dst.shaderPreset;
+            if (dst.sourceType !== 'media' && dst.sourceType !== 'text') l.sourceType = dst.sourceType;
+          }
+
+          if (dst.vertices && src.vertices && dst.vertices.length === src.vertices.length) {
+            l.vertices = dst.vertices.map((pt, i) => ({
+              x: src.vertices[i].x + (pt.x - src.vertices[i].x) * t,
+              y: src.vertices[i].y + (pt.y - src.vertices[i].y) * t
+            }));
+            if (l.meshSubdiv > 1) rebuildMeshGrid(l);
+          }
+
+          if (dst.uniforms && src.uniforms) {
+            l.uniforms.speed = src.uniforms.speed + (dst.uniforms.speed - src.uniforms.speed) * t;
+            l.uniforms.scale = src.uniforms.scale + (dst.uniforms.scale - src.uniforms.scale) * t;
+            l.uniforms.complexity = (src.uniforms.complexity ?? 2) + ((dst.uniforms.complexity ?? 2) - (src.uniforms.complexity ?? 2)) * t;
+            l.uniforms.brightness = src.uniforms.brightness + (dst.uniforms.brightness - src.uniforms.brightness) * t;
+            l.uniforms.contrast = src.uniforms.contrast + (dst.uniforms.contrast - src.uniforms.contrast) * t;
+            l.uniforms.saturation = (src.uniforms.saturation ?? 1) + ((dst.uniforms.saturation ?? 1) - (src.uniforms.saturation ?? 1)) * t;
+            l.uniforms.hueShift = (src.uniforms.hueShift ?? 0) + ((dst.uniforms.hueShift ?? 0) - (src.uniforms.hueShift ?? 0)) * t;
+            l.uniforms.color1 = lerpHex(src.uniforms.color1, dst.uniforms.color1, t);
+            l.uniforms.color2 = lerpHex(src.uniforms.color2, dst.uniforms.color2, t);
+            l.uniforms.color3 = lerpHex(src.uniforms.color3 || '#e4e4e7', dst.uniforms.color3 || '#e4e4e7', t);
+          }
+        }
+      }
+
+      function evaluateShow(timeSec) {
+        if (!state.cues.length) return;
+        let acc = 0;
+        for (let i = 0; i < state.cues.length; i++) {
+          const cue = state.cues[i];
+          const end = acc + cue.duration;
+          if (timeSec <= end || i === state.cues.length - 1) {
+            const local = Math.max(0, timeSec - acc);
+            const prev = i > 0 ? state.cues[i - 1] : null;
+            let t = 1.0;
+            if (prev && cue.fade > 0.01 && local < cue.fade) {
+              t = applyEase(local / cue.fade, cue.ease);
+            }
+            interpolateSnapshots(cue.snapshot, prev ? prev.snapshot : null, t);
+            if (state.activeCueIndex !== i) {
+              state.activeCueIndex = i;
+              state.selectedCueId = cue.id;
+              renderCueTrack();
+              renderCueSidebar();
+            }
+            return;
+          }
+          acc = end;
+        }
+      }
+
+      function renderCueTrack() {
+        const track = document.getElementById('cue-track');
+        const ruler = document.getElementById('timeline-ruler');
+        const tot = totalShowSec();
+        document.getElementById('lbl-time-tot').textContent = fmtTime(tot);
+        document.getElementById('lbl-time-cur').textContent = fmtTime(state.showTime);
+
+        let rHtml = '';
+        const step = tot <= 16 ? 2 : 5;
+        for (let t = 0; t <= tot; t += step) {
+          rHtml += `<div class="absolute top-0 bottom-0 border-l border-white/10 pl-1" style="left:${(t / tot) * 100}%">${fmtTime(t)}</div>`;
+        }
+        ruler.innerHTML = rHtml;
+
+        track.innerHTML = '';
+        let acc = 0;
+        state.cues.forEach((cue, idx) => {
+          const wPct = (cue.duration / tot) * 100;
+          const fPct = Math.min(100, (cue.fade / cue.duration) * 100);
+          const sel = cue.id === state.selectedCueId;
+          const act = idx === state.activeCueIndex;
+
+          const card = document.createElement('div');
+          card.style.width = `${wPct}%`;
+          card.className = `relative rounded-xl px-2.5 py-2 flex flex-col justify-between cursor-pointer transition overflow-hidden ${
+            sel ? 'bg-bgControl ring-1 ring-accent' : 'bg-bgControl/50 hover:bg-bgControl hairline-all'
+          }`;
+
+          card.innerHTML = `
+            <div class="absolute inset-y-0 left-0 bg-accent/15 border-r border-accent/30 pointer-events-none" style="width:${fPct}%"></div>
+            <div class="flex items-center justify-between gap-1.5 z-10">
+              <span class="text-xs font-medium truncate ${act ? 'text-white' : 'text-zinc-300'}">${cue.name}</span>
+              <span class="text-[10px] font-mono text-zinc-400 shrink-0">${cue.duration.toFixed(1)}s</span>
+            </div>
+            <div class="flex items-center justify-between text-[10px] font-mono text-zinc-500 z-10">
+              <span>Fade ${cue.fade.toFixed(1)}s</span>
+              <span>${fmtTime(acc)}</span>
+            </div>
+          `;
+
+          const startT = acc;
+          card.addEventListener('click', () => {
+            state.selectedCueId = cue.id;
+            state.activeCueIndex = idx;
+            state.waitingNextCue = false;
+            state.showTime = startT + Math.min(cue.fade, cue.duration * 0.5);
+            evaluateShow(state.showTime);
+            updatePlayhead();
+            renderCueTrack();
+            renderCueSidebar();
+            renderOverlay();
+            renderInspector();
+            persistAndSync();
+          });
+
+          track.appendChild(card);
+          acc += cue.duration;
+        });
+        updatePlayhead();
+      }
+
+      function updatePlayhead() {
+        const pct = Math.max(0, Math.min(100, (state.showTime / totalShowSec()) * 100));
+        document.getElementById('playhead').style.left = `${pct}%`;
+        document.getElementById('lbl-time-cur').textContent = fmtTime(state.showTime);
+      }
+
+      function renderCueSidebar() {
+        const side = document.getElementById('cue-sidebar');
+        const cue = state.cues.find(c => c.id === state.selectedCueId);
+        if (!cue) {
+          side.innerHTML = `<div class="text-xs text-zinc-500">No cue selected.</div>`;
+          return;
+        }
+        const idx = state.cues.indexOf(cue);
+        side.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-medium text-zinc-400">Cue ${idx + 1}</span>
+            <button id="btn-cue-del" class="w-6 h-6 rounded hover:bg-bgControl text-zinc-500 hover:text-red-400 flex items-center justify-center" title="Delete Cue">
+              <i class="ph ph-trash text-xs"></i>
+            </button>
+          </div>
+          <input id="inp-cue-name" type="text" value="${cue.name}" class="w-full h-7 bg-bgControl hairline-all rounded-lg px-2 text-xs text-white outline-none focus:border-accent" />
+          <div class="grid grid-cols-3 gap-1">
+            <div>
+              <label class="block text-[9px] text-zinc-500 mb-0.5">Hold (s)</label>
+              <input id="inp-cue-dur" type="number" min="0.5" max="600" step="0.5" value="${cue.duration}" class="w-full h-7 bg-bgControl hairline-all rounded px-1.5 text-[11px] font-mono text-zinc-200 outline-none focus:border-accent" />
+            </div>
+            <div>
+              <label class="block text-[9px] text-zinc-500 mb-0.5">Fade (s)</label>
+              <input id="inp-cue-fade" type="number" min="0" max="30" step="0.1" value="${cue.fade}" class="w-full h-7 bg-bgControl hairline-all rounded px-1.5 text-[11px] font-mono text-zinc-200 outline-none focus:border-accent" />
+            </div>
+            <div>
+              <label class="block text-[9px] text-zinc-500 mb-0.5">Curve</label>
+              <select id="sel-cue-ease" class="w-full h-7 bg-bgControl hairline-all rounded px-1 text-[10px] text-zinc-200 outline-none">
+                <option value="cubic" ${cue.ease === 'cubic' ? 'selected' : ''}>Cubic</option>
+                <option value="easeInOut" ${cue.ease === 'easeInOut' ? 'selected' : ''}>Ease</option>
+                <option value="linear" ${cue.ease === 'linear' ? 'selected' : ''}>Linear</option>
+              </select>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('inp-cue-name').addEventListener('input', (e) => { cue.name = e.target.value; renderCueTrack(); });
+        document.getElementById('inp-cue-dur').addEventListener('change', (e) => { cue.duration = Math.max(0.5, parseFloat(e.target.value) || 4); renderCueTrack(); persistAndSync(); });
+        document.getElementById('inp-cue-fade').addEventListener('change', (e) => { cue.fade = Math.max(0, Math.min(cue.duration, parseFloat(e.target.value) || 0)); renderCueTrack(); persistAndSync(); });
+        document.getElementById('sel-cue-ease').addEventListener('change', (e) => { cue.ease = e.target.value; persistAndSync(); });
+        document.getElementById('btn-cue-del').addEventListener('click', () => {
+          if (state.cues.length <= 1) return showToast('At least one cue required');
+          state.cues.splice(idx, 1);
+          state.selectedCueId = state.cues[Math.max(0, idx - 1)].id;
+          renderCueTrack(); renderCueSidebar(); persistAndSync();
+        });
+      }
+
+      document.getElementById('timeline-ruler').addEventListener('click', (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        state.showTime = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)) * totalShowSec();
+        state.waitingNextCue = false;
+        evaluateShow(state.showTime);
+        updatePlayhead();
+        renderOverlay();
+        persistAndSync();
+      });
+
+      function updatePlayUI() {
+        const btn = document.getElementById('btn-play');
+        const ico = document.getElementById('ico-play');
+        const lbl = document.getElementById('lbl-play');
+        if (state.waitingNextCue) {
+          btn.className = 'h-7 px-2.5 rounded-lg bg-accent text-white hover:bg-blue-500 font-medium text-xs flex items-center gap-1.5 transition';
+          ico.className = 'ph-fill ph-skip-forward text-xs';
+          lbl.textContent = 'Next Cue';
+        } else if (state.isPlaying) {
+          btn.className = 'h-7 px-2.5 rounded-lg bg-bgControl text-white hover:bg-bgHover hairline-all font-medium text-xs flex items-center gap-1.5 transition';
+          ico.className = 'ph-fill ph-pause text-xs';
+          lbl.textContent = 'Pause';
+        } else {
+          btn.className = 'h-7 px-2.5 rounded-lg bg-white text-bgBase hover:bg-zinc-200 font-medium text-xs flex items-center gap-1.5 transition';
+          ico.className = 'ph-fill ph-play text-xs';
+          lbl.textContent = 'Play';
+        }
+      }
+
+      function togglePlayback() {
+        if (state.waitingNextCue) { goNextCue(); return; }
+        state.isPlaying = !state.isPlaying;
+        updatePlayUI();
+      }
+
+      function goNextCue() {
+        if (!state.cues.length) return;
+        const next = (state.activeCueIndex + 1) % state.cues.length;
+        let acc = 0;
+        for (let i = 0; i < next; i++) acc += state.cues[i].duration;
+        state.showTime = acc;
+        state.waitingNextCue = false;
+        evaluateShow(state.showTime);
+        updatePlayhead();
+        renderOverlay();
+        updatePlayUI();
+        persistAndSync();
+      }
+
+      function goPrevCue() {
+        if (!state.cues.length) return;
+        const prev = (state.activeCueIndex - 1 + state.cues.length) % state.cues.length;
+        let acc = 0;
+        for (let i = 0; i < prev; i++) acc += state.cues[i].duration;
+        state.showTime = acc;
+        state.waitingNextCue = false;
+        evaluateShow(state.showTime);
+        updatePlayhead();
+        renderOverlay();
+        updatePlayUI();
+        persistAndSync();
+      }
+
+      document.getElementById('btn-play').addEventListener('click', togglePlayback);
+      document.getElementById('btn-stop').addEventListener('click', () => {
+        state.isPlaying = false;
+        state.waitingNextCue = false;
+        state.showTime = 0;
+        evaluateShow(0);
+        updatePlayhead();
+        renderOverlay();
+        updatePlayUI();
+        persistAndSync();
+      });
+      document.getElementById('btn-cue-next').addEventListener('click', goNextCue);
+      document.getElementById('btn-cue-prev').addEventListener('click', goPrevCue);
+
+      document.getElementById('btn-loop-show').addEventListener('click', (e) => {
+        state.loopShow = !state.loopShow;
+        e.currentTarget.className = state.loopShow
+          ? 'w-7 h-7 rounded-lg bg-accent/15 border border-accent/40 flex items-center justify-center text-blue-300 transition'
+          : 'w-7 h-7 rounded-lg bg-bgControl hover:bg-bgHover hairline-all flex items-center justify-center text-zinc-400 transition';
+      });
+
+      document.getElementById('btn-cue-mode').addEventListener('click', () => {
+        state.presenterMode = !state.presenterMode;
+        document.getElementById('ico-cue-mode').className = state.presenterMode ? 'ph ph-hand-pointing text-xs text-accent' : 'ph ph-play-circle text-xs text-accent';
+        document.getElementById('lbl-cue-mode').textContent = state.presenterMode ? 'Presenter Hold' : 'Auto-Play';
+        if (!state.presenterMode) state.waitingNextCue = false;
+        updatePlayUI();
+        showToast(state.presenterMode ? 'Presenter Hold: Pauses at each cue' : 'Timed Auto-Play');
+      });
+
+      document.getElementById('btn-cue-capture').addEventListener('click', () => {
+        const cue = captureCue();
+        state.cues.push(cue);
+        state.selectedCueId = cue.id;
+        renderCueTrack(); renderCueSidebar(); persistAndSync();
+        showToast(`Captured ${cue.name}`);
+      });
+
+      document.getElementById('btn-cue-update').addEventListener('click', () => {
+        const cue = state.cues.find(c => c.id === state.selectedCueId);
+        if (!cue) return;
+        cue.snapshot = captureCue(cue.name, cue.duration, cue.fade, cue.ease).snapshot;
+        persistAndSync();
+        showToast(`Updated ${cue.name}`);
+      });
+
+      /* Responsive Desktop Drawers & Mobile Bottom Sheets */
+      document.getElementById('btn-toggle-left').addEventListener('click', () => {
+        document.getElementById('left-drawer').classList.toggle('collapsed');
+        setTimeout(applyStageLayout, 50);
+      });
+      document.getElementById('btn-toggle-right').addEventListener('click', () => {
+        document.getElementById('right-drawer').classList.toggle('collapsed');
+        setTimeout(applyStageLayout, 50);
+      });
+      document.getElementById('btn-toggle-bottom').addEventListener('click', () => {
+        const b = document.getElementById('bottom-drawer');
+        b.classList.toggle('collapsed');
+        document.getElementById('ico-bottom-chevron').className = b.classList.contains('collapsed') ? 'ph ph-caret-up text-xs' : 'ph ph-caret-down text-xs';
+        setTimeout(applyStageLayout, 50);
+      });
+
+      const backdrop = document.getElementById('mobile-sheet-backdrop');
+      function closeAllMobileSheets() {
+        document.querySelectorAll('#left-drawer, #right-drawer, #bottom-drawer').forEach(el => el.classList.remove('sheet-open'));
+        backdrop.classList.add('hidden');
+      }
+
+      document.querySelectorAll('.mobile-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const target = tab.getAttribute('data-sheet');
+          if (target === 'add') {
+            closeAllMobileSheets();
+            document.getElementById('menu-add').classList.toggle('hidden');
+            return;
+          }
+          const drawer = document.getElementById(target);
+          const alreadyOpen = drawer.classList.contains('sheet-open');
+          closeAllMobileSheets();
+          if (!alreadyOpen) {
+            drawer.classList.add('sheet-open');
+            backdrop.classList.remove('hidden');
+          }
+        });
+      });
+
+      backdrop.addEventListener('click', closeAllMobileSheets);
+      document.querySelectorAll('.close-sheet-btn').forEach(btn => btn.addEventListener('click', closeAllMobileSheets));
+
+      /* Dropdowns & Top Bar Actions */
+      function wireDropdown(btnId, menuId) {
+        const btn = document.getElementById(btnId), menu = document.getElementById(menuId);
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const hid = menu.classList.contains('hidden');
+          document.querySelectorAll('#menu-add, #menu-output').forEach(m => m.classList.add('hidden'));
+          if (hid) menu.classList.remove('hidden');
+        });
+      }
+      wireDropdown('btn-add-menu', 'menu-add');
+      wireDropdown('btn-output-menu', 'menu-output');
+      window.addEventListener('click', () => document.querySelectorAll('#menu-add, #menu-output').forEach(m => m.classList.add('hidden')));
+
+      document.querySelectorAll('.add-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const shape = btn.getAttribute('data-add');
+          const lyr = createLayer({ shape });
+          state.layers.push(lyr);
+          state.selectedIds = [lyr.id];
+          pushHistory();
+          refreshAll();
+          if (window.innerWidth < 1025) closeAllMobileSheets();
+          showToast(`Added ${lyr.name}`);
+        });
+      });
+
+      function setResolution(w, h) {
+        state.outputWidth = Math.max(320, Math.min(7680, w));
+        state.outputHeight = Math.max(240, Math.min(4320, h));
+        document.getElementById('lbl-output-res').textContent = `${state.outputWidth}×${state.outputHeight}`;
+        document.getElementById('inp-res-w').value = state.outputWidth;
+        document.getElementById('inp-res-h').value = state.outputHeight;
+        applyStageLayout();
+        syncInspectorNumbers();
+        pushHistory();
+        persistAndSync();
+      }
+
+      document.querySelectorAll('.res-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const [w, h] = btn.getAttribute('data-res').split('x').map(Number);
+          setResolution(w, h);
+        });
+      });
+      document.getElementById('btn-set-res').addEventListener('click', () => {
+        setResolution(parseInt(document.getElementById('inp-res-w').value, 10) || 1920, parseInt(document.getElementById('inp-res-h').value, 10) || 1080);
+      });
+
+      /* Reference Image Overlay for Physical Model Alignment */
+      const refImgEl = document.getElementById('ref-image-layer');
+      document.getElementById('btn-upload-ref').addEventListener('click', () => document.getElementById('inp-ref-file').click());
+      document.getElementById('inp-ref-file').addEventListener('change', (e) => {
+        const f = e.target.files?.[0];
+        if (!f) return;
+        const url = URL.createObjectURL(f);
+        refImgEl.src = url;
+        refImgEl.classList.remove('hidden');
+        document.getElementById('ref-opacity-row').classList.remove('hidden');
+        document.getElementById('btn-clear-ref').classList.remove('hidden');
+        showToast('Reference guide loaded');
+      });
+      document.getElementById('inp-ref-opacity').addEventListener('input', (e) => {
+        refImgEl.style.opacity = e.target.value;
+        document.getElementById('lbl-ref-opacity').textContent = `${Math.round(parseFloat(e.target.value) * 100)}%`;
+      });
+      document.getElementById('btn-clear-ref').addEventListener('click', () => {
+        refImgEl.src = '';
+        refImgEl.classList.add('hidden');
+        document.getElementById('ref-opacity-row').classList.add('hidden');
+        document.getElementById('btn-clear-ref').classList.add('hidden');
+      });
+
+      document.getElementById('btn-grid').addEventListener('click', (e) => {
+        state.showGrid = !state.showGrid;
+        e.currentTarget.className = state.showGrid
+          ? 'h-8 px-2.5 rounded-lg bg-accent/15 border border-accent/40 text-xs text-blue-300 flex items-center gap-1.5 transition'
+          : 'h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-300 flex items-center gap-1.5 transition';
+        renderOverlay();
+      });
+
+      document.getElementById('btn-snap').addEventListener('click', (e) => {
+        state.snapEnabled = !state.snapEnabled;
+        e.currentTarget.className = state.snapEnabled
+          ? 'h-8 px-2.5 rounded-lg bg-accent/15 border border-accent/40 text-xs text-blue-300 flex items-center gap-1.5 transition'
+          : 'h-8 px-2.5 rounded-lg bg-bgControl hover:bg-bgHover hairline-all text-xs text-zinc-300 flex items-center gap-1.5 transition';
+      });
+
+      document.getElementById('btn-dup-layer').addEventListener('click', () => {
+        const lyr = primarySelectedLayer();
+        if (!lyr) return;
+        const copy = clone(lyr);
+        copy.id = genId(copy.kind === 'mask' ? 'msk' : 'lyr');
+        copy.name = `${lyr.name} Copy`;
+        transformVertices(copy, p => ({ x: Math.min(0.98, p.x + 0.03), y: Math.min(0.98, p.y + 0.03) }));
+        state.layers.push(copy);
+        state.selectedIds = [copy.id];
+        if (copy.sourceType === 'text') updateTextTexture(copy);
+        pushHistory();
+        refreshAll();
+      });
+
+      document.getElementById('btn-reset-layer').addEventListener('click', () => {
+        const lyr = primarySelectedLayer();
+        if (!lyr) return;
+        lyr.vertices = defaultVertices(lyr.shape);
+        if (lyr.meshSubdiv > 1) rebuildMeshGrid(lyr);
+        pushHistory();
+        refreshAll();
+      });
+
+      document.getElementById('btn-del-layer').addEventListener('click', () => {
+        if (!state.selectedIds.length) return;
+        state.layers = state.layers.filter(l => !state.selectedIds.includes(l.id));
+        state.selectedIds = state.layers.length ? [state.layers[state.layers.length - 1].id] : [];
+        pushHistory();
+        refreshAll();
+      });
+
+      document.getElementById('btn-undo').addEventListener('click', undo);
+      document.getElementById('btn-redo').addEventListener('click', redo);
+
+      /* Fullscreen & External Projector Output Window */
+      function enterFullscreen() {
+        document.body.classList.add('stage-fullscreen');
+        canvas.width = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2);
+        canvas.height = window.innerHeight * Math.min(window.devicePixelRatio || 1, 2);
+        renderOverlay();
+        if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
+        showToast('Press ESC or F to exit fullscreen');
+      }
+
+      function exitFullscreen() {
+        document.body.classList.remove('stage-fullscreen');
+        if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
+        setTimeout(applyStageLayout, 50);
+      }
+
+      document.getElementById('btn-fullscreen').addEventListener('click', enterFullscreen);
+
+      document.getElementById('btn-projector-win').addEventListener('click', () => {
+        const win = window.open(
+          `${window.location.pathname}?projector=1`,
+          'ProjectionOutputDisplay',
+          `width=${Math.min(1280, state.outputWidth)},height=${Math.min(800, state.outputHeight)},menubar=no,toolbar=no,location=no,status=no`
+        );
+        if (win) {
+          showToast('Projector output window opened');
+          setTimeout(persistAndSync, 400);
+        } else {
+          showToast('Enable pop-ups to open projector output');
+        }
+      });
+
+      /* JSON Save / Load */
+      document.getElementById('btn-save-json').addEventListener('click', () => {
+        const data = JSON.stringify({
+          outputWidth: state.outputWidth,
+          outputHeight: state.outputHeight,
+          layers: state.layers,
+          cues: state.cues
+        }, null, 2);
+        const url = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'projection_mapping_project.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Project exported');
+      });
+
+      document.getElementById('btn-load-json').addEventListener('click', () => document.getElementById('inp-load-json').click());
+      document.getElementById('inp-load-json').addEventListener('change', async (e) => {
+        const f = e.target.files?.[0];
+        if (!f) return;
+        try {
+          const parsed = JSON.parse(await f.text());
+          if (Array.isArray(parsed.layers)) {
+            state.outputWidth = parsed.outputWidth || 1920;
+            state.outputHeight = parsed.outputHeight || 1080;
+            state.layers = parsed.layers;
+            state.selectedIds = parsed.layers[0] ? [parsed.layers[0].id] : [];
+            state.cues = parsed.cues || [];
+            state.selectedCueId = state.cues[0]?.id || null;
+            rebuildAllTextTextures();
+            pushHistory();
+            refreshAll();
+            showToast('Project loaded');
+          }
+        } catch (err) {
+          showToast('Invalid project JSON');
+        }
+      });
+
+      /* Drag & Drop Media Files */
+      const dropBanner = document.getElementById('drop-zone-banner');
+      viewportWrap.addEventListener('dragover', (e) => { e.preventDefault(); dropBanner.classList.remove('hidden'); });
+      viewportWrap.addEventListener('dragleave', () => dropBanner.classList.add('hidden'));
+      viewportWrap.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropBanner.classList.add('hidden');
+        const f = e.dataTransfer?.files?.[0];
+        if (!f) return;
+        const target = primarySelectedLayer() || state.layers.find(l => l.kind === 'surface');
+        if (target) loadMediaFile(target.id, f);
+      });
+
+      /* Keyboard Shortcuts */
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') spaceDown = true;
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
+          e.preventDefault();
+          if (e.shiftKey) redo();
+          else undo();
+          return;
+        }
+        if (e.key === 'Escape' && document.body.classList.contains('stage-fullscreen')) { exitFullscreen(); return; }
+        if (e.key.toLowerCase() === 'f') {
+          if (document.body.classList.contains('stage-fullscreen')) exitFullscreen();
+          else enterFullscreen();
+          return;
+        }
+        if (e.key === ' ') { e.preventDefault(); togglePlayback(); return; }
+        if (e.key.toLowerCase() === 'g') { document.getElementById('btn-grid').click(); return; }
+        if (e.key.toLowerCase() === 'n') { goNextCue(); return; }
+
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+          const lyr = primarySelectedLayer();
+          if (!lyr || lyr.locked) return;
+          e.preventDefault();
+          const px = e.shiftKey ? 10 : 1;
+          const dx = (e.key === 'ArrowRight' ? px : (e.key === 'ArrowLeft' ? -px : 0)) / state.outputWidth;
+          const dy = (e.key === 'ArrowDown' ? px : (e.key === 'ArrowUp' ? -px : 0)) / state.outputHeight;
+          transformVertices(lyr, p => ({ x: Math.max(0, Math.min(1, p.x + dx)), y: Math.max(0, Math.min(1, p.y + dy)) }));
+          renderOverlay(); syncInspectorNumbers(); persistAndSync();
+        }
+      });
+
+      window.addEventListener('keyup', (e) => { if (e.code === 'Space') spaceDown = false; });
+
+      /* Cross-Window Projector Sync */
+      function persistAndSync() {
+        const payload = {
+          outputWidth: state.outputWidth,
+          outputHeight: state.outputHeight,
+          selectedIds: state.selectedIds,
+          layers: state.layers,
+          cues: state.cues,
+          selectedCueId: state.selectedCueId
+        };
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch (e) {}
+        if (syncChannel && !isProjectorWindow) {
+          syncChannel.postMessage({ type: 'SYNC', ...payload });
+        }
+      }
+
+      if (syncChannel) {
+        syncChannel.onmessage = (e) => {
+          if (e.data?.type === 'SYNC' && isProjectorWindow) {
+            state.layers = e.data.layers;
+            state.outputWidth = e.data.outputWidth;
+            state.outputHeight = e.data.outputHeight;
+            rebuildAllTextTextures();
+            fitProjectorWindow();
+          } else if (e.data?.type === 'HELLO' && !isProjectorWindow) {
+            persistAndSync();
+          }
+        };
+      }
+
+      window.addEventListener('storage', (e) => {
+        if (e.key === STORAGE_KEY && isProjectorWindow && e.newValue) {
+          try {
+            const parsed = JSON.parse(e.newValue);
+            state.layers = parsed.layers || [];
+            state.outputWidth = parsed.outputWidth || 1920;
+            state.outputHeight = parsed.outputHeight || 1080;
+            rebuildAllTextTextures();
+            fitProjectorWindow();
+          } catch (err) {}
+        }
+      });
+
+      function fitProjectorWindow() {
+        const asp = state.outputWidth / state.outputHeight;
+        let w = window.innerWidth, h = w / asp;
+        if (h > window.innerHeight) { h = window.innerHeight; w = h * asp; }
+        stageBox.style.width = `${Math.round(w)}px`;
+        stageBox.style.height = `${Math.round(h)}px`;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.max(1, Math.round(w * dpr));
+        canvas.height = Math.max(1, Math.round(h * dpr));
+      }
+
+      function showToast(msg) {
+        const host = document.getElementById('toast-host');
+        const el = document.createElement('div');
+        el.className = 'px-3 py-1.5 rounded-full bg-bgPanel/95 backdrop-blur-md hairline-all text-xs text-zinc-200 shadow-xl transition-opacity duration-300';
+        el.textContent = msg;
+        host.appendChild(el);
+        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2000);
+      }
+
+      function initDefaultScene() {
+        const top = createLayer({
+          name: 'Top Plane',
+          shape: 'quad',
+          vertices: [{ x: 0.50, y: 0.16 }, { x: 0.68, y: 0.31 }, { x: 0.50, y: 0.46 }, { x: 0.32, y: 0.31 }],
+          shaderPreset: 'aurora',
+          uniforms: { color1: '#60a5fa', color2: '#09090b', color3: '#f4f4f6', speed: 0.8, scale: 1.2, complexity: 2.2, brightness: 1.05, contrast: 1.05, saturation: 1.0, hueShift: 0.0 }
+        });
+        const left = createLayer({
+          name: 'Left Facet',
+          shape: 'quad',
+          vertices: [{ x: 0.32, y: 0.31 }, { x: 0.50, y: 0.46 }, { x: 0.50, y: 0.82 }, { x: 0.32, y: 0.67 }],
+          shaderPreset: 'grid',
+          uniforms: { color1: '#3b82f6', color2: '#09090b', color3: '#93c5fd', speed: 1.0, scale: 1.0, complexity: 2.0, brightness: 1.0, contrast: 1.05, saturation: 1.0, hueShift: 0.0 }
+        });
+        const right = createLayer({
+          name: 'Right Facet',
+          shape: 'quad',
+          vertices: [{ x: 0.50, y: 0.46 }, { x: 0.68, y: 0.31 }, { x: 0.68, y: 0.67 }, { x: 0.50, y: 0.82 }],
+          shaderPreset: 'waves',
+          uniforms: { color1: '#2563eb', color2: '#09090b', color3: '#e4e4e7', speed: 0.9, scale: 1.1, complexity: 2.0, brightness: 1.0, contrast: 1.05, saturation: 1.0, hueShift: 0.0 }
+        });
+        state.layers = [top, left, right];
+        state.selectedIds = [top.id];
+        state.cues = [
+          captureCue('Cue 01', 8.0, 1.5, 'cubic'),
+          (() => {
+            const c = captureCue('Cue 02', 8.0, 2.0, 'cubic');
+            c.snapshot[top.id].shaderPreset = 'pulse';
+            c.snapshot[left.id].shaderPreset = 'grain';
+            c.snapshot[right.id].shaderPreset = 'kaleidoscope';
+            return c;
+          })(),
+          (() => {
+            const c = captureCue('Cue 03', 8.0, 1.5, 'cubic');
+            c.snapshot[top.id].uniforms.color1 = '#f4f4f6';
+            c.snapshot[left.id].uniforms.color1 = '#60a5fa';
+            c.snapshot[right.id].uniforms.color1 = '#3b82f6';
+            return c;
+          })()
+        ];
+        state.selectedCueId = state.cues[0].id;
+      }
+
+      function refreshAll() {
+        document.getElementById('lbl-output-res').textContent = `${state.outputWidth}×${state.outputHeight}`;
+        applyStageLayout();
+        renderLayerList();
+        renderInspector();
+        renderCueTrack();
+        renderCueSidebar();
+        renderOverlay();
+        persistAndSync();
+      }
+
+      window.addEventListener('resize', () => {
+        if (isProjectorWindow) fitProjectorWindow();
+        else applyStageLayout();
+      });
+
+      let lastMs = performance.now();
+      function loop(nowMs) {
+        const dt = Math.min(0.1, (nowMs - lastMs) / 1000);
+        lastMs = nowMs;
+
+        if (state.isPlaying && !state.waitingNextCue && !isProjectorWindow) {
+          const tot = totalShowSec();
+          const curIdx = state.activeCueIndex;
+          state.showTime += dt;
+
+          let cueEnd = 0;
+          for (let i = 0; i <= curIdx && i < state.cues.length; i++) cueEnd += state.cues[i].duration;
+
+          if (state.presenterMode && state.showTime >= cueEnd && curIdx < state.cues.length - 1) {
+            state.showTime = cueEnd - 0.001;
+            state.waitingNextCue = true;
+            updatePlayUI();
+          } else if (state.showTime >= tot) {
+            if (state.loopShow) {
+              state.showTime = 0;
+            } else {
+              state.showTime = tot;
+              state.isPlaying = false;
+              updatePlayUI();
+            }
+          }
+          evaluateShow(state.showTime);
+          updatePlayhead();
+          persistAndSync();
+        }
+
+        renderGL(nowMs / 1000);
+        requestAnimationFrame(loop);
+      }
+
+      if (isProjectorWindow) {
+        document.body.classList.add('stage-fullscreen');
+        initDefaultScene();
+        fitProjectorWindow();
+        if (syncChannel) syncChannel.postMessage({ type: 'HELLO' });
+      } else {
+        let loaded = false;
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const p = JSON.parse(raw);
+            if (Array.isArray(p.layers) && p.layers.length > 0) {
+              state.outputWidth = p.outputWidth || 1920;
+              state.outputHeight = p.outputHeight || 1080;
+              state.layers = p.layers;
+              state.selectedIds = p.selectedIds || [p.layers[0].id];
+              state.cues = p.cues || [];
+              state.selectedCueId = p.selectedCueId || state.cues[0]?.id || null;
+              rebuildAllTextTextures();
+              loaded = true;
+            }
+          }
+        } catch (e) {}
+
+        if (!loaded) initDefaultScene();
+        pushHistory();
+        refreshAll();
+      }
+
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>
